@@ -1,0 +1,6 @@
+{
+    "jira-plugin.workingProject": "",
+    "python.pythonPath": "/mnt/c/Users/neyraj2/Spotlight/adme/server/env/bin/python",
+    "appService.showBuildDuringDeployPrompt": false,
+    "appService.defaultWebAppToDeploy": "None"
+}
