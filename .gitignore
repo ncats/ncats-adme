@@ -1,1 +1,7 @@
 notebooks
+
+env
+env/
+
+server-env
+server-env/

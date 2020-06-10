@@ -19,6 +19,7 @@ dependencies:
   - fontconfig=2.13.1=h86ecdb6_1001
   - freetype=2.10.2=he06d7ca_0
   - glib=2.63.1=h3eb4bd4_1
+  - gunicorn=20.0.4=py38_0
   - icu=64.2=he1b5a44_1
   - itsdangerous=1.1.0=py_0
   - jinja2=2.11.2=py_0
@@ -84,5 +85,4 @@ dependencies:
   - xz=5.2.5=h7b6447c_0
   - zlib=1.2.11=h7b6447c_3
   - zstd=1.4.4=h6597ccf_3
-prefix: adme-env
 
