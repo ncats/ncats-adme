@@ -1,0 +1,33 @@
+.fill-middle {
+    flex: 1 1 auto;
+}
+
+.title {
+    font-size: 30px;
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.navigation {
+    margin-left: 20px;
+    .nav-item {
+        margin-right: 20px;
+        font-size: 14px;
+        transform: all 500ms;
+        color: white;
+        text-decoration: none;
+
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        &:active {
+            text-decoration: underline;
+        }
+    }
+}

@@ -1,0 +1,37 @@
+.upper-body {
+    display: flex;
+    padding: 10px 20px;
+    height: 65vh;
+    min-height: 465px;
+    max-height: 600px;
+}
+
+.molecule-input {
+    display: flex;
+    flex-direction: column;
+    min-width: 640px;
+    flex-basis: 60%;
+}
+
+.models-output {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+@media(max-width: 1000px) {
+    .upper-body {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .molecule-input {
+        width: 100%;
+        flex-basis: auto;
+    }
+
+    .models-output {
+        margin-top: 20px;
+        width: 100%;
+    }
+}

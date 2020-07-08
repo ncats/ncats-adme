@@ -1,0 +1,9 @@
+/node_modules
+/*.zip
+/dist
+/indigo
+
+.idea/
+*.pyc
+/extra
+.tern-port
