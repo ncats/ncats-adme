@@ -1,5 +1,11 @@
 :host {
     height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.actions {
+    padding-top: 15px;
 }
 
 iframe {

@@ -8,11 +8,14 @@ import pickle
 from flask_cors import CORS
 import sys
 import os
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import ImmutableMultiDict
+from consensus_model import getConsensusPredictions
+import tensorflow as tf
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
 app.config["DEBUG"] = True
-
 
 def get_morgan_fp(mol):
     """
@@ -48,6 +51,39 @@ def predict():
     smiles = request.args.get('smiles')
     y_pred, y_pred_prob = get_prediction(smiles, model)
     return f'{y_pred_prob}'
+
+ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/api/v1/predict-file', methods=['POST'])
+def upload_file():
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['file']
+    # if user does not select file, browser also
+    # submit an empty part without filename
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        data = dict(request.form)
+        if data['hasHeaderRow'] == 'true':
+            header = 0
+        else:
+            header = None
+        df = pd.read_csv(file, header=header)
+        pred_df = getConsensusPredictions(df, int(data['indexIdentifierColumn']))
+        print(pred_df.head(), file=sys.stdout)
+        return pred_df.to_json(orient='records')
+
+    return ''
+        
 
 @app.route('/client/<path:path>')
 def send_js(path):

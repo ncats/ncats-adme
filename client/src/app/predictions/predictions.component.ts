@@ -3,6 +3,8 @@ import { Ketcher } from '../sketcher/ketcher.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
+import { environment } from '../../environments/environment';
+import { FileForm } from '../text-file/file-form.model';
 
 @Component({
   selector: 'adme-predictions',
@@ -11,7 +13,8 @@ import { PageEvent } from '@angular/material/paginator';
 })
 export class PredictionsComponent implements OnInit {
   private ketcher: Ketcher;
-  displayedColumns = ['smiles', 'rlm'];
+  private defaultDisplayedColumns = ['smiles', 'rlm'];
+  displayedColumns: Array<string>;
   dataSource = new MatTableDataSource<any>([]);
   data: Array<any> = [];
   paged: Array<any>;
@@ -21,20 +24,16 @@ export class PredictionsComponent implements OnInit {
 
   constructor(
     private http: HttpClient
-  ) { }
+  ) {
+    this.displayedColumns = this.defaultDisplayedColumns;
+  }
 
   ngOnInit(): void {
   }
 
-  ketcherOnLoad(ketcher: Ketcher): void {
-    this.ketcher = ketcher;
-    this.isProcessing = false;
-  }
-
-  addMolecule(): void {
+  processSketcherInput(smiles: string): void {
     this.isProcessing = true;
-    const smiles = this.ketcher.getSmiles();
-    this.http.get(`/api/v1/predict?smiles=${smiles}`).subscribe(response => {
+    this.http.get(`${environment.apiBaseUrl}api/v1/predict?smiles=${smiles}`).subscribe(response => {
       this.isProcessing = false;
       const predition = {
         // tslint:disable-next-line:object-literal-shorthand
@@ -52,6 +51,9 @@ export class PredictionsComponent implements OnInit {
     if (pageEvent != null) {
       this.page = pageEvent.pageIndex;
       this.pageSize = pageEvent.pageSize;
+    } else {
+      this.page = 0;
+      this.pageSize = 25;
     }
 
     this.paged = [];
@@ -63,6 +65,23 @@ export class PredictionsComponent implements OnInit {
         break;
       }
     }
+  }
+
+  processFile(fileForm: FileForm): void {
+    const formData = new FormData();
+    formData.append('lineBreak', fileForm.lineBreak);
+    formData.append('columnSeparator', fileForm.columnSeparator);
+    formData.append('hasHeaderRow', fileForm.hasHeaderRow.toString());
+    formData.append('indexIdentifierColumn', fileForm.indexIdentifierColumn.toString());
+    formData.append('file', fileForm.file);
+    this.http.post(`${environment.apiBaseUrl}api/v1/predict-file`, formData).subscribe((response: Array<any>) => {
+      if (response && response.length > 0) {
+        this.data = response;
+        this.pageChange();
+        const keys = Object.keys(response[0]);
+        this.displayedColumns = keys;
+      }
+    });
   }
 
 }

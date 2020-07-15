@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Ketcher } from './ketcher.model';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
@@ -10,8 +10,9 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 })
 export class SketcherComponent implements OnInit {
   ketcherSrc: SafeResourceUrl;
+  private ketcher: Ketcher;
   @ViewChild('ketcherFrame', { static: true }) ketcherFrame: { nativeElement: HTMLIFrameElement };
-  @Output() ketcherOnLoad = new EventEmitter<Ketcher>();
+  @Output() moleculeInput = new EventEmitter<string>();
 
   constructor(
     private domSanatizer: DomSanitizer
@@ -22,8 +23,13 @@ export class SketcherComponent implements OnInit {
   ngOnInit(): void {
     this.ketcherFrame.nativeElement.onload = () => {
       // tslint:disable-next-line:no-string-literal
-      this.ketcherOnLoad.emit(this.ketcherFrame.nativeElement.contentWindow['ketcher']);
+      this.ketcher = this.ketcherFrame.nativeElement.contentWindow['ketcher'];
     };
+  }
+
+  addMolecule(): void {
+    const smiles = this.ketcher.getSmiles();
+    this.moleculeInput.emit(smiles);
   }
 
 }

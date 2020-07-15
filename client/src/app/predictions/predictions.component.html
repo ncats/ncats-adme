@@ -1,34 +1,30 @@
 <div class="upper-body">
-    <div class="molecule-input">
-        <h2>Molecule Input</h2>
-        <adme-sketcher (ketcherOnLoad)="ketcherOnLoad($event)"></adme-sketcher>
-        <div>
-            <button mat-raised-button color="accent" (click)="addMolecule()" [disabled]="isProcessing">
-                Add molecule
-              </button>
-        </div>
-    </div>
-    <div class="models-output">
-        <h2>Model predictions</h2>
-        <mat-table #table [dataSource]="paged">
-            <ng-container matColumnDef="smiles">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Smiles</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                {{row.smiles}}
-              </mat-cell>
-            </ng-container>
-            <ng-container matColumnDef="rlm">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>RLM</mat-header-cell>
-              <mat-cell *matCellDef="let row">
-                {{row.rlm}}
-              </mat-cell>
-            </ng-container>
-        
-            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns;" fxLayoutAlign="center start"></mat-row>
-          </mat-table>
-          <mat-paginator [length]="data && data.length || 0" [pageSize]="25" showFirstLastButtons="true"
-            (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
-          </mat-paginator>
-    </div>
+  <div class="molecule-input">
+    <h2>Molecule Input</h2>
+    <mat-tab-group>
+      <mat-tab label="Sketcher">
+        <adme-sketcher (moleculeInput)="processSketcherInput($event)"></adme-sketcher>
+      </mat-tab>
+      <mat-tab label="Text File">
+        <adme-text-file (fileProcess)="processFile($event)">
+        </adme-text-file>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <div class="models-output">
+    <h2>Model predictions</h2>
+    <mat-table #table [dataSource]="paged">
+      <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of displayedColumns">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>{{displayedColumn}}</mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          {{row[displayedColumn]}}
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" fxLayoutAlign="center start"></mat-row>
+    </mat-table>
+    <mat-paginator [length]="data && data.length || 0" [pageSize]="25" showFirstLastButtons="true"
+      (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div>
 </div>

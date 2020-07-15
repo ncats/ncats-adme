@@ -11,12 +11,21 @@
     flex-direction: column;
     min-width: 640px;
     flex-basis: 60%;
+    padding-right: 20px;
+
+    .mat-tab-header {
+        margin-bottom: 10px;
+      }
 }
 
 .models-output {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+
+    mat-header-row {
+        min-height: 48px;
+    }
 }
 
 @media(max-width: 1000px) {

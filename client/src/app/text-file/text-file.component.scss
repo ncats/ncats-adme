@@ -1,0 +1,32 @@
+.text-file-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.text-file-form {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+.form-body {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.form-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.mat-form-field:not(:first-child) {
+    margin-left: 15px;
+}
+
+.form-actions {
+    display: flex;
+}

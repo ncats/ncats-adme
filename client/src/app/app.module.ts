@@ -13,6 +13,13 @@ import { PredictionsComponent } from './predictions/predictions.component';
 import { MethodComponent } from './method/method.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { FileSelectDirective } from './utilities/file-select.directive';
+import { TextFileComponent } from './text-file/text-file.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -20,7 +27,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     HomeComponent,
     PredictionsComponent,
     MethodComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    FileSelectDirective,
+    TextFileComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +40,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatPaginatorModule,
     HttpClientModule,
     MatButtonModule,
-    MatToolbarModule
+    MatToolbarModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatTabsModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SketcherComponent } from './sketcher.component';
+import { MatButtonModule } from '@angular/material/button';
 
 
 
@@ -9,7 +10,8 @@ import { SketcherComponent } from './sketcher.component';
     SketcherComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatButtonModule
   ],
   exports: [
     SketcherComponent
