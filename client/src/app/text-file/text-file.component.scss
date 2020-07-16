@@ -12,15 +12,17 @@
     overflow: auto;
 }
 
-.form-body {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
+.description {
+    margin-bottom: 10px;
 }
 
-.form-row {
+.form-body {
     display: flex;
-    margin-bottom: 10px;
+    flex-direction: row;
+
+    & > div:not(:last-child) {
+        padding-right: 10px;
+    }
 }
 
 .mat-form-field:not(:first-child) {
@@ -29,4 +31,5 @@
 
 .form-actions {
     display: flex;
+    padding-top: 15px;
 }

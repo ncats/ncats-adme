@@ -11,7 +11,7 @@
     </div>
     <form #textFileForm="ngForm" class="text-file-form">
         <div class="form-body">
-            <div class="form-row">
+            <div class="file-type">
                 <mat-form-field>
                     <mat-label>File type</mat-label>
                     <mat-select [(ngModel)]="fileType" name="fileType" required (selectionChange)="updateType()">
@@ -27,19 +27,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="form-row">
-                <!-- <mat-form-field>
-                    <mat-label>Line break</mat-label>
-                    <mat-select [(ngModel)]="options.lineBreak" name="lineBreak" required
-                        (selectionChange)="updateOptions()" matTooltip="Set of characters used to separate columns">
-                        <mat-option [value]="'\n'">
-                            Linux, macOS (\n)
-                        </mat-option>
-                        <mat-option [value]="'\r\n'">
-                            Windows (\r\n)
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field> -->
+            <div class="column-separator">
                 <mat-form-field>
                     <mat-label>Column separator</mat-label>
                     <mat-select [(ngModel)]="options.columnSeparator" name="columnSeparator" required
@@ -53,7 +41,7 @@
                     </mat-select>
                 </mat-form-field>
             </div>
-            <div class="form-row">
+            <div class="header-row">
                 <mat-form-field>
                     <mat-label>Has header row</mat-label>
                     <mat-select [(ngModel)]="options.hasHeaderRow" name="hasHeaderRow" required
@@ -71,6 +59,7 @@
                         [(ngModel)]="options.indexIdentifierColumn" name="indexIdentifierColumn" required
                         matTooltip="The column number that contains the molecule identifiers starting from 0."
                         (change)="updateOptions()">
+                    <mat-hint>Zero indicates that the SMILES are in the first column</mat-hint>
                 </mat-form-field>
             </div>
         </div>

@@ -1,18 +1,27 @@
-<div class="upper-body">
+<div class="content-container">
   <div class="molecule-input">
-    <h2>Molecule Input</h2>
-    <mat-tab-group>
-      <mat-tab label="Sketcher">
-        <adme-sketcher (moleculeInput)="processSketcherInput($event)"></adme-sketcher>
-      </mat-tab>
+    <mat-tab-group (selectedTabChange)=updateSelectedTab($event)>
       <mat-tab label="Text File">
-        <adme-text-file (fileProcess)="processFile($event)">
-        </adme-text-file>
+        <div class="tab-body">
+          <adme-text-file (fileProcess)="processFile($event)">
+          </adme-text-file>
+        </div>
+      </mat-tab>
+      <mat-tab label="Sketcher">
+        <div class="tab-body">
+          <adme-sketcher (moleculeInput)="processSketcherInput($event)"></adme-sketcher>
+        </div>
       </mat-tab>
     </mat-tab-group>
   </div>
-  <div class="models-output">
+  <div class="error-message-container" *ngIf="errorMessage">
+    {{errorMessage}}
+  </div>
+  <div class="models-output" *ngIf="data && data.length">
     <h2>Model predictions</h2>
+    <mat-paginator [length]="data && data.length || 0" [pageSize]="25" showFirstLastButtons="true"
+      (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
     <mat-table #table [dataSource]="paged">
       <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of displayedColumns">
         <mat-header-cell *matHeaderCellDef mat-sort-header>{{displayedColumn}}</mat-header-cell>

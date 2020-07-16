@@ -20,6 +20,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +32,8 @@ import { MatInputModule } from '@angular/material/input';
     MethodComponent,
     PageNotFoundComponent,
     FileSelectDirective,
-    TextFileComponent
+    TextFileComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +50,9 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatSelectModule,
     MatTabsModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

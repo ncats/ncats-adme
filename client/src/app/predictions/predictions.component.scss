@@ -1,17 +1,21 @@
-.upper-body {
+.content-container {
     display: flex;
+    flex-direction: column;
     padding: 10px 20px;
-    height: 65vh;
-    min-height: 465px;
-    max-height: 600px;
+}
+
+.mat-tab-group {
+    width: 100%;
+}
+
+.tab-body {
+    padding-top: 15px;
 }
 
 .molecule-input {
     display: flex;
-    flex-direction: column;
     min-width: 640px;
-    flex-basis: 60%;
-    padding-right: 20px;
+    width: 100%;
 
     .mat-tab-header {
         margin-bottom: 10px;
@@ -21,26 +25,20 @@
 .models-output {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    width: 100%;
+    margin-top: 20px;
 
     mat-header-row {
         min-height: 48px;
     }
 }
 
-@media(max-width: 1000px) {
-    .upper-body {
-        flex-direction: column;
-        height: auto;
-    }
+mat-cell {
+    word-wrap: anywhere;
+}
 
-    .molecule-input {
-        width: 100%;
-        flex-basis: auto;
-    }
-
-    .models-output {
-        margin-top: 20px;
-        width: 100%;
-    }
+.error-message-container {
+    margin: 15px 0;
+    font-weight: 500;
+    color: red;
 }

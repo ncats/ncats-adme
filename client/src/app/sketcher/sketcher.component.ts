@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/cor
 import { Ketcher } from './ketcher.model';
 import { environment } from '../../environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { LoadingService } from '../loading/loading.service';
 
 @Component({
   selector: 'adme-sketcher',
@@ -15,15 +16,18 @@ export class SketcherComponent implements OnInit {
   @Output() moleculeInput = new EventEmitter<string>();
 
   constructor(
-    private domSanatizer: DomSanitizer
+    private domSanatizer: DomSanitizer,
+    private loadingService: LoadingService
   ) {
     this.ketcherSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${environment.baseHref}assets/ketcher/ketcher.html`);
   }
 
   ngOnInit(): void {
+    // this.loadingService.setLoadingState(true);
     this.ketcherFrame.nativeElement.onload = () => {
       // tslint:disable-next-line:no-string-literal
       this.ketcher = this.ketcherFrame.nativeElement.contentWindow['ketcher'];
+      this.loadingService.setLoadingState(false);
     };
   }
 
