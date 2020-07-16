@@ -46,7 +46,7 @@ def get_prediction(smi, model):
 
 @app.route('/api/v1/predict', methods=['GET'])
 def predict():
-    pkl_file = open('./api/models/random_forest_2019.pkl', 'rb')
+    pkl_file = open('./models/random_forest_2019.pkl', 'rb')
     model = pickle.load(pkl_file)
     smiles = request.args.get('smiles')
     y_pred, y_pred_prob = get_prediction(smiles, model)
@@ -73,11 +73,11 @@ def upload_file():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         data = dict(request.form)
-        if data['hasHeaderRow'] == 'true':
-            header = 0
-        else:
-            header = None
-        df = pd.read_csv(file, header=header)
+        # if data['hasHeaderRow'] == 'true':
+        #     header = 0
+        # else:
+        #     header = None
+        df = pd.read_csv(file)
         pred_df = getConsensusPredictions(df, int(data['indexIdentifierColumn']))
         print(pred_df.head(), file=sys.stdout)
         return pred_df.to_json(orient='records')

@@ -17,15 +17,15 @@ import sys
 # graph = tf.compat.v1.get_default_graph()
 
 global dnn_model
-with open('./api/models/dnn_morgan_all_data.pkl', 'rb') as pkl_file:
+with open('./models/dnn_morgan_all_data.pkl', 'rb') as pkl_file:
 	dnn_model = pickle.load(pkl_file)
 
 global tokenizer
-with open("./api/models/tokenizer.pickle",'rb') as tokfile:
+with open("./models/tokenizer.pickle",'rb') as tokfile:
 	tokenizer = pickle.load(tokfile)
 
 global lstm_model
-lstm_model = load_model("./api/models/lstm_all_data.h5", custom_objects=SeqSelfAttention.get_custom_objects())
+lstm_model = load_model("./models/lstm_all_data.h5", custom_objects=SeqSelfAttention.get_custom_objects())
 
 def Get_MorganFP(mol):
     """
@@ -86,7 +86,7 @@ def get_processed_smi(X_test):
 
 
 def getRfPredictions(X_morgan):
-	with open('./api/models/rf_morgan_all_data.pkl', 'rb') as pkl_file:
+	with open('./models/rf_morgan_all_data.pkl', 'rb') as pkl_file:
 		model = pickle.load(pkl_file)
 	y_pred = model.predict(X_morgan)
 	y_pred_prob = model.predict_proba(X_morgan).T[1]

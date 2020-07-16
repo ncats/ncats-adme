@@ -3,4 +3,4 @@ notebooks
 env
 env/
 
-server/api/models/
+server/models/
