@@ -14,7 +14,8 @@ dependencies:
   - rdkit=2020.03
   - scikit-learn=0.22
   - pip:
-    - keras-self-attention==0.41.0
+    - tensorflow=2.2.0
+    - keras-self-attention=0.41.0
     - torch=1.5.1
     - tqdm=4.48.0
     - networkx=2.4
@@ -25,4 +26,5 @@ dependencies:
     - tap.py=3.0
     - typed-argument-parser=1.5.3
     - hyperopt=0.2.4
+    - IPython
 

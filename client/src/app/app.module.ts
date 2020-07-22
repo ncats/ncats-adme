@@ -25,6 +25,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingComponent } from './loading/loading.component';
 import { MatListModule } from '@angular/material/list';
 import { StructureImageDirective } from './structure-image/structure-image.directive';
+import { StructureImageDialogComponent } from './structure-image-dialog/structure-image-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,8 @@ import { StructureImageDirective } from './structure-image/structure-image.direc
     FileSelectDirective,
     TextFileComponent,
     LoadingComponent,
-    StructureImageDirective
+    StructureImageDirective,
+    StructureImageDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -56,7 +59,11 @@ import { StructureImageDirective } from './structure-image/structure-image.direc
     MatInputModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule
+  ],
+  entryComponents: [
+    StructureImageDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

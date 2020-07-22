@@ -7,6 +7,8 @@ import { environment } from '../../environments/environment';
 import { FileForm } from '../text-file/file-form.model';
 import { LoadingService } from '../loading/loading.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { MatDialog } from '@angular/material/dialog';
+import { StructureImageDialogComponent } from '../structure-image-dialog/structure-image-dialog.component';
 
 @Component({
   selector: 'adme-predictions',
@@ -35,7 +37,8 @@ export class PredictionsComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private dialog: MatDialog
   ) {
     this.displayedColumns = this.sketcherDisplayedColumns;
   }
@@ -151,4 +154,11 @@ export class PredictionsComponent implements OnInit {
     // window.open(url);
   }
 
+  openStructureImageDialog(smi: string): void {
+    this.dialog.open(StructureImageDialogComponent, {
+      data: {
+        smiles: smi
+      }
+    });
+  }
 }

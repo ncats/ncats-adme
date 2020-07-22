@@ -22,7 +22,7 @@
     <div class="top-actions-container">
       <button mat-raised-button color="primary" (click)="downloadCSV()">Download</button>
       <div class="fill-middle"></div>
-      <mat-paginator [length]="data && data.length || 0" [pageSize]="10" showFirstLastButtons="true"
+      <mat-paginator [length]="data && data.length || 0" [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
         (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>
@@ -31,13 +31,15 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header>{{displayedColumn}}</mat-header-cell>
         <mat-cell *matCellDef="let row">
           <span *ngIf="indexIdentifierColumn != index">{{row[displayedColumn]}}</span>
-          <img class="table-structure" *ngIf="indexIdentifierColumn == index" admeStructureImage [entityId]="row[displayedColumn]" />
+          <a *ngIf="indexIdentifierColumn == index" (click)="openStructureImageDialog(row[displayedColumn])">
+            <img class="table-structure" admeStructureImage [entityId]="row[displayedColumn]" />
+          </a>
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;" fxLayoutAlign="center start"></mat-row>
     </mat-table>
-    <mat-paginator [length]="data && data.length || 0" [pageSize]="10" showFirstLastButtons="true"
+    <mat-paginator [length]="data && data.length || 0" [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
       (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
     </mat-paginator>
   </div>
