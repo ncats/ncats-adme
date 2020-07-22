@@ -1,5 +1,5 @@
 import flask
-from flask import request, jsonify, send_from_directory
+from flask import request, jsonify, send_from_directory, Response
 import numpy as np
 import pandas as pd
 from rdkit import Chem, DataStructs
@@ -12,6 +12,13 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import ImmutableMultiDict
 from consensus_model import getConsensusPredictions
 import tensorflow as tf
+from rdkit import Chem
+from rdkit.Chem import Draw
+from rdkit.Chem.Draw import rdMolDraw2D
+from rdkit.Chem import rdDepictor
+rdDepictor.SetPreferCoordGen(True)
+from rdkit.Chem.Draw import IPythonConsole
+import rdkit
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -46,11 +53,11 @@ def get_prediction(smi, model):
 
 @app.route('/api/v1/predict', methods=['GET'])
 def predict():
-    pkl_file = open('./models/random_forest_2019.pkl', 'rb')
-    model = pickle.load(pkl_file)
     smiles = request.args.get('smiles')
-    y_pred, y_pred_prob = get_prediction(smiles, model)
-    return f'{y_pred_prob}'
+    print(smiles, file=sys.stdout)
+    df = pd.DataFrame([[smiles]], columns=['mol'])
+    pred_df = getConsensusPredictions(df, 0)
+    return pred_df.to_json(orient='records')
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
@@ -73,17 +80,23 @@ def upload_file():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         data = dict(request.form)
-        # if data['hasHeaderRow'] == 'true':
-        #     header = 0
-        # else:
-        #     header = None
-        df = pd.read_csv(file)
+        if data['hasHeaderRow'] == 'true':
+            header = 0
+        else:
+            header = None
+        df = pd.read_csv(file, header=header)
         pred_df = getConsensusPredictions(df, int(data['indexIdentifierColumn']))
-        print(pred_df.head(), file=sys.stdout)
-        return pred_df.to_json(orient='records')
+        return pred_df.to_json(orient='records', double_precision=2)
 
     return ''
         
+@app.route('/api/v1/structure_image/<smiles>', methods=['GET'])
+def get_structure_image(smiles):
+    diclofenac = Chem.MolFromSmiles(smiles)
+    d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
+    d2d.DrawMolecule(diclofenac)
+    d2d.FinishDrawing()
+    return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
 
 @app.route('/client/<path:path>')
 def send_js(path):

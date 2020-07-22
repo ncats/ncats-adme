@@ -22,6 +22,11 @@
       }
 }
 
+.top-actions-container {
+    display: flex;
+    align-items: center;
+}
+
 .models-output {
     display: flex;
     flex-direction: column;
@@ -31,6 +36,13 @@
     mat-header-row {
         min-height: 48px;
     }
+}
+
+.table-structure {
+    height: 50px;
+    width: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 mat-cell {

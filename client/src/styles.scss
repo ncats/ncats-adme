@@ -2,3 +2,35 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.fill-middle {
+    flex: 1 1 auto;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.inner-container {
+    max-width: 700px;
+}
+
+.definitions-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.definition {
+    display: flex;
+    margin-bottom: 15px;
+
+    .name {
+        font-weight: 600;
+        margin-right: 15px;
+        min-width: 125px;
+    }
+}

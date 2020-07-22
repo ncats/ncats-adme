@@ -23,6 +23,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoadingComponent } from './loading/loading.component';
+import { MatListModule } from '@angular/material/list';
+import { StructureImageDirective } from './structure-image/structure-image.directive';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import { LoadingComponent } from './loading/loading.component';
     PageNotFoundComponent,
     FileSelectDirective,
     TextFileComponent,
-    LoadingComponent
+    LoadingComponent,
+    StructureImageDirective
   ],
   imports: [
     BrowserModule,
@@ -52,7 +55,8 @@ import { LoadingComponent } from './loading/loading.component';
     MatTabsModule,
     MatInputModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -19,20 +19,25 @@
   </div>
   <div class="models-output" *ngIf="data && data.length">
     <h2>Model predictions</h2>
-    <mat-paginator [length]="data && data.length || 0" [pageSize]="25" showFirstLastButtons="true"
-      (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
-    </mat-paginator>
+    <div class="top-actions-container">
+      <button mat-raised-button color="primary" (click)="downloadCSV()">Download</button>
+      <div class="fill-middle"></div>
+      <mat-paginator [length]="data && data.length || 0" [pageSize]="10" showFirstLastButtons="true"
+        (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+    </div>
     <mat-table #table [dataSource]="paged">
-      <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of displayedColumns">
+      <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of displayedColumns; index as index">
         <mat-header-cell *matHeaderCellDef mat-sort-header>{{displayedColumn}}</mat-header-cell>
         <mat-cell *matCellDef="let row">
-          {{row[displayedColumn]}}
+          <span *ngIf="indexIdentifierColumn != index">{{row[displayedColumn]}}</span>
+          <img class="table-structure" *ngIf="indexIdentifierColumn == index" admeStructureImage [entityId]="row[displayedColumn]" />
         </mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;" fxLayoutAlign="center start"></mat-row>
     </mat-table>
-    <mat-paginator [length]="data && data.length || 0" [pageSize]="25" showFirstLastButtons="true"
+    <mat-paginator [length]="data && data.length || 0" [pageSize]="10" showFirstLastButtons="true"
       (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
     </mat-paginator>
   </div>
