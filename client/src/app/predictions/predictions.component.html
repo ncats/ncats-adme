@@ -1,15 +1,15 @@
 <div class="content-container">
   <div class="molecule-input">
     <mat-tab-group (selectedTabChange)=updateSelectedTab($event)>
+      <mat-tab label="Sketcher">
+        <div class="tab-body">
+          <adme-sketcher (moleculeInput)="processSketcherInput($event)"></adme-sketcher>
+        </div>
+      </mat-tab>
       <mat-tab label="Text File">
         <div class="tab-body">
           <adme-text-file (fileProcess)="processFile($event)">
           </adme-text-file>
-        </div>
-      </mat-tab>
-      <mat-tab label="Sketcher">
-        <div class="tab-body">
-          <adme-sketcher (moleculeInput)="processSketcherInput($event)"></adme-sketcher>
         </div>
       </mat-tab>
     </mat-tab-group>
@@ -28,7 +28,7 @@
     </div>
     <mat-table #table [dataSource]="paged">
       <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of displayedColumns; index as index">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>{{displayedColumn}}</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>{{indexIdentifierColumn == index ? 'mol' : displayedColumn}}</mat-header-cell>
         <mat-cell *matCellDef="let row">
           <span *ngIf="indexIdentifierColumn != index">{{row[displayedColumn]}}</span>
           <a *ngIf="indexIdentifierColumn == index" (click)="openStructureImageDialog(row[displayedColumn])">

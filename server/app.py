@@ -84,7 +84,7 @@ def upload_file():
             header = 0
         else:
             header = None
-        df = pd.read_csv(file, header=header)
+        df = pd.read_csv(file, header=header, sep=data['columnSeparator'])
         pred_df = getConsensusPredictions(df, int(data['indexIdentifierColumn']))
         return pred_df.to_json(orient='records', double_precision=2)
 

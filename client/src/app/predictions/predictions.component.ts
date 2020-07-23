@@ -33,6 +33,8 @@ export class PredictionsComponent implements OnInit {
   link: HTMLAnchorElement;
   columnSeparator = ',';
   lineBreak = '\n';
+  private sketcherIndexIdentifierColumn = 0;
+  private fileIndexIdentifierColumn: number;
   indexIdentifierColumn: number;
 
   constructor(
@@ -50,16 +52,16 @@ export class PredictionsComponent implements OnInit {
   processSketcherInput(smiles: string): void {
     this.clearErrorMessage();
     this.loadingService.setLoadingState(true);
+    this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
     this.http.get(`${environment.apiBaseUrl}api/v1/predict?smiles=${smiles}`).subscribe(response => {
       this.loadingService.setLoadingState(false);
       const predition = response[0];
       this.sketcherData.push(predition);
       this.data = this.sketcherData;
       this.pageChange();
-      this.indexIdentifierColumn = 0;
       const keys = Object.keys(response[0]);
-      this.fileDisplayedColumns = keys;
-      this.displayedColumns = this.fileDisplayedColumns;
+      this.sketcherDisplayedColumns = keys;
+      this.displayedColumns = this.sketcherDisplayedColumns;
     }, error => {
       this.errorMessageTimer = this.errorMessage = 'There was an error processing your structure. Please modify it and try again.';
       setTimeout(() => {
@@ -99,7 +101,8 @@ export class PredictionsComponent implements OnInit {
     this.columnSeparator = fileForm.columnSeparator;
     formData.append('hasHeaderRow', fileForm.hasHeaderRow.toString());
     formData.append('indexIdentifierColumn', fileForm.indexIdentifierColumn.toString());
-    this.indexIdentifierColumn = fileForm.indexIdentifierColumn;
+    this.fileIndexIdentifierColumn = fileForm.indexIdentifierColumn;
+    this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
     formData.append('file', fileForm.file);
     this.http.post(`${environment.apiBaseUrl}api/v1/predict-file`, formData).subscribe((response: Array<any>) => {
       this.loadingService.setLoadingState(false);
@@ -122,10 +125,12 @@ export class PredictionsComponent implements OnInit {
 
   updateSelectedTab(event: MatTabChangeEvent): void {
     this.clearErrorMessage();
-    if (event.index === 0) {
+    if (event.index === 1) {
+      this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
       this.displayedColumns = this.fileDisplayedColumns;
       this.data = this.fileData;
     } else {
+      this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
       this.displayedColumns = this.sketcherDisplayedColumns;
       this.data = this.sketcherData;
     }
