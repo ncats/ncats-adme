@@ -27,6 +27,7 @@ import { MatListModule } from '@angular/material/list';
 import { StructureImageDirective } from './structure-image/structure-image.directive';
 import { StructureImageDialogComponent } from './structure-image-dialog/structure-image-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -60,7 +61,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatListModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSortModule
   ],
   entryComponents: [
     StructureImageDialogComponent

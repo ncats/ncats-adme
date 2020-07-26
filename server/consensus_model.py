@@ -112,7 +112,7 @@ def getDnnPredictions(X_morgan):
 	# y_pred = np.round(predictions,0)
 	# y_pred_labels = np.array(y_pred).ravel()
 	y_pred_labels = np.array(predictions).ravel()
-	labels = y_pred_labels.astype(int)
+	labels = y_pred_labels.round(0).astype(int)
 	predictions = np.array(predictions).ravel()
 	#predictions = np.round(predictions, 2)
 	return predictions, labels
@@ -127,7 +127,7 @@ def getLstmPredictions(X_smi_list):
 	# y_pred = np.round(predictions,0)
 	# y_pred_labels = np.array(y_pred).ravel()
 	y_pred_labels = np.array(predictions).ravel()
-	labels = y_pred_labels.astype(int)
+	labels = y_pred_labels.round(0).astype(int)
 	predictions = np.array(predictions).ravel()
 	#predictions = np.round(predictions, 2)
 
@@ -160,7 +160,7 @@ def getGcnnPredictions(smiles):
 	# y_pred = np.round(model_preds,0)
 	# y_pred_labels = np.array(y_pred).ravel()
 	y_pred_labels = np.array(model_preds).ravel()
-	labels = y_pred_labels.astype(int)
+	labels = y_pred_labels.round(0).astype(int)
 	predictions = np.array(model_preds).ravel()
 	# predictions = np.round(predictions, 2)
 	return predictions, labels
@@ -175,6 +175,7 @@ def get_kekule_smiles(mol):
 # get consensus predictions
 
 def getConsensusPredictions(df, indexIdentifierColumn):
+
 
 	columns = [
 		'rnd_forest',
@@ -196,6 +197,12 @@ def getConsensusPredictions(df, indexIdentifierColumn):
 	smi_df = smi_df[~smi_df[mol_column_name].isnull()] # this step omits mols for which smiles could not be parsed
 	smi_df[mol_column_name]=smi_df[mol_column_name].apply(get_kekule_smiles)
 
+	has_smi_errors = len(df.index) > len(smi_df.index)
+	has_rf_errors = False
+	has_dnn_errors = False
+	has_lstm_errors = False
+	has_gcnn_errors = False
+
 	if len(smi_df.index) > 0:
 		X_morgan = get_morgan_features(smi_df.copy(), mol_column_name)
 
@@ -204,16 +211,19 @@ def getConsensusPredictions(df, indexIdentifierColumn):
 
 		rf_y_pred, rf_y_pred_prob = getRfPredictions(X_morgan)
 		smi_df['rnd_forest'] = pd.Series(pd.Series(rf_y_pred).round(2).astype(str) + ' (' + pd.Series(rf_y_pred_prob).round(2).astype(str) + ')')
-		print(rf_y_pred_prob.shape, file=sys.stdout)
+		has_rf_errors = len(smi_df.index) > len(rf_y_pred_prob)
 
 		dnn_predictions, dnn_labels = getDnnPredictions(X_morgan)
 		smi_df['neural_net'] = pd.Series(pd.Series(dnn_labels).round(2).astype(str) + ' (' + pd.Series(dnn_predictions).round(2).astype(str) + ')')
+		has_dnn_errors = len(smi_df.index) > len(dnn_predictions)
 
 		lstm_predictions, lstm_labels = getLstmPredictions(X_smi)
 		smi_df['long_short_term_mem'] = pd.Series(pd.Series(lstm_labels).round(2).astype(str) + ' (' + pd.Series(lstm_predictions).round(2).astype(str) + ')')
+		has_lstm_errors = len(smi_df.index) > len(lstm_predictions)
 
 		gcnn_predictions, gcnn_labels = getGcnnPredictions(smi_df[mol_column_name].tolist())
 		smi_df['graph_conv_neural_net'] = pd.Series(pd.Series(gcnn_labels).round(2).astype(str) + ' (' + pd.Series(gcnn_predictions).round(2).astype(str) + ')')
+		has_gcnn_errors = len(smi_df.index) > len(gcnn_predictions)
 
 		matrix = np.ma.empty((4, max(rf_y_pred_prob.shape[0], dnn_predictions.shape[0], lstm_predictions.shape[0], gcnn_predictions.shape[0])))
 		matrix.mask = True
@@ -232,4 +242,11 @@ def getConsensusPredictions(df, indexIdentifierColumn):
 
 	smi_df.drop([mol_column_name], axis=1, inplace=True)
 	
-	return df.merge(smi_df, on=smi_column_name, how='left')
+	return (
+		has_smi_errors,
+		has_rf_errors,
+		has_dnn_errors,
+		has_lstm_errors,
+		has_gcnn_errors,
+		df.merge(smi_df, on=smi_column_name, how='left')
+	)

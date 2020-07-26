@@ -16,19 +16,23 @@
   </div>
   <div class="error-message-container" *ngIf="errorMessage">
     {{errorMessage}}
+    <ul *ngIf="errorMessages && errorMessages.length">
+      <li *ngFor="let message of errorMessages">{{message}}</li>
+    </ul>
   </div>
   <div class="models-output" *ngIf="data && data.length">
     <h2>Model predictions</h2>
     <div class="top-actions-container">
       <button mat-raised-button color="primary" (click)="downloadCSV()">Download</button>
       <div class="fill-middle"></div>
-      <mat-paginator [length]="data && data.length || 0" [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
-        (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+      <mat-paginator [length]="data && data.length || 0" [pageSize]="pageSize" [pageIndex]="page"
+        showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>
-    <mat-table #table [dataSource]="paged">
+    <mat-table #table [dataSource]="paged" matSort (matSortChange)="sortData($event)">
       <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of displayedColumns; index as index">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>{{indexIdentifierColumn == index ? 'mol' : displayedColumn}}</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>{{indexIdentifierColumn == index ? 'mol' : displayedColumn}}
+        </mat-header-cell>
         <mat-cell *matCellDef="let row">
           <span *ngIf="indexIdentifierColumn != index">{{row[displayedColumn]}}</span>
           <a *ngIf="indexIdentifierColumn == index" (click)="openStructureImageDialog(row[displayedColumn])">
@@ -39,8 +43,8 @@
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;" fxLayoutAlign="center start"></mat-row>
     </mat-table>
-    <mat-paginator [length]="data && data.length || 0" [pageSize]="pageSize" [pageIndex]="page" showFirstLastButtons="true"
-      (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+    <mat-paginator [length]="data && data.length || 0" [pageSize]="pageSize" [pageIndex]="page"
+      showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
     </mat-paginator>
   </div>
 </div>

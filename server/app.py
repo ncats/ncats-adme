@@ -19,6 +19,8 @@ from rdkit.Chem import rdDepictor
 rdDepictor.SetPreferCoordGen(True)
 from rdkit.Chem.Draw import IPythonConsole
 import rdkit
+from flask import send_file
+from flask import jsonify
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -53,11 +55,48 @@ def get_prediction(smi, model):
 
 @app.route('/api/v1/predict', methods=['GET'])
 def predict():
+    response = {}
+
     smiles = request.args.get('smiles')
-    print(smiles, file=sys.stdout)
+    
     df = pd.DataFrame([[smiles]], columns=['mol'])
-    pred_df = getConsensusPredictions(df, 0)
-    return pred_df.to_json(orient='records')
+
+    (
+        has_smi_errors,
+        has_rf_errors,
+        has_dnn_errors,
+        has_lstm_errors,
+        has_gcnn_errors,
+        pred_df
+    ) = getConsensusPredictions(df, 0)
+    error_messages = []
+
+    response['hasErrors'] = has_smi_errors
+
+    if has_smi_errors:
+        smi_error_message = 'We were not able to parse the structure you submitted'
+        error_messages.append(smi_error_message)
+
+    if has_rf_errors:
+        rf_error_message = 'We were not able to make predictions using the random forest model'
+        error_messages.append(rf_error_message)
+
+    if has_dnn_errors:
+        dnn_error_message = 'We were not able to make predictions using the deep neural networ model'
+        error_messages.append(dnn_error_message)
+
+    if has_lstm_errors:
+        lstm_error_message = 'We were not able to make predictions using the long short term memory model'
+        error_messages.append(lstm_error_message)
+
+    if has_gcnn_errors:
+        gcnn_error_message = 'We were not able to make predictions for some of your molecules using the graph convolutional neural network model'
+        error_messages.append(gcnn_error_message)
+
+    response['errorMessages'] = error_messages
+    response['columns'] = list(pred_df.columns.values)
+    response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+    return jsonify(response)
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
@@ -67,16 +106,21 @@ def allowed_file(filename):
 
 @app.route('/api/v1/predict-file', methods=['POST'])
 def upload_file():
+
+    response = {}
+
     # check if the post request has the file part
     if 'file' not in request.files:
-        flash('No file part')
-        return redirect(request.url)
+        response['hasErrors'] = True
+        response['errorMessages'] = 'A file needs to be attached to the request'
+        return jsonify(response)
+
     file = request.files['file']
-    # if user does not select file, browser also
-    # submit an empty part without filename
+
     if file.filename == '':
-        flash('No selected file')
-        return redirect(request.url)
+        response['hasErrors'] = True
+        response['errorMessages'] = 'A file with a file name needs to be attached to the request'
+        return jsonify(response)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         data = dict(request.form)
@@ -85,18 +129,60 @@ def upload_file():
         else:
             header = None
         df = pd.read_csv(file, header=header, sep=data['columnSeparator'])
-        pred_df = getConsensusPredictions(df, int(data['indexIdentifierColumn']))
-        return pred_df.to_json(orient='records', double_precision=2)
 
-    return ''
+        (
+            has_smi_errors,
+		    has_rf_errors,
+		    has_dnn_errors,
+		    has_lstm_errors,
+		    has_gcnn_errors,
+            pred_df
+        ) = getConsensusPredictions(df, int(data['indexIdentifierColumn']))
+
+        error_messages = []
+
+        response['hasErrors'] = has_smi_errors
+
+        if has_smi_errors:
+            smi_error_message = 'We were not able to parse some smiles'
+            error_messages.append(smi_error_message)
+
+        if has_rf_errors:
+            rf_error_message = 'We were not able to make predictions for some of your molecules using the random forest model'
+            error_messages.append(rf_error_message)
+
+        if has_dnn_errors:
+            dnn_error_message = 'We were not able to make predictions for some of your molecules using the deep neural networ model'
+            error_messages.append(dnn_error_message)
+
+        if has_lstm_errors:
+            lstm_error_message = 'We were not able to make predictions for some of your molecules using the long short term memory model'
+            error_messages.append(lstm_error_message)
+
+        if has_gcnn_errors:
+            gcnn_error_message = 'We were not able to make predictions for some of your molecules using the graph convolutional neural network model'
+            error_messages.append(gcnn_error_message)
+
+        response['errorMessages'] = error_messages
+        response['columns'] = list(pred_df.columns.values)
+        response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+        return jsonify(response)
+    else:
+        response['hasErrors'] = True
+        response['errorMessages'] = 'Only csv, txt or smi files can be processed'
+        return jsonify(response)
         
 @app.route('/api/v1/structure_image/<smiles>', methods=['GET'])
 def get_structure_image(smiles):
-    diclofenac = Chem.MolFromSmiles(smiles)
-    d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
-    d2d.DrawMolecule(diclofenac)
-    d2d.FinishDrawing()
-    return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
+    try:
+        diclofenac = Chem.MolFromSmiles(smiles)
+        d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
+        d2d.DrawMolecule(diclofenac)
+        d2d.FinishDrawing()
+        return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
+    except:
+        return send_file('./images/no_image_available.png', mimetype='image/png')
+
 
 @app.route('/client/<path:path>')
 def send_js(path):

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Ketcher } from '../sketcher/ketcher.model';
-import { MatTableDataSource } from '@angular/material/table';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { PageEvent } from '@angular/material/paginator';
 import { environment } from '../../environments/environment';
 import { FileForm } from '../text-file/file-form.model';
@@ -9,6 +8,7 @@ import { LoadingService } from '../loading/loading.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { MatDialog } from '@angular/material/dialog';
 import { StructureImageDialogComponent } from '../structure-image-dialog/structure-image-dialog.component';
+import { Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'adme-predictions',
@@ -20,7 +20,6 @@ export class PredictionsComponent implements OnInit {
   private sketcherDisplayedColumns = ['smiles', 'rlm'];
   private fileDisplayedColumns: Array<string>;
   displayedColumns: Array<string>;
-  dataSource = new MatTableDataSource<any>([]);
   private fileData: Array<any> = [];
   private sketcherData: Array<any> = [];
   data: Array<any> = [];
@@ -28,6 +27,7 @@ export class PredictionsComponent implements OnInit {
   page = 0;
   pageSize = 10;
   errorMessage: string;
+  errorMessages: Array<string> = [];
   private errorMessageTimer: any;
   file: Blob;
   link: HTMLAnchorElement;
@@ -53,15 +53,22 @@ export class PredictionsComponent implements OnInit {
     this.clearErrorMessage();
     this.loadingService.setLoadingState(true);
     this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
-    this.http.get(`${environment.apiBaseUrl}api/v1/predict?smiles=${smiles}`).subscribe(response => {
+    this.http.get(`${environment.apiBaseUrl}api/v1/predict?smiles=${smiles}`).subscribe((response: any) => {
       this.loadingService.setLoadingState(false);
-      const predition = response[0];
+      const predition = response.data[0];
       this.sketcherData.push(predition);
       this.data = this.sketcherData;
       this.pageChange();
-      const keys = Object.keys(response[0]);
-      this.sketcherDisplayedColumns = keys;
+      this.sketcherDisplayedColumns = response.columns;
       this.displayedColumns = this.sketcherDisplayedColumns;
+      if (response.hasErrors) {
+        this.errorMessage = 'The system encountered the following error(s) while processing your request:';
+        this.errorMessages = response.errorMessages;
+        this.errorMessageTimer = setTimeout(() => {
+          this.errorMessage = '';
+          this.errorMessages = [];
+        }, 15000);
+      }
     }, error => {
       this.errorMessageTimer = this.errorMessage = 'There was an error processing your structure. Please modify it and try again.';
       setTimeout(() => {
@@ -91,6 +98,26 @@ export class PredictionsComponent implements OnInit {
     }
   }
 
+  sortData(sort: Sort) {
+
+    if (!sort.active || sort.direction === '') {
+      return;
+    }
+
+    const data = this.data.slice();
+
+    this.data = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      return this.compare(a[sort.active], b[sort.active], isAsc);
+    });
+
+    this.pageChange();
+  }
+
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
   processFile(fileForm: FileForm): void {
     this.clearErrorMessage();
     this.loadingService.setLoadingState(true);
@@ -104,15 +131,22 @@ export class PredictionsComponent implements OnInit {
     this.fileIndexIdentifierColumn = fileForm.indexIdentifierColumn;
     this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
     formData.append('file', fileForm.file);
-    this.http.post(`${environment.apiBaseUrl}api/v1/predict-file`, formData).subscribe((response: Array<any>) => {
+    this.http.post(`${environment.apiBaseUrl}api/v1/predict-file`, formData).subscribe((response: any) => {
       this.loadingService.setLoadingState(false);
-      if (response && response.length > 0) {
-        this.fileData = response;
+      if (response && response.data && response.data.length > 0) {
+        this.fileData = response.data;
         this.data = this.fileData;
         this.pageChange();
-        const keys = Object.keys(response[0]);
-        this.fileDisplayedColumns = keys;
+        this.fileDisplayedColumns = response.columns;
         this.displayedColumns = this.fileDisplayedColumns;
+      }
+      if (response.hasErrors) {
+        this.errorMessage = 'The system encountered the following error(s) while processing your request:';
+        this.errorMessages = response.errorMessages;
+        this.errorMessageTimer = setTimeout(() => {
+          this.errorMessage = '';
+          this.errorMessages = [];
+        }, 20000);
       }
     }, error => {
       this.errorMessage = 'There was an error processing your file. Please make sure you have selected a file that contains SMILES, indicate if the file contains a header and the column number containing the SMILES.';
@@ -140,6 +174,7 @@ export class PredictionsComponent implements OnInit {
   clearErrorMessage(): void {
     clearTimeout(this.errorMessageTimer);
     this.errorMessage = '';
+    this.errorMessages = [];
   }
 
   downloadCSV(): void {
