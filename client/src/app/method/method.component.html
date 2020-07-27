@@ -27,12 +27,22 @@
             <div class="definition">
                 <div class="name">Model Details:</div>
                 <div class="value">
-                    The consensus model includes four individual models: random forest, deep neural network, long-short term memory network and graph convolutional neural network.</div>
-                </div>
+                    The consensus model includes four individual models: random forest, deep neural network, long-short
+                    term memory network and graph convolutional neural network.</div>
+            </div>
+            <div class="definition">
+                <div class="name">Interpretation of Model Predictions:</div>
+                <div class="value">
+                    The models provide a predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t1/2 &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t1/2 &gt; 30 min). Along with the predicted class, the models provide a probability score (between 0 and 1) shown in parentheses next to the predicted class. This is the probability for a compound to be unstable. If this value is &gt;= 0.5, the predicted class is '1', otherwise it is '0'.</div>
+            </div>
             <div class="definition">
                 <div class="name">Data for Download:</div>
                 <div class="value">
-                    A subset of the dataset used for developing these models is available for download. Click <a [href]="dataDownloadHref" target="_blank">here</a> to download. Alternatively, this data is also available from PubChem Bioassay database: <a href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1508591" target="_blank">AID 1508591</a>.
+                    A subset of the dataset used for developing these models is available for download. Click <a
+                        [href]="dataDownloadHref" target="_blank">here</a> to download. Alternatively, this data is also
+                    available from PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1508591" target="_blank">AID
+                        1508591</a>.
                 </div>
             </div>
         </div>

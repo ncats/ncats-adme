@@ -172,7 +172,7 @@ def upload_file():
         response['errorMessages'] = 'Only csv, txt or smi files can be processed'
         return jsonify(response)
         
-@app.route('/api/v1/structure_image/<smiles>', methods=['GET'])
+@app.route('/api/v1/structure_image/<path:smiles>', methods=['GET'])
 def get_structure_image(smiles):
     try:
         diclofenac = Chem.MolFromSmiles(smiles)

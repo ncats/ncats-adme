@@ -149,6 +149,8 @@ export class PredictionsComponent implements OnInit {
         }, 20000);
       }
     }, error => {
+      this.fileData = null;
+      this.data = null;
       this.errorMessage = 'There was an error processing your file. Please make sure you have selected a file that contains SMILES, indicate if the file contains a header and the column number containing the SMILES.';
       this.errorMessageTimer = setTimeout(() => {
         this.errorMessage = '';

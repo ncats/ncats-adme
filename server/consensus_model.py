@@ -107,14 +107,10 @@ def getRfPredictions(X_morgan):
 	return y_pred, y_pred_prob
 
 def getDnnPredictions(X_morgan):
-	# with graph.as_default():
 	predictions = dnn_model.predict(X_morgan)
-	# y_pred = np.round(predictions,0)
-	# y_pred_labels = np.array(y_pred).ravel()
 	y_pred_labels = np.array(predictions).ravel()
 	labels = y_pred_labels.round(0).astype(int)
 	predictions = np.array(predictions).ravel()
-	#predictions = np.round(predictions, 2)
 	return predictions, labels
 
 def getLstmPredictions(X_smi_list):
@@ -124,12 +120,9 @@ def getLstmPredictions(X_smi_list):
 	X_smi = pad_sequences(X_smi, maxlen=max_len, padding='post')
 
 	predictions = lstm_model.predict(X_smi)
-	# y_pred = np.round(predictions,0)
-	# y_pred_labels = np.array(y_pred).ravel()
 	y_pred_labels = np.array(predictions).ravel()
 	labels = y_pred_labels.round(0).astype(int)
 	predictions = np.array(predictions).ravel()
-	#predictions = np.round(predictions, 2)
 
 	return predictions, labels
 
@@ -156,13 +149,15 @@ def getGcnnPredictions(smiles):
 		data_loader=test_data_loader,
 		scaler=gcnn_scaler
 	)
+	predictions = np.ma.empty(len(full_data))
+	predictions.mask = True
+	labels = np.ma.empty(len(full_data))
+	labels.mask = True
+	for key in full_to_valid_indices.keys():
+		full_index = int(key)
+		predictions[full_index] = model_preds[full_to_valid_indices[key]][0]
+		labels[full_index] = int(round(model_preds[full_to_valid_indices[key]][0]))
 
-	# y_pred = np.round(model_preds,0)
-	# y_pred_labels = np.array(y_pred).ravel()
-	y_pred_labels = np.array(model_preds).ravel()
-	labels = y_pred_labels.round(0).astype(int)
-	predictions = np.array(model_preds).ravel()
-	# predictions = np.round(predictions, 2)
 	return predictions, labels
 
 def get_kekule_smiles(mol):
@@ -210,20 +205,20 @@ def getConsensusPredictions(df, indexIdentifierColumn):
 		X_smi = smi_df[mol_column_name].values
 
 		rf_y_pred, rf_y_pred_prob = getRfPredictions(X_morgan)
-		smi_df['rnd_forest'] = pd.Series(pd.Series(rf_y_pred).round(2).astype(str) + ' (' + pd.Series(rf_y_pred_prob).round(2).astype(str) + ')')
+		smi_df['rnd_forest'] = pd.Series(pd.Series(rf_y_pred).astype(str) + ' (' + pd.Series(rf_y_pred_prob).round(2).astype(str) + ')')
 		has_rf_errors = len(smi_df.index) > len(rf_y_pred_prob)
 
 		dnn_predictions, dnn_labels = getDnnPredictions(X_morgan)
-		smi_df['neural_net'] = pd.Series(pd.Series(dnn_labels).round(2).astype(str) + ' (' + pd.Series(dnn_predictions).round(2).astype(str) + ')')
+		smi_df['neural_net'] = pd.Series(pd.Series(dnn_labels).astype(str) + ' (' + pd.Series(dnn_predictions).round(2).astype(str) + ')')
 		has_dnn_errors = len(smi_df.index) > len(dnn_predictions)
 
 		lstm_predictions, lstm_labels = getLstmPredictions(X_smi)
-		smi_df['long_short_term_mem'] = pd.Series(pd.Series(lstm_labels).round(2).astype(str) + ' (' + pd.Series(lstm_predictions).round(2).astype(str) + ')')
+		smi_df['long_short_term_mem'] = pd.Series(pd.Series(lstm_labels).astype(str) + ' (' + pd.Series(lstm_predictions).round(2).astype(str) + ')')
 		has_lstm_errors = len(smi_df.index) > len(lstm_predictions)
 
 		gcnn_predictions, gcnn_labels = getGcnnPredictions(smi_df[mol_column_name].tolist())
-		smi_df['graph_conv_neural_net'] = pd.Series(pd.Series(gcnn_labels).round(2).astype(str) + ' (' + pd.Series(gcnn_predictions).round(2).astype(str) + ')')
-		has_gcnn_errors = len(smi_df.index) > len(gcnn_predictions)
+		smi_df['graph_conv_neural_net'] = pd.Series(pd.Series(gcnn_labels).fillna('').astype(str) + ' (' + pd.Series(gcnn_predictions).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
+		has_gcnn_errors = len(smi_df.index) > len(gcnn_predictions) or np.ma.count_masked(gcnn_predictions) > 0
 
 		matrix = np.ma.empty((4, max(rf_y_pred_prob.shape[0], dnn_predictions.shape[0], lstm_predictions.shape[0], gcnn_predictions.shape[0])))
 		matrix.mask = True
