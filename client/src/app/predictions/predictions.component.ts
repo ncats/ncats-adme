@@ -18,8 +18,11 @@ import { Sort } from '@angular/material/sort';
 export class PredictionsComponent implements OnInit {
   private ketcher: Ketcher;
   private sketcherDisplayedColumns = ['smiles', 'rlm'];
+  private sketcherColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
   private fileDisplayedColumns: Array<string>;
+  private fileColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
   displayedColumns: Array<string>;
+  displayedColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
   private fileData: Array<any> = [];
   private sketcherData: Array<any> = [];
   data: Array<any> = [];
@@ -28,7 +31,6 @@ export class PredictionsComponent implements OnInit {
   pageSize = 10;
   errorMessage: string;
   errorMessages: Array<string> = [];
-  private errorMessageTimer: any;
   file: Blob;
   link: HTMLAnchorElement;
   columnSeparator = ',';
@@ -59,21 +61,18 @@ export class PredictionsComponent implements OnInit {
       this.sketcherData.push(predition);
       this.data = this.sketcherData;
       this.pageChange();
-      this.sketcherDisplayedColumns = response.columns;
+      this.sketcherColumnsDict = response.mainColumnsDict;
+      this.displayedColumnsDict = this.sketcherColumnsDict;
+      this.sketcherDisplayedColumns = Object.keys(this.sketcherColumnsDict).sort((a, b) => {
+        return this.fileColumnsDict[a].order - this.fileColumnsDict[b].order;
+      });
       this.displayedColumns = this.sketcherDisplayedColumns;
       if (response.hasErrors) {
         this.errorMessage = 'The system encountered the following error(s) while processing your request:';
         this.errorMessages = response.errorMessages;
-        this.errorMessageTimer = setTimeout(() => {
-          this.errorMessage = '';
-          this.errorMessages = [];
-        }, 15000);
       }
     }, error => {
-      this.errorMessageTimer = this.errorMessage = 'There was an error processing your structure. Please modify it and try again.';
-      setTimeout(() => {
-        this.errorMessage = '';
-      }, 5000);
+      this.errorMessage = 'There was an error processing your structure. Please modify it and try again.';
       this.loadingService.setLoadingState(false);
     });
   }
@@ -137,24 +136,21 @@ export class PredictionsComponent implements OnInit {
         this.fileData = response.data;
         this.data = this.fileData;
         this.pageChange();
-        this.fileDisplayedColumns = response.columns;
+        this.fileColumnsDict = response.mainColumnsDict;
+        this.displayedColumnsDict = this.fileColumnsDict;
+        this.fileDisplayedColumns = Object.keys(this.fileColumnsDict).sort((a, b) => {
+          return this.fileColumnsDict[a].order - this.fileColumnsDict[b].order;
+        });
         this.displayedColumns = this.fileDisplayedColumns;
       }
       if (response.hasErrors) {
         this.errorMessage = 'The system encountered the following error(s) while processing your request:';
         this.errorMessages = response.errorMessages;
-        this.errorMessageTimer = setTimeout(() => {
-          this.errorMessage = '';
-          this.errorMessages = [];
-        }, 20000);
       }
     }, error => {
       this.fileData = null;
       this.data = null;
       this.errorMessage = 'There was an error processing your file. Please make sure you have selected a file that contains SMILES, indicate if the file contains a header and the column number containing the SMILES.';
-      this.errorMessageTimer = setTimeout(() => {
-        this.errorMessage = '';
-      }, 12000);
       this.loadingService.setLoadingState(false);
     });
   }
@@ -163,10 +159,12 @@ export class PredictionsComponent implements OnInit {
     this.clearErrorMessage();
     if (event.index === 1) {
       this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
+      this.displayedColumnsDict = this.fileColumnsDict;
       this.displayedColumns = this.fileDisplayedColumns;
       this.data = this.fileData;
     } else {
       this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
+      this.displayedColumnsDict = this.sketcherColumnsDict;
       this.displayedColumns = this.sketcherDisplayedColumns;
       this.data = this.sketcherData;
     }
@@ -174,7 +172,6 @@ export class PredictionsComponent implements OnInit {
   }
 
   clearErrorMessage(): void {
-    clearTimeout(this.errorMessageTimer);
     this.errorMessage = '';
     this.errorMessages = [];
   }

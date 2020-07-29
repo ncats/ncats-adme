@@ -3,12 +3,9 @@ import pandas as pd
 import pickle
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from keras.models import Model, load_model
-from keras_self_attention import SeqSelfAttention
 import tensorflow as tf
 from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem
-import pickle
 import warnings
 warnings.filterwarnings('ignore')
 import sys
@@ -16,30 +13,11 @@ sys.path.insert(0, './chemprop')
 from chemprop.data.utils import get_data, get_data_from_smiles
 from chemprop.data import MoleculeDataLoader, MoleculeDataset
 from chemprop.train import predict
-from chemprop.utils import load_checkpoint, load_scalers
 from rdkit.Chem import PandasTools
 import random
 import string
-
-# global graph
-# graph = tf.compat.v1.get_default_graph()
-
-global dnn_model
-with open('./models/dnn_morgan_all_data.pkl', 'rb') as pkl_file:
-	dnn_model = pickle.load(pkl_file)
-
-global tokenizer
-with open("./models/tokenizer.pickle",'rb') as tokfile:
-	tokenizer = pickle.load(tokfile)
-
-global lstm_model
-lstm_model = load_model("./models/lstm_all_data.h5", custom_objects=SeqSelfAttention.get_custom_objects())
-
-global gcnn_scaler, gcnn_features_scaler
-gcnn_scaler, gcnn_features_scaler = load_scalers('./models/gcnn_model.pt')
-
-global gcnn_model
-gcnn_model = load_checkpoint('./models/gcnn_model.pt')
+import settings
+import models
 
 def Get_MorganFP(mol):
     """
@@ -107,7 +85,7 @@ def getRfPredictions(X_morgan):
 	return y_pred, y_pred_prob
 
 def getDnnPredictions(X_morgan):
-	predictions = dnn_model.predict(X_morgan)
+	predictions = models.dnn_model.predict(X_morgan)
 	y_pred_labels = np.array(predictions).ravel()
 	labels = y_pred_labels.round(0).astype(int)
 	predictions = np.array(predictions).ravel()
@@ -116,10 +94,10 @@ def getDnnPredictions(X_morgan):
 def getLstmPredictions(X_smi_list):
 	max_len = 100
 	X_smi = get_processed_smi(X_smi_list)
-	X_smi = tokenizer.texts_to_sequences(X_smi)
+	X_smi = models.tokenizer.texts_to_sequences(X_smi)
 	X_smi = pad_sequences(X_smi, maxlen=max_len, padding='post')
 
-	predictions = lstm_model.predict(X_smi)
+	predictions = models.lstm_model.predict(X_smi)
 	y_pred_labels = np.array(predictions).ravel()
 	labels = y_pred_labels.round(0).astype(int)
 	predictions = np.array(predictions).ravel()
@@ -145,9 +123,9 @@ def getGcnnPredictions(smiles):
 	)
 
 	model_preds = predict(
-		model=gcnn_model,
+		model=models.gcnn_model,
 		data_loader=test_data_loader,
-		scaler=gcnn_scaler
+		scaler=models.gcnn_scaler
 	)
 	predictions = np.ma.empty(len(full_data))
 	predictions.mask = True
@@ -156,9 +134,8 @@ def getGcnnPredictions(smiles):
 	for key in full_to_valid_indices.keys():
 		full_index = int(key)
 		predictions[full_index] = model_preds[full_to_valid_indices[key]][0]
-		labels[full_index] = int(round(model_preds[full_to_valid_indices[key]][0]))
-
-	return predictions, labels
+		labels[full_index] = np.round(model_preds[full_to_valid_indices[key]][0], 0)
+	return predictions, labels.astype(int)
 
 def get_kekule_smiles(mol):
 	Chem.Kekulize(mol)
@@ -171,15 +148,8 @@ def get_kekule_smiles(mol):
 
 def getConsensusPredictions(df, indexIdentifierColumn):
 
+	columns = settings.columns_dict.keys()
 
-	columns = [
-		'rnd_forest',
-		'neural_net',
-		'long_short_term_mem',
-		'graph_conv_neural_net',
-		'consensus'
-	]
-	
 	smi_series = df.iloc[:, indexIdentifierColumn]
 	smi_column_name = smi_series.name
 	smi_df = pd.DataFrame(columns=columns)
@@ -187,11 +157,9 @@ def getConsensusPredictions(df, indexIdentifierColumn):
 
 	mol_column_name = get_random_string(10)
 
-
 	PandasTools.AddMoleculeColumnToFrame(smi_df, smi_column_name, mol_column_name, includeFingerprints=False)
 	smi_df = smi_df[~smi_df[mol_column_name].isnull()] # this step omits mols for which smiles could not be parsed
 	smi_df[mol_column_name]=smi_df[mol_column_name].apply(get_kekule_smiles)
-
 	has_smi_errors = len(df.index) > len(smi_df.index)
 	has_rf_errors = False
 	has_dnn_errors = False
@@ -205,19 +173,19 @@ def getConsensusPredictions(df, indexIdentifierColumn):
 		X_smi = smi_df[mol_column_name].values
 
 		rf_y_pred, rf_y_pred_prob = getRfPredictions(X_morgan)
-		smi_df['rnd_forest'] = pd.Series(pd.Series(rf_y_pred).astype(str) + ' (' + pd.Series(rf_y_pred_prob).round(2).astype(str) + ')')
+		smi_df['RF'] = pd.Series(pd.Series(rf_y_pred).astype(str) + ' (' + pd.Series(rf_y_pred_prob).round(2).astype(str) + ')')
 		has_rf_errors = len(smi_df.index) > len(rf_y_pred_prob)
 
 		dnn_predictions, dnn_labels = getDnnPredictions(X_morgan)
-		smi_df['neural_net'] = pd.Series(pd.Series(dnn_labels).astype(str) + ' (' + pd.Series(dnn_predictions).round(2).astype(str) + ')')
+		smi_df['DNN'] = pd.Series(pd.Series(dnn_labels).astype(str) + ' (' + pd.Series(dnn_predictions).round(2).astype(str) + ')')
 		has_dnn_errors = len(smi_df.index) > len(dnn_predictions)
 
-		lstm_predictions, lstm_labels = getLstmPredictions(X_smi)
-		smi_df['long_short_term_mem'] = pd.Series(pd.Series(lstm_labels).astype(str) + ' (' + pd.Series(lstm_predictions).round(2).astype(str) + ')')
+		lstm_predictions, lstm_labels = getLstmPredictions(X_smi.copy())
+		smi_df['LSTM'] = pd.Series(pd.Series(lstm_labels).astype(str) + ' (' + pd.Series(lstm_predictions).round(2).astype(str) + ')')
 		has_lstm_errors = len(smi_df.index) > len(lstm_predictions)
 
 		gcnn_predictions, gcnn_labels = getGcnnPredictions(smi_df[mol_column_name].tolist())
-		smi_df['graph_conv_neural_net'] = pd.Series(pd.Series(gcnn_labels).fillna('').astype(str) + ' (' + pd.Series(gcnn_predictions).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
+		smi_df['GCNN'] = pd.Series(pd.Series(gcnn_labels).fillna('').astype(str) + ' (' + pd.Series(gcnn_predictions).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
 		has_gcnn_errors = len(smi_df.index) > len(gcnn_predictions) or np.ma.count_masked(gcnn_predictions) > 0
 
 		matrix = np.ma.empty((4, max(rf_y_pred_prob.shape[0], dnn_predictions.shape[0], lstm_predictions.shape[0], gcnn_predictions.shape[0])))
@@ -228,11 +196,15 @@ def getConsensusPredictions(df, indexIdentifierColumn):
 		matrix[3, :gcnn_predictions.shape[0]] = gcnn_predictions
 
 		consensus_pred_prob = matrix.mean(axis=0)
-		smi_df['consensus'] = pd.Series(
+		smi_df['Consensus'] = pd.Series(
 			pd.Series(np.where(consensus_pred_prob>=0.5, 1, 0)).round(2).astype(str)
 			+' ('
 			+pd.Series(consensus_pred_prob).round(2).astype(str)
 			+')'
+		)
+
+		smi_df['Prediction'] = pd.Series(
+			pd.Series(np.where(consensus_pred_prob>=0.5, 'unstable', 'stable'))
 		)
 
 	smi_df.drop([mol_column_name], axis=1, inplace=True)

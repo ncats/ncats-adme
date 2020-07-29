@@ -21,6 +21,10 @@ from rdkit.Chem.Draw import IPythonConsole
 import rdkit
 from flask import send_file
 from flask import jsonify
+import settings
+settings.init()
+import models
+models.init()
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -61,6 +65,9 @@ def predict():
     
     df = pd.DataFrame([[smiles]], columns=['mol'])
 
+    columns_dict =  settings.columns_dict.copy()
+    columns_dict['mol'] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+
     (
         has_smi_errors,
         has_rf_errors,
@@ -95,6 +102,7 @@ def predict():
 
     response['errorMessages'] = error_messages
     response['columns'] = list(pred_df.columns.values)
+    response['mainColumnsDict'] = columns_dict
     response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
     return jsonify(response)
 
@@ -122,6 +130,7 @@ def upload_file():
         response['errorMessages'] = 'A file with a file name needs to be attached to the request'
         return jsonify(response)
     if file and allowed_file(file.filename):
+
         filename = secure_filename(file.filename)
         data = dict(request.form)
         if data['hasHeaderRow'] == 'true':
@@ -129,6 +138,11 @@ def upload_file():
         else:
             header = None
         df = pd.read_csv(file, header=header, sep=data['columnSeparator'])
+        indexIdentifierColumn = int(data['indexIdentifierColumn'])
+
+        columns_dict =  settings.columns_dict.copy()
+        smi_column_name = df.columns.values[indexIdentifierColumn]
+        columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
 
         (
             has_smi_errors,
@@ -137,7 +151,7 @@ def upload_file():
 		    has_lstm_errors,
 		    has_gcnn_errors,
             pred_df
-        ) = getConsensusPredictions(df, int(data['indexIdentifierColumn']))
+        ) = getConsensusPredictions(df, indexIdentifierColumn)
 
         error_messages = []
 
@@ -165,6 +179,7 @@ def upload_file():
 
         response['errorMessages'] = error_messages
         response['columns'] = list(pred_df.columns.values)
+        response['mainColumnsDict'] = columns_dict
         response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
         return jsonify(response)
     else:

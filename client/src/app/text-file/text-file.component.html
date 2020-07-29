@@ -1,6 +1,6 @@
 <div class="text-file-body">
     <div class="description">
-        Select a text file containing a list of smiles, but try to keep the size of the data to under 30,000 rows. If you have an Excel file, follow <a href="https://support.office.com/en-us/article/import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba" target="_blank">these instructions</a> to export it as Text or CSV. 
+        Select a text file containing a list of smiles, but try to keep the size of the data to under 10,000 rows. Anything above 10,000 rows may take several minutes. If you have an Excel file, follow <a href="https://support.office.com/en-us/article/import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba" target="_blank">these instructions</a> to export it as Text or CSV. 
     </div>
     <div>
         <button mat-raised-button color="primary" admeFileSelect (selectedFile)="fileSelected($event)">Browse</button>
@@ -55,9 +55,9 @@
                     </mat-select>
                 </mat-form-field>
                 <mat-form-field>
-                    <input type="number" matInput placeholder="Identifier column number"
+                    <input type="number" matInput placeholder="SMILES column number"
                         [(ngModel)]="options.indexIdentifierColumn" name="indexIdentifierColumn" required
-                        matTooltip="The column number that contains the molecule identifiers starting from 0."
+                        matTooltip="The column number that contains the SMILES starting from 0."
                         (change)="updateOptions()">
                     <mat-hint>Zero indicates that the SMILES are in the first column</mat-hint>
                 </mat-form-field>

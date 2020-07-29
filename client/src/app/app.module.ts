@@ -28,6 +28,9 @@ import { StructureImageDirective } from './structure-image/structure-image.direc
 import { StructureImageDialogComponent } from './structure-image-dialog/structure-image-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSortModule } from '@angular/material/sort';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { ContactComponent } from './contact/contact.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +43,8 @@ import { MatSortModule } from '@angular/material/sort';
     TextFileComponent,
     LoadingComponent,
     StructureImageDirective,
-    StructureImageDialogComponent
+    StructureImageDialogComponent,
+    ContactComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +66,9 @@ import { MatSortModule } from '@angular/material/sort';
     MatProgressSpinnerModule,
     MatListModule,
     MatDialogModule,
-    MatSortModule
+    MatSortModule,
+    MatTooltipModule,
+    MatIconModule
   ],
   entryComponents: [
     StructureImageDialogComponent

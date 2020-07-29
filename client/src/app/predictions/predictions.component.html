@@ -15,10 +15,19 @@
     </mat-tab-group>
   </div>
   <div class="error-message-container" *ngIf="errorMessage">
-    {{errorMessage}}
-    <ul *ngIf="errorMessages && errorMessages.length">
-      <li *ngFor="let message of errorMessages">{{message}}</li>
-    </ul>
+    <div class="error-message">
+      <div>
+        {{errorMessage}}
+      </div>
+      <ul *ngIf="errorMessages && errorMessages.length">
+        <li *ngFor="let message of errorMessages">{{message}}</li>
+      </ul>
+    </div>
+    <div class="error-message-actions">
+      <button mat-button color="primary" (click)="clearErrorMessage()">
+        <mat-icon aria-hidden="false" aria-label="Close error message" svgIcon="cancel"></mat-icon>
+      </button>
+    </div>
   </div>
   <div class="models-output" *ngIf="data && data.length">
     <h2>Model predictions</h2>
@@ -31,11 +40,15 @@
     </div>
     <mat-table #table [dataSource]="paged" matSort (matSortChange)="sortData($event)">
       <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of displayedColumns; index as index">
-        <mat-header-cell *matHeaderCellDef mat-sort-header>{{indexIdentifierColumn == index ? 'mol' : displayedColumn}}
+        <mat-header-cell *matHeaderCellDef mat-sort-header>
+          <span [matTooltip]="displayedColumnsDict[displayedColumn].description">
+            {{displayedColumnsDict[displayedColumn].isSmilesColumn ? 'mol' : displayedColumn}}
+          </span>
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <span *ngIf="indexIdentifierColumn != index">{{row[displayedColumn]}}</span>
-          <a *ngIf="indexIdentifierColumn == index" (click)="openStructureImageDialog(row[displayedColumn])">
+          <span *ngIf="!displayedColumnsDict[displayedColumn].isSmilesColumn">{{row[displayedColumn]}}</span>
+          <a *ngIf="displayedColumnsDict[displayedColumn].isSmilesColumn"
+            (click)="openStructureImageDialog(row[displayedColumn])">
             <img class="table-structure" admeStructureImage [entityId]="row[displayedColumn]" />
           </a>
         </mat-cell>
