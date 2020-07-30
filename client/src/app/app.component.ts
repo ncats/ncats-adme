@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'adme-root',
@@ -14,6 +15,6 @@ export class AppComponent {
   ) {
     iconRegistry.addSvgIcon(
       'cancel',
-      sanitizer.bypassSecurityTrustResourceUrl('assets/icons/cancel-24px.svg'));
+      sanitizer.bypassSecurityTrustResourceUrl(`${environment.baseHref}assets/icons/cancel-24px.svg`));
   }
 }
