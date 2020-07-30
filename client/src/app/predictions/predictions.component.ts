@@ -20,9 +20,11 @@ export class PredictionsComponent implements OnInit {
   private sketcherDisplayedColumns = ['smiles', 'rlm'];
   private sketcherColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
   private fileDisplayedColumns: Array<string>;
+  private fileAllColumns: Array<string>;
   private fileColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
   displayedColumns: Array<string>;
   displayedColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
+  private allColumns: Array<string>;
   private fileData: Array<any> = [];
   private sketcherData: Array<any> = [];
   data: Array<any> = [];
@@ -66,6 +68,7 @@ export class PredictionsComponent implements OnInit {
         return this.displayedColumnsDict[a].order - this.displayedColumnsDict[b].order;
       });
       this.displayedColumns = this.sketcherDisplayedColumns;
+      this.allColumns = this.displayedColumns;
       if (response.hasErrors) {
         this.errorMessage = 'The system encountered the following error(s) while processing your request:';
         this.errorMessages = response.errorMessages;
@@ -141,6 +144,8 @@ export class PredictionsComponent implements OnInit {
           return this.displayedColumnsDict[a].order - this.displayedColumnsDict[b].order;
         });
         this.displayedColumns = this.fileDisplayedColumns;
+        this.fileAllColumns = response.columns;
+        this.allColumns = this.fileAllColumns;
       }
       if (response.hasErrors) {
         this.errorMessage = 'The system encountered the following error(s) while processing your request:';
@@ -161,11 +166,13 @@ export class PredictionsComponent implements OnInit {
       this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
       this.displayedColumnsDict = this.fileColumnsDict;
       this.displayedColumns = this.fileDisplayedColumns;
+      this.allColumns = this.fileAllColumns;
       this.data = this.fileData;
     } else {
       this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
       this.displayedColumnsDict = this.sketcherColumnsDict;
       this.displayedColumns = this.sketcherDisplayedColumns;
+      this.allColumns = this.displayedColumns;
       this.data = this.sketcherData;
     }
     this.pageChange();
@@ -177,9 +184,9 @@ export class PredictionsComponent implements OnInit {
   }
 
   downloadCSV(): void {
-    const dataKeys = [...Object.keys(this.data[0])].join(this.columnSeparator);
+    const dataKeys = [...this.allColumns].join(this.columnSeparator);
     const lines = [];
-    this.data.forEach(data => lines.push([...(Object.values(data))].join(this.columnSeparator)));
+    this.data.forEach(data => lines.push(this.allColumns.map(key => data[key]).join(this.columnSeparator)));
     const csv = dataKeys + this.lineBreak + lines.join(this.lineBreak);
     this.file = new Blob([csv], { type: 'text/csv'});
     this.link.download = 'ADMEModelsPredictions.csv';

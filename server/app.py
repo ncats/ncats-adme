@@ -133,12 +133,19 @@ def upload_file():
 
         filename = secure_filename(file.filename)
         data = dict(request.form)
-        if data['hasHeaderRow'] == 'true':
-            header = 0
-        else:
-            header = None
-        df = pd.read_csv(file, header=header, sep=data['columnSeparator'])
         indexIdentifierColumn = int(data['indexIdentifierColumn'])
+
+        if data['hasHeaderRow'] == 'true':
+            df = pd.read_csv(file, header=0, sep=data['columnSeparator'])
+        else:
+            df = pd.read_csv(file, header=None, sep=data['columnSeparator'])
+            column_name_mapper = {}
+            for column_name in df.columns.values:
+                if int(column_name) == indexIdentifierColumn:
+                    column_name_mapper[column_name] = 'mol'
+                else:
+                    column_name_mapper[column_name] = f'col_{column_name}'
+            df.rename(columns=column_name_mapper, inplace=True)
 
         columns_dict =  settings.columns_dict.copy()
         smi_column_name = df.columns.values[indexIdentifierColumn]
@@ -156,7 +163,7 @@ def upload_file():
         error_messages = []
 
         response['hasErrors'] = has_smi_errors
-
+        print(response['hasErrors'], file=sys.stdout)
         if has_smi_errors:
             smi_error_message = 'We were not able to parse some smiles'
             error_messages.append(smi_error_message)
@@ -181,6 +188,7 @@ def upload_file():
         response['columns'] = list(pred_df.columns.values)
         response['mainColumnsDict'] = columns_dict
         response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+        pred_df.replace(np.nan, '', regex=True).to_json('test.json', orient='records')
         return jsonify(response)
     else:
         response['hasErrors'] = True
