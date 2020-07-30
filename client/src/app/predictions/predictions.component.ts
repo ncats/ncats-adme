@@ -56,7 +56,6 @@ export class PredictionsComponent implements OnInit {
     this.loadingService.setLoadingState(true);
     this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
     this.http.get(`${environment.apiBaseUrl}api/v1/predict?smiles=${smiles}`).subscribe((response: any) => {
-      this.loadingService.setLoadingState(false);
       const predition = response.data[0];
       this.sketcherData.push(predition);
       this.data = this.sketcherData;
@@ -64,13 +63,14 @@ export class PredictionsComponent implements OnInit {
       this.sketcherColumnsDict = response.mainColumnsDict;
       this.displayedColumnsDict = this.sketcherColumnsDict;
       this.sketcherDisplayedColumns = Object.keys(this.sketcherColumnsDict).sort((a, b) => {
-        return this.fileColumnsDict[a].order - this.fileColumnsDict[b].order;
+        return this.displayedColumnsDict[a].order - this.displayedColumnsDict[b].order;
       });
       this.displayedColumns = this.sketcherDisplayedColumns;
       if (response.hasErrors) {
         this.errorMessage = 'The system encountered the following error(s) while processing your request:';
         this.errorMessages = response.errorMessages;
       }
+      this.loadingService.setLoadingState(false);
     }, error => {
       this.errorMessage = 'There was an error processing your structure. Please modify it and try again.';
       this.loadingService.setLoadingState(false);
@@ -131,7 +131,6 @@ export class PredictionsComponent implements OnInit {
     this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
     formData.append('file', fileForm.file);
     this.http.post(`${environment.apiBaseUrl}api/v1/predict-file`, formData).subscribe((response: any) => {
-      this.loadingService.setLoadingState(false);
       if (response && response.data && response.data.length > 0) {
         this.fileData = response.data;
         this.data = this.fileData;
@@ -139,7 +138,7 @@ export class PredictionsComponent implements OnInit {
         this.fileColumnsDict = response.mainColumnsDict;
         this.displayedColumnsDict = this.fileColumnsDict;
         this.fileDisplayedColumns = Object.keys(this.fileColumnsDict).sort((a, b) => {
-          return this.fileColumnsDict[a].order - this.fileColumnsDict[b].order;
+          return this.displayedColumnsDict[a].order - this.displayedColumnsDict[b].order;
         });
         this.displayedColumns = this.fileDisplayedColumns;
       }
@@ -147,6 +146,7 @@ export class PredictionsComponent implements OnInit {
         this.errorMessage = 'The system encountered the following error(s) while processing your request:';
         this.errorMessages = response.errorMessages;
       }
+      this.loadingService.setLoadingState(false);
     }, error => {
       this.fileData = null;
       this.data = null;
