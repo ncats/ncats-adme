@@ -10,21 +10,21 @@ dependencies:
   - keras=2.3.1
   - numpy=1.18
   - pip=20.0
-  - python=3.8
+  - python>=3.7
   - rdkit=2020.03
   - scikit-learn=0.22
   - pip:
-    - tensorflow=2.2.0
-    - keras-self-attention=0.41.0
-    - torch=1.5.1
-    - tqdm=4.48.0
-    - networkx=2.4
-    - mordred=1.2.0
-    - matplotlib=3.3.0
-    - tensorboardX=2.1
-    - typing-extensions=3.7.4.2
-    - tap.py=3.0
-    - typed-argument-parser=1.5.3
-    - hyperopt=0.2.4
+    - tensorflow==2.2.0
+    - keras-self-attention==0.41.0
+    - torch==1.5.1
+    - tqdm==4.48.0
+    - networkx==2.4
+    - mordred==1.2.0
+    - matplotlib==3.3.0
+    - tensorboardX==2.1
+    - typing-extensions==3.7.4.2
+    - tap.py==3.0
+    - typed-argument-parser==1.5.3
+    - hyperopt==0.2.4
     - IPython
 
