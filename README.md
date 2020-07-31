@@ -17,7 +17,7 @@ Python is also required but it is included with either installation of conda or 
 You only have complete these steps one time.
 
 1. Open your terminal
-  - If you're on Windows, open Anaconda Prompt
+  - If you're on Windows, open Anaconda Prompt (window -> Anaconda3 -> Anaconda Prompt)
   - If you're on Mac or Linux, open your terminal
 2. Change the working directory ([windows](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands) or [Mac and Linux](https://www.geeksforgeeks.org/cd-command-in-linux-with-examples/)) to where you have ADME_RLM and then go (CD one more time) into the server directory
 3. Create environment
@@ -33,7 +33,7 @@ You only have complete these steps one time.
 
 1. If you're doing this immediately after completing the steps above, skip to step 4
 2. Open your terminal
-  - If you're on Windows, open Anaconda Prompt
+  - If you're on Windows, open Anaconda Prompt (window -> Anaconda3 -> Anaconda Prompt)
   - If you're on Mac or Linux, open your terminal
 3. Change the working directory ([windows](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands) or [Mac and Linux](https://www.geeksforgeeks.org/cd-command-in-linux-with-examples/)) to where you have ADME_RLM and then go into the server directory
 4. Type `conda activate ./env` and hit Enter
