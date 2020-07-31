@@ -1,4 +1,4 @@
-name: adme-env
+name: adme-rlm-env
 channels:
   - anaconda
   - conda-forge
