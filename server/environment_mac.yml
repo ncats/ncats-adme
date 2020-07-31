@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 name: adme-rlm-env
+=======
+name: ncats-adme
+>>>>>>> a9526c84e99f4c7ccd9d7a06a832ab1484e0a29d
 channels:
   - anaconda
   - conda-forge
