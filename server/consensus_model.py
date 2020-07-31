@@ -3,7 +3,6 @@ import pandas as pd
 import pickle
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-import tensorflow as tf
 from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem
 import warnings
@@ -119,7 +118,7 @@ def getGcnnPredictions(smiles):
 	test_data_loader = MoleculeDataLoader(
 		dataset=test_data,
 		batch_size=50,
-		num_workers=8
+		num_workers=0
 	)
 
 	model_preds = predict(

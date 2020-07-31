@@ -4,14 +4,12 @@ import numpy as np
 import pandas as pd
 from rdkit import Chem, DataStructs
 from rdkit.Chem import AllChem
-import pickle
 from flask_cors import CORS
 import sys
 import os
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import ImmutableMultiDict
 from consensus_model import getConsensusPredictions
-import tensorflow as tf
 from rdkit import Chem
 from rdkit.Chem import Draw
 from rdkit.Chem.Draw import rdMolDraw2D
@@ -20,7 +18,6 @@ rdDepictor.SetPreferCoordGen(True)
 from rdkit.Chem.Draw import IPythonConsole
 import rdkit
 from flask import send_file
-from flask import jsonify
 import settings
 settings.init()
 import models
@@ -217,4 +214,4 @@ def send_js(path):
 def return_index(path):
     return app.send_static_file('index.html')
 
-app.run()
+app.run(debug=False)
