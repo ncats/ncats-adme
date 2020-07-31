@@ -1,4 +1,4 @@
-name: adme-env
+name: ncats-adme
 channels:
   - anaconda
   - conda-forge
