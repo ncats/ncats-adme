@@ -77,10 +77,8 @@ def get_random_string(length):
 	return result_str
 
 def getRfPredictions(X_morgan):
-	with open('./models/rf_morgan_all_data.pkl', 'rb') as pkl_file:
-		model = pickle.load(pkl_file)
-	y_pred = model.predict(X_morgan)
-	y_pred_prob = model.predict_proba(X_morgan).T[1]
+	y_pred = models.rf_model.predict(X_morgan)
+	y_pred_prob = models.rf_model.predict_proba(X_morgan).T[1]
 	return y_pred, y_pred_prob
 
 def getDnnPredictions(X_morgan):

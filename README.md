@@ -6,6 +6,16 @@ If you use Git to clone this repository, please use the --recursive flag:
 
 `git clone --recursive https://github.com/ncats/ncats-adme.git`
 
+Model will be loaded from NCATS servers so you will need access to the internet when you first run the application.
+
+If you want to download the models, the file locations are as follows:
+
+- [https://tripod.nih.gov/pub/adme/models/rlm/dnn_morgan_all_data.pkl](https://tripod.nih.gov/pub/adme/models/rlm/dnn_morgan_all_data.pkl)
+- [https://tripod.nih.gov/pub/adme/models/rlm/gcnn_model.pt](https://tripod.nih.gov/pub/adme/models/rlm/gcnn_model.pt)
+- [https://tripod.nih.gov/pub/adme/models/rlm/lstm_all_data.h5](https://tripod.nih.gov/pub/adme/models/rlm/lstm_all_data.h5)
+- [https://tripod.nih.gov/pub/adme/models/rlm/rf_morgan_all_data.pkl](https://tripod.nih.gov/pub/adme/models/rlm/rf_morgan_all_data.pkl)
+- [https://tripod.nih.gov/pub/adme/models/rlm/tokenizer.pickle](https://tripod.nih.gov/pub/adme/models/rlm/tokenizer.pickle)
+
 ## Installing required software
 
 1. Install [anaconda or miniconda](https://docs.conda.io/projects/continuumio-conda/en/latest/user-guide/install/index.html#)
