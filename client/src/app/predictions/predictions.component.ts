@@ -87,7 +87,7 @@ export class PredictionsComponent implements OnInit {
       this.pageSize = pageEvent.pageSize;
     } else {
       this.page = 0;
-      this.pageSize = 10;
+      this.pageSize = this.pageSize;
     }
     this.paged = [];
     const startIndex = this.page * this.pageSize;
@@ -101,7 +101,7 @@ export class PredictionsComponent implements OnInit {
   }
 
   sortData(sort: Sort) {
-
+    console.log(sort);
     if (!sort.active || sort.direction === '') {
       return;
     }
@@ -112,7 +112,7 @@ export class PredictionsComponent implements OnInit {
       const isAsc = sort.direction === 'asc';
       return this.compare(a[sort.active], b[sort.active], isAsc);
     });
-
+    console.log(this.data);
     this.pageChange();
   }
 
