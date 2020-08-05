@@ -1,4 +1,4 @@
-[submodule "ketcher"]
+[submodule "client/ketcher"]
 	path = ./client/ketcher
 	url = https://github.com/epam/ketcher.git
 [submodule "server/chemprop"]
