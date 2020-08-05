@@ -17,16 +17,23 @@ import { Sort } from '@angular/material/sort';
 })
 export class PredictionsComponent implements OnInit {
   private ketcher: Ketcher;
+
   private sketcherDisplayedColumns = ['smiles', 'rlm'];
   private sketcherColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
+  private sketcherData: Array<any> = [];
+  private sketcherDisplayData: Array<any> = [];
+
   private fileDisplayedColumns: Array<string>;
   private fileAllColumns: Array<string>;
   private fileColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
+  private fileData: Array<any> = [];
+  private fileDisplayData: Array<any> = [];
+
   displayedColumns: Array<string>;
   displayedColumnsDict: { [columnName: string]: { order: number, description: string, isSmilesColumn: boolean } };
   private allColumns: Array<string>;
-  private fileData: Array<any> = [];
-  private sketcherData: Array<any> = [];
+
+  displayData: Array<any> = [];
   data: Array<any> = [];
   paged: Array<any>;
   page = 0;
@@ -58,10 +65,6 @@ export class PredictionsComponent implements OnInit {
     this.loadingService.setLoadingState(true);
     this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
     this.http.get(`${environment.apiBaseUrl}api/v1/predict?smiles=${smiles}`).subscribe((response: any) => {
-      const predition = response.data[0];
-      this.sketcherData.push(predition);
-      this.data = this.sketcherData;
-      this.pageChange();
       this.sketcherColumnsDict = response.mainColumnsDict;
       this.displayedColumnsDict = this.sketcherColumnsDict;
       this.sketcherDisplayedColumns = Object.keys(this.sketcherColumnsDict).sort((a, b) => {
@@ -69,6 +72,12 @@ export class PredictionsComponent implements OnInit {
       });
       this.displayedColumns = this.sketcherDisplayedColumns;
       this.allColumns = this.displayedColumns;
+      const predition = response.data[0];
+      this.sketcherData.push(predition);
+      this.data = this.sketcherData;
+      this.sketcherDisplayData = this.sketcherDisplayData.concat(this.getNonEmptyPredictions(response.data));
+      this.displayData = this.sketcherDisplayData;
+      this.pageChange();
       if (response.hasErrors) {
         this.errorMessage = 'The system encountered the following error(s) while processing your request:';
         this.errorMessages = response.errorMessages;
@@ -87,13 +96,12 @@ export class PredictionsComponent implements OnInit {
       this.pageSize = pageEvent.pageSize;
     } else {
       this.page = 0;
-      this.pageSize = this.pageSize;
     }
     this.paged = [];
     const startIndex = this.page * this.pageSize;
     for (let i = startIndex; i < (startIndex + this.pageSize); i++) {
-      if (this.data[i] != null) {
-        this.paged.push(this.data[i]);
+      if (this.displayData[i] != null) {
+        this.paged.push(this.displayData[i]);
       } else {
         break;
       }
@@ -101,18 +109,18 @@ export class PredictionsComponent implements OnInit {
   }
 
   sortData(sort: Sort) {
-    console.log(sort);
+
     if (!sort.active || sort.direction === '') {
       return;
     }
 
-    const data = this.data.slice();
+    const data = this.displayData.slice();
 
-    this.data = data.sort((a, b) => {
+    this.displayData = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       return this.compare(a[sort.active], b[sort.active], isAsc);
     });
-    console.log(this.data);
+
     this.pageChange();
   }
 
@@ -135,9 +143,6 @@ export class PredictionsComponent implements OnInit {
     formData.append('file', fileForm.file);
     this.http.post(`${environment.apiBaseUrl}api/v1/predict-file`, formData).subscribe((response: any) => {
       if (response && response.data && response.data.length > 0) {
-        this.fileData = response.data;
-        this.data = this.fileData;
-        this.pageChange();
         this.fileColumnsDict = response.mainColumnsDict;
         this.displayedColumnsDict = this.fileColumnsDict;
         this.fileDisplayedColumns = Object.keys(this.fileColumnsDict).sort((a, b) => {
@@ -146,6 +151,11 @@ export class PredictionsComponent implements OnInit {
         this.displayedColumns = this.fileDisplayedColumns;
         this.fileAllColumns = response.columns;
         this.allColumns = this.fileAllColumns;
+        this.fileData = response.data;
+        this.data = this.fileData;
+        this.fileDisplayData = this.getNonEmptyPredictions(this.fileData);
+        this.displayData = this.fileDisplayData;
+        this.pageChange();
       }
       if (response.hasErrors) {
         this.errorMessage = 'The system encountered the following error(s) while processing your request:';
@@ -153,8 +163,9 @@ export class PredictionsComponent implements OnInit {
       }
       this.loadingService.setLoadingState(false);
     }, error => {
-      this.fileData = null;
       this.data = null;
+      this.fileData = null;
+      this.displayData = null;
       this.errorMessage = 'There was an error processing your file. Please make sure you have selected a file that contains SMILES, indicate if the file contains a header and the column number containing the SMILES.';
       this.loadingService.setLoadingState(false);
     });
@@ -167,12 +178,14 @@ export class PredictionsComponent implements OnInit {
       this.displayedColumnsDict = this.fileColumnsDict;
       this.displayedColumns = this.fileDisplayedColumns;
       this.allColumns = this.fileAllColumns;
+      this.displayData = this.fileDisplayData;
       this.data = this.fileData;
     } else {
       this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
       this.displayedColumnsDict = this.sketcherColumnsDict;
       this.displayedColumns = this.sketcherDisplayedColumns;
       this.allColumns = this.displayedColumns;
+      this.displayData = this.sketcherDisplayData;
       this.data = this.sketcherData;
     }
     this.pageChange();
@@ -205,6 +218,19 @@ export class PredictionsComponent implements OnInit {
       data: {
         smiles: smi
       }
+    });
+  }
+
+  getNonEmptyPredictions(data: Array<any>): Array<any> {
+    const predictionColumns = Object.keys(this.displayedColumnsDict).filter(key => !this.displayedColumnsDict[key].isSmilesColumn);
+    return data.filter(item => {
+      let emptyColumns = 0;
+      predictionColumns.forEach(column => {
+        if (item[column] == null || item[column] === '') {
+          emptyColumns++;
+        }
+      });
+      return emptyColumns < predictionColumns.length;
     });
   }
 }

@@ -29,12 +29,12 @@
       </button>
     </div>
   </div>
-  <div class="models-output" *ngIf="data && data.length">
+  <div class="models-output" *ngIf="paged && paged.length">
     <h2>Model predictions</h2>
     <div class="top-actions-container">
       <button mat-raised-button color="primary" (click)="downloadCSV()">Download</button>
       <div class="fill-middle"></div>
-      <mat-paginator [length]="data && data.length || 0" [pageSize]="pageSize" [pageIndex]="page"
+      <mat-paginator [length]="displayData && displayData.length || 0" [pageSize]="pageSize" [pageIndex]="page"
         showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
       </mat-paginator>
     </div>
@@ -46,9 +46,9 @@
           </span>
         </mat-header-cell>
         <mat-cell *matCellDef="let row">
-          <span *ngIf="!displayedColumnsDict[displayedColumn].isSmilesColumn">{{row[displayedColumn]}}</span>
+          <span *ngIf="!displayedColumnsDict[displayedColumn].isSmilesColumn">{{row[displayedColumn] == '0 (0.0)' ? '0 (0.01)' : row[displayedColumn]}}</span>
           <a *ngIf="displayedColumnsDict[displayedColumn].isSmilesColumn"
-            (click)="openStructureImageDialog(row[displayedColumn])">
+            (click)="openStructureImageDialog(row[displayedColumn])" [matTooltip]="row[displayedColumn]">
             <img class="table-structure" admeStructureImage [entityId]="row[displayedColumn]" />
           </a>
         </mat-cell>
@@ -56,7 +56,7 @@
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;" fxLayoutAlign="center start"></mat-row>
     </mat-table>
-    <mat-paginator [length]="data && data.length || 0" [pageSize]="pageSize" [pageIndex]="page"
+    <mat-paginator [length]="displayData && displayData.length || 0" [pageSize]="pageSize" [pageIndex]="page"
       showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
     </mat-paginator>
   </div>
