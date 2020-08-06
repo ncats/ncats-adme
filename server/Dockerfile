@@ -22,4 +22,4 @@ ENV PATH /opt/conda/envs/ncats-adme/bin:$PATH
 
 EXPOSE 5000
 
-ENTRYPOINT ["./boot.sh"]
+ENTRYPOINT ["./startup.sh"]
