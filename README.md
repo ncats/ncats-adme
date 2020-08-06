@@ -6,6 +6,17 @@ If you use Git to clone this repository, please use the --recursive flag:
 
 `git clone --recursive https://github.com/ncats/ncats-adme.git`
 
+If you download the application, you also need to download and unzip [chemprop](https://github.com/chemprop/chemprop/tree/cd55a9f12478aef69917bbd044603d6512173306), but make sure to unzip the contents of chemprop inside the server folder so the the ncats-adme folder/file structure looks something like this:
+
+- ncats-adme
+  - client
+  - server
+    - chemprop
+      - chemprop
+      - docs
+      - scripts
+      - ...
+
 Model will be loaded from NCATS servers so you will need access to the internet when you first run the application.
 
 If you want to download the models, the file locations are as follows:
