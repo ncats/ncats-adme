@@ -1,6 +1,6 @@
 FROM continuumio/miniconda:latest
 
-WORKDIR /home/docker_conda_template
+WORKDIR ./
 
 COPY client/ ./
 COPY images/ ./
