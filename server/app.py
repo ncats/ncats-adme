@@ -214,4 +214,5 @@ def send_js(path):
 def return_index(path):
     return app.send_static_file('index.html')
 
-app.run(debug=False)
+if __name__ == "__main__":
+    app.run(debug=False)
