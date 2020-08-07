@@ -34,6 +34,17 @@ pipeline {
                 }
             }
         }
+        stage('Prepare') {
+            when {
+                expression {
+                    // Skip build when a specific version is provided
+                    return !params.BUILD_VERSION
+                }
+            }
+            steps {
+                sh 'git submodule update --init --recursive'
+            }
+        }
         stage('Build') {
             agent {
                 node { 
@@ -49,22 +60,19 @@ pipeline {
             }
             steps {
                 sshagent (credentials: ['871f96b5-9d34-449d-b6c3-3a04bbd4c0e4']) {
-                    nodejs(configId: 'kw-npmrc', nodeJSInstallationName: 'LTS Node.js 10.16.0') {
-                        withEnv([
-                            "IMAGE_NAME=adme",
-                            "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
-                        ]) {
-                            sh 'git submodule update --init --recursive'
-                            script {
-                                // See: https://jenkins.io/doc/book/pipeline/docker/#building-containers
-                                docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
-                                    def image = docker.build(
-                                        "${env.IMAGE_NAME}:${env.BUILD_VERSION}",
-                                        "--no-cache ."
-                                    )
-                                    // Push the image to the registry
-                                    image.push("${env.BUILD_VERSION}")
-                                }
+                    withEnv([
+                        "IMAGE_NAME=adme",
+                        "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
+                    ]) {
+                        script {
+                            // See: https://jenkins.io/doc/book/pipeline/docker/#building-containers
+                            docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
+                                def image = docker.build(
+                                    "${env.IMAGE_NAME}:${env.BUILD_VERSION}",
+                                    "--no-cache ."
+                                )
+                                // Push the image to the registry
+                                image.push("${env.BUILD_VERSION}")
                             }
                         }
                     }
