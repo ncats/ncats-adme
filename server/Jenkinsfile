@@ -36,7 +36,7 @@ pipeline {
         }
         stage('Build') {
             agent {
-                customWorkspace './server'
+                node { customWorkspace './server' }
             }
             when {
                 expression {
