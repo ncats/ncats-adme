@@ -11,7 +11,7 @@ pipeline {
     triggers {
         pollSCM('H/5 * * * *')
     }  
-  environment {
+    environment {
         PROJECT_NAME = "adme"
         DOCKER_REPO_NAME = "registry.ncats.nih.gov:5000/adme"
     }
@@ -48,7 +48,8 @@ pipeline {
                             "IMAGE_NAME=adme",
                             "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                         ]) {
-                            checkout([$class: 'GitSCM', branches: [[name: 'opendata']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'SubmoduleOption', disableSubmodules: false, parentCredentials: false, recursiveSubmodules: true, reference: '', trackingSubmodules: false]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '917d2cc8-84fe-4faf-89e5-25ea6649be83', url: 'git@github.com:ncats/ncats-adme.git']]])
+                            checkout scm
+                            sh 'git submodule update --init --recursive'
                             sh 'cd server/'
                             script {
                                 // See: https://jenkins.io/doc/book/pipeline/docker/#building-containers
