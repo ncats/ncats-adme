@@ -89,8 +89,6 @@ pipeline {
                node { label 'ncatsldvifx01'}
             }
             steps {
-                cleanWs()
-                checkout scm
                 configFileProvider([
                    configFile(fileId: 'adme-dev-compose', targetLocation: 'docker-compose.yml')     
                 ]) {
