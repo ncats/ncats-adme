@@ -26,4 +26,4 @@ This will start a development server that will refresh your browser whenever you
 To build and embed the application in the server directory (/server/client) so it can be deployed as a single application, you can run one of two commands:
 
 - `npm run build:embedded`, or
-- `build:embedded:opendata` so the application's URL's path always starts with `/adme`
+- `npm run build:embedded:opendata` so the application's URL's path always starts with `/adme`
