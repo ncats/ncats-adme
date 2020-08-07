@@ -35,6 +35,9 @@ pipeline {
             }
         }
         stage('Build') {
+            agnet {
+                customWorkspace './server'
+            }
             when {
                 expression {
                     // Skip build when a specific version is provided
@@ -70,7 +73,7 @@ pipeline {
         stage('deploy docker') {
             agent {
                node { label 'ncatsldvifx01'}
-          }
+            }
             steps {
                 cleanWs()
                 checkout scm
