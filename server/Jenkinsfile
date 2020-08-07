@@ -45,7 +45,7 @@ pipeline {
             steps {
                 checkout scm
                 sh 'git submodule update --init --recursive'
-                milestone()
+                milestone(1)
             }
         }
         stage('Build') {
