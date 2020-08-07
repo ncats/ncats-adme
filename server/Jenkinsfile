@@ -1,6 +1,7 @@
 pipeline {
     options {
         timestamps()
+        skipDefaultCheckout true
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
@@ -42,7 +43,9 @@ pipeline {
                 }
             }
             steps {
+                checkout scm
                 sh 'git submodule update --init --recursive'
+                milestone()
             }
         }
         stage('Build') {
