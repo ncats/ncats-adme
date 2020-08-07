@@ -46,7 +46,7 @@ pipeline {
                 sshagent (credentials: ['871f96b5-9d34-449d-b6c3-3a04bbd4c0e4']) {
                     checkout scm
                     sh 'git submodule update --init --recursive'
-                    milestone(1)
+                    // milestone(1)
                 }
             }
         }
