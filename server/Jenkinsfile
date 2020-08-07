@@ -38,7 +38,7 @@ pipeline {
             agent {
                 node { 
                     label 'ncatsldvifx01'
-                    customWorkspace './server'
+                    customWorkspace "${env.WORKSPACE}/server"
                 }
             }
             when {
