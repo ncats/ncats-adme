@@ -1,27 +1,29 @@
 # Client
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7.
+If you want to modify the UI for this application, download and install the dependencies below and follow the steps to run the application. But you will also need to have the python server running by following [these steps](https://github.com/ncats/ncats-adme/blob/master/README.md#ncats-adme)
 
-## Development server
+## Dependencies
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- [Node](https://nodejs.org/en/)
+- [Angular CLI](https://cli.angular.io/) installed globally (`npm install -g @angular/cli`)
 
-## Code scaffolding
+## Setting up application
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Open a terminal and make your way to the `/client` directory
+2. Type `npm install` and hit Enter
+3. Wait for a few minutes while all required packages are downloaded
 
-## Build
+## Running the application
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+1. Open a terminal and make your way to the `/client` directory
+2. Type `npm run start:dev` and hit Enter
+3. Navigate to http://localhost:4200/
 
-## Running unit tests
+This will start a development server that will refresh your browser whenever you make changes to the application.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Building the application
 
-## Running end-to-end tests
+To build and embed the application in the server directory (/server/client) so it can be deployed as a single application, you can run one of two commands:
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+- `npm run build:embedded`
+- `build:embedded:opendata` so the application's URL's path always starts with `/adme`
