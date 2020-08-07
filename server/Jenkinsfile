@@ -54,9 +54,7 @@ pipeline {
                             "IMAGE_NAME=adme",
                             "BUILD_VERSION=" + (params.BUILD_VERSION ?: env.BUILD_VERSION)
                         ]) {
-                            checkout scm
                             sh 'git submodule update --init --recursive'
-                            sh 'cd server/'
                             script {
                                 // See: https://jenkins.io/doc/book/pipeline/docker/#building-containers
                                 docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
