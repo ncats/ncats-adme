@@ -27,3 +27,25 @@
         }
     }
 }
+
+@media(max-width: 445px) {
+    .mat-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-top: 5px;
+    }
+
+    .mat-toolbar-single-row {
+        height: auto;
+    }
+
+    .navigation {
+        display: flex;
+        justify-content: space-evenly;
+        margin-left: 0;
+        width: 100%;
+        .nav-item {
+            margin-right: 0;
+        }
+    }
+}

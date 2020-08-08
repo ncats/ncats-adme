@@ -10,12 +10,16 @@
 
 .tab-body {
     padding-top: 15px;
+    max-width: 100%;
+    width: 100%;
+    overflow: auto;
+    padding-bottom: 10px;
 }
 
 .molecule-input {
     display: flex;
-    min-width: 640px;
     width: 100%;
+    max-width: 100%;
 
     .mat-tab-header {
         margin-bottom: 10px;
@@ -45,10 +49,6 @@
     margin-bottom: 5px;
 }
 
-mat-cell {
-    word-wrap: anywhere;
-}
-
 .error-message-container {
     margin: 15px 0;
     font-weight: 500;
@@ -68,4 +68,28 @@ mat-cell {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.table-container {
+    max-width: 100%;
+    width: 100%;
+}
+
+.mat-table {
+    min-width: 460px;
+}
+
+@media(max-width: 580px) {
+    .top-actions-container {
+        flex-direction: column;
+        align-items: flex-start;
+
+        .mat-paginator {
+            width: 100%;
+        }
+
+        .mat-paginator-outer-container {
+            align-items: flex-end;
+        }
+    }
 }

@@ -15,6 +15,7 @@ h1 {
 .profile-image-container {
     width: 115px;
     max-width: 115px;
+    min-width: 115px;
 
     img {
         width: 100%;
@@ -61,5 +62,18 @@ h1 {
             width: 80%;
             max-width: 100%;
         }
+    }
+}
+
+@media(max-width: 400px) {
+
+    .profile-image-container {
+        width: 105px;
+        max-width: 105px;
+        min-width: 105px;
+    }
+
+    .profile-info-container {
+        padding-left: 10px;
     }
 }
