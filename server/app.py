@@ -27,34 +27,12 @@ app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
 app.config["DEBUG"] = True
 
-def get_morgan_fp(mol):
-    """
-    Returns the RDKit Morgan fingerprint for a molecule.
-    """
-    info = {}
-    arr = np.zeros((1,))
-    fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=1024, useFeatures=False, bitInfo=info)
-    DataStructs.ConvertToNumpyArray(fp, arr)
-    arr = np.array([len(info[x]) if x in info else 0 for x in range(1024)])
-
-    return arr
-
-def get_prediction(smi, model):
-    """
-    Returns predictions for a given input smiles but needs a model object as argument.
-    """
-    mol = Chem.MolFromSmiles(smi)
-    fp = get_morgan_fp(mol)
-    fp1 = np.reshape(fp, (1, -1)) # converting into 2d array
-    y_pred = model.predict(fp1)
-    y_pred_prob = model.predict_proba(fp1).T[1]
-    y_pred_prob = y_pred_prob.ravel()
-    y_pred_prob = np.round(y_pred_prob, 2)
-    
-    return y_pred, y_pred_prob
+global root_route_path
+root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
 
 
-@app.route('/api/v1/predict', methods=['GET'])
+
+@app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():
     response = {}
 
@@ -109,7 +87,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/api/v1/predict-file', methods=['POST'])
+@app.route(f'{root_route_path}/api/v1/predict-file', methods=['POST'])
 def upload_file():
 
     response = {}
@@ -192,7 +170,7 @@ def upload_file():
         response['errorMessages'] = 'Only csv, txt or smi files can be processed'
         return jsonify(response)
         
-@app.route('/api/v1/structure_image/<path:smiles>', methods=['GET'])
+@app.route(f'{root_route_path}/api/v1/structure_image/<path:smiles>', methods=['GET'])
 def get_structure_image(smiles):
     try:
         diclofenac = Chem.MolFromSmiles(smiles)
@@ -204,7 +182,7 @@ def get_structure_image(smiles):
         return send_file('./images/no_image_available.png', mimetype='image/png')
 
 
-@app.route('/client/<path:path>')
+@app.route(f'{root_route_path}/client/<path:path>')
 def send_js(path):
     print(path, file=sys.stdout)
     return send_from_directory('client', path)
@@ -212,6 +190,7 @@ def send_js(path):
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def return_index(path):
+    print(path, file=sys.stdout)
     return app.send_static_file('index.html')
 
 if __name__ == "__main__":

@@ -1,25 +1,20 @@
-FROM continuumio/miniconda:latest
+FROM continuumio/miniconda:4.7.12
 
-WORKDIR ./
+WORKDIR /opt/adme
 
-COPY client/ ./
-COPY images/ ./
-COPY consensus_model.py ./
-COPY environment.yml ./
-COPY models.py ./
-COPY settings.py ./
-COPY startup.sh ./
-COPY wsgi.py ./
+COPY ./ ./
 
-RUN apt update
-RUN apt install -y git
-RUN git clone https://github.com/chemprop/chemprop.git
-RUN chmod +x startup.sh
 RUN conda env create -f environment.yml
 
-RUN echo "source activate ncats-adme" > ~/.bashrc
-ENV PATH /opt/conda/envs/ncats-adme/bin:$PATH
+RUN chmod +x startup.sh
+
+# Make RUN commands use the new environment:
+SHELL ["conda", "run", "-n", "ncats-adme", "/bin/bash", "-c"]
+
+# Make sure the environment is activated:
+RUN echo "Make sure flask is installed:"
+RUN python -c "import flask"
+
+ENTRYPOINT ["conda", "run", "-n", "ncats-adme", "/bin/bash", "startup.sh"]
 
 EXPOSE 5000
-
-ENTRYPOINT ["./startup.sh"]

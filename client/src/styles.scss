@@ -3,6 +3,10 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+div {
+    box-sizing: border-box;
+}
+
 a:hover {
     cursor: pointer;
 }
@@ -13,10 +17,12 @@ a:hover {
 
 .container {
     width: 100%;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 .inner-container {
@@ -37,5 +43,30 @@ a:hover {
         font-weight: 600;
         margin-right: 15px;
         min-width: 125px;
+    }
+}
+
+@media(max-width: 550px) {
+
+    .definition {
+        flex-direction: column;
+    }
+
+    .value {
+        padding-left: 30px;
+        padding-top: 5px;
+    }
+}
+
+@media(max-width: 700px) {
+
+    .container {
+        padding: 10px;
+        width: auto;
+    }
+
+    .inner-container {
+        max-width: 100%;
+        width: 100%;
     }
 }

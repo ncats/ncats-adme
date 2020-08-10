@@ -5,6 +5,7 @@
     "ng": "ng",
     "start:dev": "ng serve --configuration=dev",
     "build": "ng build",
+    "build:embedded:adme": "ng build --configuration=adme --deploy-url=/adme/client/ --base-href=/adme/ && rimraf ../server/client && cpx \"dist/client/**/*\" ../server/client -u",
     "build:embedded": "ng build --prod --deploy-url=/client/ && rimraf ../server/client && cpx \"dist/client/**/*\" ../server/client -u",
     "test": "ng test",
     "lint": "ng lint",
