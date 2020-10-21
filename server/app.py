@@ -25,7 +25,7 @@ models.init()
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
