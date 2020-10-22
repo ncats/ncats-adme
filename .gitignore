@@ -11,5 +11,5 @@ notebooks
 env
 env/
 
-# server/models
-# server/models/
+server/models
+server/models/
