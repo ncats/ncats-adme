@@ -3,12 +3,11 @@ import pandas as pd
 import pickle
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
-from rdkit import Chem, DataStructs
-from rdkit.Chem import AllChem
+from rdkit import Chem
 import warnings
 warnings.filterwarnings('ignore')
 import sys
-sys.path.insert(0, './chemprop')
+sys.path.insert(0, './predictors/chemprop')
 from chemprop.data.utils import get_data, get_data_from_smiles
 from chemprop.data import MoleculeDataLoader, MoleculeDataset
 from chemprop.train import predict
@@ -17,17 +16,8 @@ import random
 import string
 import settings
 import models
-
-def Get_MorganFP(mol):
-    """
-    Returns the RDKit Morgan fingerprint for a molecule.
-    """
-    info = {}
-    arr = np.zeros((1,))
-    fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=1024, useFeatures=False, bitInfo=info)
-    DataStructs.ConvertToNumpyArray(fp, arr)
-    arr = np.array([len(info[x]) if x in info else 0 for x in range(1024)])
-    return arr
+from predictors.features.morgan_fp import MorganFPGenerator
+from predictors.rlm.rlm_predictor import RLMPredictior
 
 def Average(lst):
 	return sum(lst) / len(lst)
@@ -39,21 +29,6 @@ def Get_ClassLabel(y_pred_prob):
 		return 'Unstable'
 	else:
 		return 'Stable'
-
-def get_morgan_features(test_df, smi_column_name):
-	morgan_cols = [ 'morgan_'+str(i) for i in range(1024) ]
-	for index, row in test_df.iterrows():
-		# change this to column index of smiles
-		smi = row[smi_column_name]
-		mol = Chem.MolFromSmiles(smi)
-		fp = Get_MorganFP(mol)
-		fpl = fp.tolist()
-		fps = ','.join(str(e) for e in fpl)
-		test_df.at[index,'morganfp'] = fps
-
-	morgan_df = pd.DataFrame(test_df['morganfp'].str.split(',', expand=True).values, columns=morgan_cols)
-	return morgan_df.iloc[:,0:].values
-
 
 def get_processed_smi(X_test):
 	for p in range (X_test.shape[0]):
@@ -164,12 +139,17 @@ def getConsensusPredictions(df, indexIdentifierColumn):
 	has_gcnn_errors = False
 
 	if len(smi_df.index) > 0:
-		X_morgan = get_morgan_features(smi_df.copy(), mol_column_name)
+
+		morgan_fp_generator = MorganFPGenerator(smi_df.copy())
+		X_morgan = morgan_fp_generator.get_morgan_features(mol_column_name)
 
 		# change column to where smiles are located
 		X_smi = smi_df[mol_column_name].values
 
-		rf_y_pred, rf_y_pred_prob = getRfPredictions(X_morgan)
+
+		rlm_predictor = RLMPredictior(df, indexIdentifierColumn)
+		# rf_y_pred, rf_y_pred_prob = getRfPredictions(X_morgan)
+		rf_y_pred, rf_y_pred_prob = rlm_predictor.rf_predict(X_morgan)
 		smi_df['RF'] = pd.Series(pd.Series(rf_y_pred).astype(str) + ' (' + pd.Series(rf_y_pred_prob).round(2).astype(str) + ')')
 		has_rf_errors = len(smi_df.index) > len(rf_y_pred_prob)
 

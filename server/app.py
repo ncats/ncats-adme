@@ -9,7 +9,6 @@ import sys
 import os
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import ImmutableMultiDict
-from consensus_model import getConsensusPredictions
 from rdkit import Chem
 from rdkit.Chem import Draw
 from rdkit.Chem.Draw import rdMolDraw2D
@@ -18,10 +17,9 @@ rdDepictor.SetPreferCoordGen(True)
 from rdkit.Chem.Draw import IPythonConsole
 import rdkit
 from flask import send_file
-import settings
-settings.init()
-import models
-models.init()
+from predictors.rlm.rlm_predictor import RLMPredictior
+from predictors.cypp450.cypp450_predictor import CYPP450redictior
+import time
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -39,44 +37,47 @@ def predict():
     smiles = request.args.get('smiles')
     
     df = pd.DataFrame([[smiles]], columns=['mol'])
-
-    columns_dict =  settings.columns_dict.copy()
-    columns_dict['mol'] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
-
-    (
-        has_smi_errors,
-        has_rf_errors,
-        has_dnn_errors,
-        has_lstm_errors,
-        has_gcnn_errors,
-        pred_df
-    ) = getConsensusPredictions(df, 0)
     error_messages = []
+    base_models_error_message = 'We were not able to make predictions using the following model(s): '
+    model_errors = []
 
-    response['hasErrors'] = has_smi_errors
+    rlm_predictior = RLMPredictior(df, 0)
+    pred_df = rlm_predictior.get_consensus_predictions()
+    rlm_errors_dict = rlm_predictior.get_errors()
 
-    if has_smi_errors:
+    response['hasErrors'] = rlm_predictior.has_errors
+
+    if len(rlm_errors_dict['model_errors']) > 0:
+        model_errors.append(rlm_errors_dict['model_errors'])
+
+    cypp450_predictor = CYPP450redictior(pred_df, 0, rlm_predictior.morgan_fp_matrix)
+    pred_df = cypp450_predictor.get_predictions()
+    cypp450_errors_dict = cypp450_predictor.get_errors()
+
+    if response['hasErrors'] == False and cypp450_predictor.has_errors == True:
+        response['hasErrors'] = True
+
+    if len(cypp450_errors_dict['model_errors']) > 0:
+        model_errors.append(cypp450_errors_dict['model_errors'])
+
+    if rlm_errors_dict['has_smi_errors'] or cypp450_errors_dict['has_smi_errors']:
         smi_error_message = 'We were not able to parse the structure you submitted'
         error_messages.append(smi_error_message)
 
-    if has_rf_errors:
-        rf_error_message = 'We were not able to make predictions using the random forest model'
-        error_messages.append(rf_error_message)
-
-    if has_dnn_errors:
-        dnn_error_message = 'We were not able to make predictions using the deep neural networ model'
-        error_messages.append(dnn_error_message)
-
-    if has_lstm_errors:
-        lstm_error_message = 'We were not able to make predictions using the long short term memory model'
-        error_messages.append(lstm_error_message)
-
-    if has_gcnn_errors:
-        gcnn_error_message = 'We were not able to make predictions for some of your molecules using the graph convolutional neural network model'
-        error_messages.append(gcnn_error_message)
+    if len(model_errors) > 0:
+        error_message = base_models_error_message + model_errors.join(', ')
+        error_messages.append(error_message)
 
     response['errorMessages'] = error_messages
     response['columns'] = list(pred_df.columns.values)
+
+    columns_dict =  rlm_predictior.columns_dict()
+    dict_length = len(columns_dict.keys())
+    cypp450_predictor_dict = cypp450_predictor.columns_dict()
+    for cypp450_predictor_key in  cypp450_predictor_dict.keys():
+        columns_dict[cypp450_predictor_key] = cypp450_predictor_dict[cypp450_predictor_key]
+        columns_dict[cypp450_predictor_key]['order'] = columns_dict[cypp450_predictor_key]['order'] + dict_length
+    columns_dict['mol'] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
     response['mainColumnsDict'] = columns_dict
     response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
     return jsonify(response)
@@ -122,48 +123,51 @@ def upload_file():
                     column_name_mapper[column_name] = f'col_{column_name}'
             df.rename(columns=column_name_mapper, inplace=True)
 
-        columns_dict =  settings.columns_dict.copy()
-        smi_column_name = df.columns.values[indexIdentifierColumn]
-        columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
-
-        (
-            has_smi_errors,
-		    has_rf_errors,
-		    has_dnn_errors,
-		    has_lstm_errors,
-		    has_gcnn_errors,
-            pred_df
-        ) = getConsensusPredictions(df, indexIdentifierColumn)
-
         error_messages = []
+        base_models_error_message = 'We were not able to make predictions on some of your molecules using the following model(s): '
+        model_errors = []
 
-        response['hasErrors'] = has_smi_errors
-        print(response['hasErrors'], file=sys.stdout)
-        if has_smi_errors:
-            smi_error_message = 'We were not able to parse some smiles'
+        rlm_predictior = RLMPredictior(df, indexIdentifierColumn)
+        pred_df = rlm_predictior.get_consensus_predictions()
+        rlm_errors_dict = rlm_predictior.get_errors()
+
+        response['hasErrors'] = rlm_predictior.has_errors
+
+        if len(rlm_errors_dict['model_errors']) > 0:
+            model_errors.append(rlm_errors_dict['model_errors'])
+
+        cypp450_predictor = CYPP450redictior(pred_df, indexIdentifierColumn, rlm_predictior.morgan_fp_matrix)
+        pred_df = cypp450_predictor.get_predictions()
+        cypp450_errors_dict = cypp450_predictor.get_errors()
+
+        if response['hasErrors'] == False and cypp450_predictor.has_errors == True:
+            response['hasErrors'] = True
+
+        if len(cypp450_errors_dict['model_errors']) > 0:
+            model_errors.append(cypp450_errors_dict['model_errors'])
+
+        if rlm_errors_dict['has_smi_errors'] or cypp450_errors_dict['has_smi_errors']:
+            smi_error_message = 'We were not able to parse some of the structure you submitted'
             error_messages.append(smi_error_message)
 
-        if has_rf_errors:
-            rf_error_message = 'We were not able to make predictions for some of your molecules using the random forest model'
-            error_messages.append(rf_error_message)
-
-        if has_dnn_errors:
-            dnn_error_message = 'We were not able to make predictions for some of your molecules using the deep neural networ model'
-            error_messages.append(dnn_error_message)
-
-        if has_lstm_errors:
-            lstm_error_message = 'We were not able to make predictions for some of your molecules using the long short term memory model'
-            error_messages.append(lstm_error_message)
-
-        if has_gcnn_errors:
-            gcnn_error_message = 'We were not able to make predictions for some of your molecules using the graph convolutional neural network model'
-            error_messages.append(gcnn_error_message)
+        if len(model_errors) > 0:
+            error_message = base_models_error_message + model_errors.join(', ')
+            error_messages.append(error_message)
 
         response['errorMessages'] = error_messages
         response['columns'] = list(pred_df.columns.values)
+
+        columns_dict =  rlm_predictior.columns_dict()
+        dict_length = len(columns_dict.keys())
+        cypp450_predictor_dict = cypp450_predictor.columns_dict()
+        for cypp450_predictor_key in  cypp450_predictor_dict.keys():
+            columns_dict[cypp450_predictor_key] = cypp450_predictor_dict[cypp450_predictor_key]
+            columns_dict[cypp450_predictor_key]['order'] = columns_dict[cypp450_predictor_key]['order'] + dict_length
+
+        smi_column_name = df.columns.values[indexIdentifierColumn]
+        columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
         response['mainColumnsDict'] = columns_dict
         response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
-        pred_df.replace(np.nan, '', regex=True).to_json('test.json', orient='records')
         return jsonify(response)
     else:
         response['hasErrors'] = True
