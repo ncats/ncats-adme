@@ -7,12 +7,13 @@ from rdkit.Chem import PandasTools
 from numpy import array
 from typing import Tuple
 from rdkit.Chem.rdchem import Mol
-from predictors.features.morgan_fp import MorganFPGenerator
-from predictors.utilities.processors import get_processed_smi
+from ..features.morgan_fp import MorganFPGenerator
+from ..utilities.processors import get_processed_smi
 from rdkit import Chem
-from predictors.features.rdkit_descriptors import RDKitDescriptorsGenerator
-from predictors.cypp450 import cypp450_models_dict
+from ..features.rdkit_descriptors import RDKitDescriptorsGenerator
+from ..cypp450 import cypp450_models_dict
 import time
+from tqdm import tqdm
 
 class CYPP450redictior:
     """
@@ -25,32 +26,32 @@ class CYPP450redictior:
     """
 
     _columns_dict = {
-        'CYPP450_CYP2C9_inhib': {
+        'CYP2C9_inhib': {
             'order': 1,
             'description': 'CYP2C9 inhibitor',
             'isSmilesColumn': False
         },
-        'CYPP450_CYP2C9_subs': {
+        'CYP2C9_subs': {
             'order': 2,
             'description': 'CYP2C9 substrate',
             'isSmilesColumn': False
         },
-        'CYPP450_CYP2D6_inhib': {
+        'CYP2D6_inhib': {
             'order': 3,
             'description': 'CYP2D6 inhibitor',
             'isSmilesColumn': False
         },
-        'CYPP450_CYP2D6_subs': {
+        'CYP2D6_subs': {
             'order': 4,
             'description': 'CYPP450 CYP2D6 substrate',
             'isSmilesColumn': False
         },
-        'CYPP450_CYP3A4_inhib': {
+        'CYP3A4_inhib': {
             'order': 5,
             'description': 'CYPP450 CYP3A4 inhibitor',
             'isSmilesColumn': False
         },
-        'CYPP450_CYP3A4_subs': {
+        'CYP3A4_subs': {
             'order': 6,
             'description': 'CYPP450 CYP3A4 substrate',
             'isSmilesColumn': False
@@ -126,7 +127,7 @@ class CYPP450redictior:
 
         start = time.time()
 
-        for model_name in cypp450_models_dict.keys():
+        for model_name in tqdm(cypp450_models_dict.keys()):
 
             model_has_error = False
 
@@ -134,7 +135,7 @@ class CYPP450redictior:
             probs_matrix = np.ma.empty((64, features.shape[0]))
             probs_matrix.mask = True
 
-            for model_number in range(0, 64):
+            for model_number in tqdm(range(0, 64)):
                 probs = cypp450_models_dict[model_name][f'model_{model_number}'].predict_proba(features)
                 probs_matrix[model_number, :probs.shape[0]] = probs.T[1]
                 if model_has_error == False and len(self.predictions_df.index) > len(probs):
@@ -145,7 +146,7 @@ class CYPP450redictior:
             if model_has_error:
                 self.model_errors.append(self._columns_dict[model_name]['description'])
 
-            self.predictions_df[f'CYPP450_{model_name}'] = pd.Series(
+            self.predictions_df[f'{model_name}'] = pd.Series(
                 pd.Series(np.where(mean_probs>=0.5, 1, 0)).round(2).astype(str)
                 +' ('
                 +pd.Series(mean_probs).round(2).astype(str)

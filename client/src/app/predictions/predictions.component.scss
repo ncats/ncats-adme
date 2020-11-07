@@ -26,28 +26,7 @@
       }
 }
 
-.top-actions-container {
-    display: flex;
-    align-items: center;
-}
 
-.models-output {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 20px;
-
-    mat-header-row {
-        min-height: 48px;
-    }
-}
-
-.table-structure {
-    height: 50px;
-    width: auto;
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
 
 .error-message-container {
     margin: 15px 0;
@@ -68,29 +47,4 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-}
-
-.table-container {
-    max-width: 100%;
-    width: 100%;
-    overflow-x: auto;
-}
-
-.mat-table {
-    min-width: 460px;
-}
-
-@media(max-width: 580px) {
-    .top-actions-container {
-        flex-direction: column;
-        align-items: flex-start;
-
-        .mat-paginator {
-            width: 100%;
-        }
-
-        .mat-paginator-outer-container {
-            align-items: flex-end;
-        }
-    }
 }

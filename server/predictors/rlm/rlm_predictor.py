@@ -21,9 +21,9 @@ import settings
 from rdkit.Chem.rdchem import Mol
 from numpy import array
 from typing import Tuple
-from predictors.features.morgan_fp import MorganFPGenerator
-from predictors.utilities.processors import get_processed_smi
-from predictors.rlm import rlm_rf_model, rlm_dnn_model, rlm_tokenizer, rlm_lstm_model, rlm_gcnn_scaler, rlm_gcnn_model
+from ..features.morgan_fp import MorganFPGenerator
+from ..utilities.processors import get_processed_smi
+from . import rlm_rf_model, rlm_dnn_model, rlm_dnn_tokenizer, rlm_lstm_model, rlm_gcnn_scaler, rlm_gcnn_model
 import time
 
 class RLMPredictior:
@@ -37,32 +37,32 @@ class RLMPredictior:
     """
 
     _columns_dict = {
-        'RLM_RF': {
+        'RF': {
             'order': 1,
             'description': 'random forest',
             'isSmilesColumn': False
         },
-        'RLM_DNN': {
+        'DNN': {
             'order': 2,
             'description': 'deep neural network',
             'isSmilesColumn': False
         },
-        'RLM_LSTM': {
+        'LSTM': {
             'order': 3,
             'description': 'long-short term memory',
             'isSmilesColumn': False
         },
-        'RLM_GCNN': {
+        'GCNN': {
             'order': 4,
             'description': 'graph convolutional neural network',
             'isSmilesColumn': False
         },
-        'RLM_Consensus': {
+        'Consensus': {
             'order': 5,
             'description': 'consensus of all four models',
             'isSmilesColumn': False
         },
-        'RLM_Prediction': {
+        'Prediction': {
             'order': 6,
             'description': 'class label predicted by consensus model',
             'isSmilesColumn': False
@@ -131,7 +131,7 @@ class RLMPredictior:
         kek_smi = Chem.MolToSmiles(mol,kekuleSmiles=True)
         return kek_smi
         
-    def get_consensus_predictions(self) -> DataFrame:
+    def get_predictions(self) -> DataFrame:
         """
         Function that calculates consensus predictions
 
@@ -158,14 +158,14 @@ class RLMPredictior:
             matrix[3, :gcnn_predictions.shape[0]] = gcnn_predictions
 
             consensus_pred_prob = matrix.mean(axis=0)
-            self.predictions_df['RLM_Consensus'] = pd.Series(
+            self.predictions_df['Consensus'] = pd.Series(
                 pd.Series(np.where(consensus_pred_prob>=0.5, 1, 0)).round(2).astype(str)
                 +' ('
                 +pd.Series(consensus_pred_prob).round(2).astype(str)
                 +')'
             )
 
-            self.predictions_df['RLM_Prediction'] = pd.Series(
+            self.predictions_df['Prediction'] = pd.Series(
                 pd.Series(np.where(consensus_pred_prob>=0.5, 'unstable', 'stable'))
             )
 
@@ -183,7 +183,7 @@ class RLMPredictior:
 
         y_pred = rlm_rf_model.predict(self.morgan_fp_matrix)
         y_pred_prob = rlm_rf_model.predict_proba(self.morgan_fp_matrix).T[1]
-        self.predictions_df['RLM_RF'] = pd.Series(pd.Series(y_pred).astype(str) + ' (' + pd.Series(y_pred_prob).round(2).astype(str) + ')')
+        self.predictions_df['RF'] = pd.Series(pd.Series(y_pred).astype(str) + ' (' + pd.Series(y_pred_prob).round(2).astype(str) + ')')
         if len(self.predictions_df.index) > len(y_pred_prob):
             self.model_errors.append('random forest')
             self.has_errors = True
@@ -202,7 +202,7 @@ class RLMPredictior:
         y_pred_labels = np.array(predictions).ravel()
         labels = y_pred_labels.round(0).astype(int)
         predictions = np.array(predictions).ravel()
-        self.predictions_df['RLM_DNN'] = pd.Series(pd.Series(labels).astype(str) + ' (' + pd.Series(predictions).round(2).astype(str) + ')')
+        self.predictions_df['DNN'] = pd.Series(pd.Series(labels).astype(str) + ' (' + pd.Series(predictions).round(2).astype(str) + ')')
 
         if len(self.predictions_df.index) > len(predictions):
             self.model_errors.append('deep neural network')
@@ -223,14 +223,14 @@ class RLMPredictior:
 
         max_len = 100
         X_smi = get_processed_smi(self.rdkit_mols)
-        X_smi = rlm_tokenizer.texts_to_sequences(X_smi)
+        X_smi = rlm_dnn_tokenizer.texts_to_sequences(X_smi)
         X_smi = pad_sequences(X_smi, maxlen=max_len, padding='post')
 
         predictions = rlm_lstm_model.predict(X_smi)
         y_pred_labels = np.array(predictions).ravel()
         labels = y_pred_labels.round(0).astype(int)
         predictions = np.array(predictions).ravel()
-        self.predictions_df['RLM_LSTM'] = pd.Series(pd.Series(labels).astype(str) + ' (' + pd.Series(predictions).round(2).astype(str) + ')')
+        self.predictions_df['LSTM'] = pd.Series(pd.Series(labels).astype(str) + ' (' + pd.Series(predictions).round(2).astype(str) + ')')
         if len(self.predictions_df.index) > len(predictions):
             self.model_errors.append('deep neural network')
             self.has_errors = True
@@ -280,7 +280,7 @@ class RLMPredictior:
             predictions[full_index] = model_preds[full_to_valid_indices[key]][0]
             labels[full_index] = np.round(model_preds[full_to_valid_indices[key]][0], 0)
 
-        self.predictions_df['RLM_GCNN'] = pd.Series(pd.Series(labels).fillna('').astype(str) + ' (' + pd.Series(predictions).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
+        self.predictions_df['GCNN'] = pd.Series(pd.Series(labels).fillna('').astype(str) + ' (' + pd.Series(predictions).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
         if len(self.predictions_df.index) > len(predictions) or np.ma.count_masked(predictions) > 0:
             self.model_errors.append('graph convolutional neural network')
             self.has_errors = True

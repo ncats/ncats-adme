@@ -7,8 +7,9 @@ setup(
     author_email='jorge.neyra@nih.gov, vishalbabu.siramshetty@nih.gov, sankalp.jain@nih.gov',
     packages=find_namespace_packages(include=[
         'rlm.*',
-        'CYPP450.*'
+        'cypp450.*'
         'features.*'
+        'utilities.*'
     ]),
     zip_safe=False
 )

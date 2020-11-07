@@ -31,6 +31,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { ContactComponent } from './contact/contact.component';
+import { PredictionsTableComponent } from './predictions-table/predictions-table.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { ContactComponent } from './contact/contact.component';
     LoadingComponent,
     StructureImageDirective,
     StructureImageDialogComponent,
-    ContactComponent
+    ContactComponent,
+    PredictionsTableComponent
   ],
   imports: [
     BrowserModule,

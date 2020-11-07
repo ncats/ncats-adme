@@ -1,0 +1,50 @@
+<div class="error-message-container" *ngIf="errorMessage">
+    <div class="error-message">
+        <div>
+            {{errorMessage}}
+        </div>
+        <ul *ngIf="errorMessages && errorMessages.length">
+            <li *ngFor="let message of errorMessages">{{message}}</li>
+        </ul>
+    </div>
+    <div class="error-message-actions">
+        <button mat-button color="primary" (click)="clearErrorMessage()">
+            <mat-icon aria-hidden="false" aria-label="Close error message" svgIcon="cancel"></mat-icon>
+        </button>
+    </div>
+</div>
+<div class="models-output" *ngIf="paged && paged.length">
+    <h2>Model predictions</h2>
+    <div class="top-actions-container">
+        <button mat-raised-button color="primary" (click)="downloadCSV()">Download</button>
+        <div class="fill-middle"></div>
+        <mat-paginator [length]="displayData && displayData.length || 0" [pageSize]="pageSize" [pageIndex]="page"
+            showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+        </mat-paginator>
+    </div>
+    <div class="table-container">
+        <mat-table #table [dataSource]="paged" matSort (matSortChange)="sortData($event)">
+            <ng-container [matColumnDef]="displayedColumn"
+                *ngFor="let displayedColumn of displayedColumns; index as index">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    <span [matTooltip]="displayedColumnsDict[displayedColumn].description">
+                        {{displayedColumnsDict[displayedColumn].isSmilesColumn ? 'mol' : displayedColumn}}
+                    </span>
+                </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span
+                        *ngIf="!displayedColumnsDict[displayedColumn].isSmilesColumn">{{row[displayedColumn] == '0 (0.0)' ? '0 (0.01)' : row[displayedColumn]}}</span>
+                    <a *ngIf="displayedColumnsDict[displayedColumn].isSmilesColumn"
+                        (click)="openStructureImageDialog(row[displayedColumn])" [matTooltip]="row[displayedColumn]">
+                        <img class="table-structure" admeStructureImage [entityId]="row[displayedColumn]" />
+                    </a>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;" fxLayoutAlign="center start"></mat-row>
+        </mat-table>
+    </div>
+    <mat-paginator [length]="displayData && displayData.length || 0" [pageSize]="pageSize" [pageIndex]="page"
+        showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+</div>
