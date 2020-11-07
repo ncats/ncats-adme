@@ -1,9 +1,33 @@
 <div class="content-container">
   <div class="molecule-input">
-    <mat-tab-group (selectedTabChange)=updateSelectedTab($event)>
+    <mat-tab-group>
       <mat-tab label="Sketcher">
         <div class="tab-body">
           <adme-sketcher (moleculeInput)="processSketcherInput($event)"></adme-sketcher>
+        </div>
+        <div class="error-message-container" *ngIf="errorMessage">
+          <div class="error-message">
+            <div>
+              {{errorMessage}}
+            </div>
+            <ul *ngIf="errorMessages && errorMessages.length">
+              <li *ngFor="let message of errorMessages">{{message}}</li>
+            </ul>
+          </div>
+          <div class="error-message-actions">
+            <button mat-button color="primary" (click)="clearErrorMessage()">
+              <mat-icon aria-hidden="false" aria-label="Close error message" svgIcon="cancel"></mat-icon>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="sketcherData">
+          <mat-tab-group>
+            <mat-tab *ngFor="let model of models" [label]="model">
+              <div>
+                <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" (download)="downloadCSV($event)"></adme-predictions-table>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
         </div>
       </mat-tab>
       <mat-tab label="Text File">
@@ -11,25 +35,34 @@
           <adme-text-file (fileProcess)="processFile($event)">
           </adme-text-file>
         </div>
+        <div class="error-message-container" *ngIf="errorMessage">
+          <div class="error-message">
+            <div>
+              {{errorMessage}}
+            </div>
+            <ul *ngIf="errorMessages && errorMessages.length">
+              <li *ngFor="let message of errorMessages">{{message}}</li>
+            </ul>
+          </div>
+          <div class="error-message-actions">
+            <button mat-button color="primary" (click)="clearErrorMessage()">
+              <mat-icon aria-hidden="false" aria-label="Close error message" svgIcon="cancel"></mat-icon>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="fileData">
+          <mat-tab-group>
+            <mat-tab *ngFor="let model of models" [label]="model">
+              <div>
+                <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" (download)="downloadCSV($event)"></adme-predictions-table>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
       </mat-tab>
     </mat-tab-group>
   </div>
-  <div class="error-message-container" *ngIf="errorMessage">
-    <div class="error-message">
-      <div>
-        {{errorMessage}}
-      </div>
-      <ul *ngIf="errorMessages && errorMessages.length">
-        <li *ngFor="let message of errorMessages">{{message}}</li>
-      </ul>
-    </div>
-    <div class="error-message-actions">
-      <button mat-button color="primary" (click)="clearErrorMessage()">
-        <mat-icon aria-hidden="false" aria-label="Close error message" svgIcon="cancel"></mat-icon>
-      </button>
-    </div>
-  </div>
-  <div class="models-output" *ngIf="paged && paged.length">
+  <!-- <div class="models-output" *ngIf="paged && paged.length">
     <h2>Model predictions</h2>
     <div class="top-actions-container">
       <button mat-raised-button color="primary" (click)="downloadCSV()">Download</button>
@@ -61,5 +94,5 @@
     <mat-paginator [length]="displayData && displayData.length || 0" [pageSize]="pageSize" [pageIndex]="page"
       showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
     </mat-paginator>
-  </div>
+  </div> -->
 </div>

@@ -9,7 +9,6 @@ import sys
 import os
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import ImmutableMultiDict
-from consensus_model import getConsensusPredictions
 from rdkit import Chem
 from rdkit.Chem import Draw
 from rdkit.Chem.Draw import rdMolDraw2D
@@ -18,14 +17,12 @@ rdDepictor.SetPreferCoordGen(True)
 from rdkit.Chem.Draw import IPythonConsole
 import rdkit
 from flask import send_file
-import settings
-settings.init()
-import models
-models.init()
+from predictors.rlm.rlm_predictor import RLMPredictior
+from predictors.cypp450.cypp450_predictor import CYPP450redictior
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
-app.config["DEBUG"] = True
+app.config["DEBUG"] = False
 
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
@@ -35,50 +32,47 @@ root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
 @app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():
     response = {}
-
     smiles = request.args.get('smiles')
+    models = request.args.getlist('model')
+    base_models_error_message = 'We were not able to make predictions using the following model(s): '
+
+    morgan_fp_matrix = None
     
-    df = pd.DataFrame([[smiles]], columns=['mol'])
+    for model in models:
+        response[model] = {}
+        df = pd.DataFrame([[smiles]], columns=['mol'])
+        error_messages = []
 
-    columns_dict =  settings.columns_dict.copy()
-    columns_dict['mol'] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+        if model.lower() == 'rlm':
+            predictor = RLMPredictior(df, 0, morgan_fp_matrix)
+        elif model.lower() == 'cypp450':
+            predictor = CYPP450redictior(df, 0, morgan_fp_matrix)
+        
+        pred_df = predictor.get_predictions()
 
-    (
-        has_smi_errors,
-        has_rf_errors,
-        has_dnn_errors,
-        has_lstm_errors,
-        has_gcnn_errors,
-        pred_df
-    ) = getConsensusPredictions(df, 0)
-    error_messages = []
+        if morgan_fp_matrix is None:
+            morgan_fp_matrix = predictor.morgan_fp_matrix
+        
+        errors_dict = predictor.get_errors()
+        response[model]['hasErrors'] = predictor.has_errors
+        model_errors = errors_dict['model_errors']
 
-    response['hasErrors'] = has_smi_errors
+        if errors_dict['has_smi_errors']:
+            smi_error_message = 'We were not able to parse the structure you submitted'
+            error_messages.append(smi_error_message)
 
-    if has_smi_errors:
-        smi_error_message = 'We were not able to parse the structure you submitted'
-        error_messages.append(smi_error_message)
+        if len(model_errors) > 0:
+            error_message = base_models_error_message + model_errors.join(', ')
+            error_messages.append(error_message)
 
-    if has_rf_errors:
-        rf_error_message = 'We were not able to make predictions using the random forest model'
-        error_messages.append(rf_error_message)
+        response[model]['errorMessages'] = error_messages
+        response[model]['columns'] = list(pred_df.columns.values)
 
-    if has_dnn_errors:
-        dnn_error_message = 'We were not able to make predictions using the deep neural networ model'
-        error_messages.append(dnn_error_message)
-
-    if has_lstm_errors:
-        lstm_error_message = 'We were not able to make predictions using the long short term memory model'
-        error_messages.append(lstm_error_message)
-
-    if has_gcnn_errors:
-        gcnn_error_message = 'We were not able to make predictions for some of your molecules using the graph convolutional neural network model'
-        error_messages.append(gcnn_error_message)
-
-    response['errorMessages'] = error_messages
-    response['columns'] = list(pred_df.columns.values)
-    response['mainColumnsDict'] = columns_dict
-    response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+        columns_dict =  predictor.columns_dict()
+        dict_length = len(columns_dict.keys())
+        columns_dict['mol'] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+        response[model]['mainColumnsDict'] = columns_dict
+        response[model]['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
     return jsonify(response)
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
@@ -109,6 +103,10 @@ def upload_file():
         filename = secure_filename(file.filename)
         data = dict(request.form)
         indexIdentifierColumn = int(data['indexIdentifierColumn'])
+        models = data['models'].split(';')
+        base_models_error_message = 'We were not able to make predictions on some of your molecules using the following model(s): '
+
+        morgan_fp_matrix = None
 
         if data['hasHeaderRow'] == 'true':
             df = pd.read_csv(file, header=0, sep=data['columnSeparator'])
@@ -122,48 +120,42 @@ def upload_file():
                     column_name_mapper[column_name] = f'col_{column_name}'
             df.rename(columns=column_name_mapper, inplace=True)
 
-        columns_dict =  settings.columns_dict.copy()
-        smi_column_name = df.columns.values[indexIdentifierColumn]
-        columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+        for model in models:
+            response[model] = {}
+            error_messages = []
 
-        (
-            has_smi_errors,
-		    has_rf_errors,
-		    has_dnn_errors,
-		    has_lstm_errors,
-		    has_gcnn_errors,
-            pred_df
-        ) = getConsensusPredictions(df, indexIdentifierColumn)
+            if model.lower() == 'rlm':
+                predictor = RLMPredictior(df, indexIdentifierColumn, morgan_fp_matrix)
+            elif model.lower() == 'cypp450':
+                predictor = CYPP450redictior(df, indexIdentifierColumn, morgan_fp_matrix)
 
-        error_messages = []
+            pred_df = predictor.get_predictions()
 
-        response['hasErrors'] = has_smi_errors
-        print(response['hasErrors'], file=sys.stdout)
-        if has_smi_errors:
-            smi_error_message = 'We were not able to parse some smiles'
-            error_messages.append(smi_error_message)
+            if morgan_fp_matrix is None:
+                morgan_fp_matrix = predictor.morgan_fp_matrix
+            
+            errors_dict = predictor.get_errors()
+            response[model]['hasErrors'] = predictor.has_errors
+            model_errors = errors_dict['model_errors']
+    
+            if errors_dict['has_smi_errors']:
+                smi_error_message = 'We were not able to parse some of the structure you submitted'
+                error_messages.append(smi_error_message)
 
-        if has_rf_errors:
-            rf_error_message = 'We were not able to make predictions for some of your molecules using the random forest model'
-            error_messages.append(rf_error_message)
+            if len(model_errors) > 0:
+                error_message = base_models_error_message + model_errors.join(', ')
+                error_messages.append(error_message)
 
-        if has_dnn_errors:
-            dnn_error_message = 'We were not able to make predictions for some of your molecules using the deep neural networ model'
-            error_messages.append(dnn_error_message)
+            response[model]['errorMessages'] = error_messages
+            response[model]['columns'] = list(pred_df.columns.values)
 
-        if has_lstm_errors:
-            lstm_error_message = 'We were not able to make predictions for some of your molecules using the long short term memory model'
-            error_messages.append(lstm_error_message)
+            columns_dict =  predictor.columns_dict()
+            dict_length = len(columns_dict.keys())
+            smi_column_name = df.columns.values[indexIdentifierColumn]
+            columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+            response[model]['mainColumnsDict'] = columns_dict
+            response[model]['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
 
-        if has_gcnn_errors:
-            gcnn_error_message = 'We were not able to make predictions for some of your molecules using the graph convolutional neural network model'
-            error_messages.append(gcnn_error_message)
-
-        response['errorMessages'] = error_messages
-        response['columns'] = list(pred_df.columns.values)
-        response['mainColumnsDict'] = columns_dict
-        response['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
-        pred_df.replace(np.nan, '', regex=True).to_json('test.json', orient='records')
         return jsonify(response)
     else:
         response['hasErrors'] = True
