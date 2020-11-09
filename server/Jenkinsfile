@@ -90,7 +90,8 @@ pipeline {
             }
             steps {
                 configFileProvider([
-                   configFile(fileId: 'adme-dev-compose', targetLocation: 'docker-compose.yml')     
+                   configFile(fileId: 'adme-dev-compose', targetLocation: 'docker-compose.yml'),
+                   configFile(fileId: 'config.json', targetLocation: 'config.json') 
                 ]) {
                    script {
                         def docker = new org.labshare.Docker()
