@@ -8,19 +8,31 @@ import { ContactComponent } from './contact/contact.component';
 const routes: Routes = [
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    data: {
+      pageTitle: 'home'
+    }
   },
   {
     path: 'predictions',
-    component: PredictionsComponent
+    component: PredictionsComponent,
+    data: {
+      pageTitle: 'predictions'
+    }
   },
   {
     path: 'method',
-    component: MethodComponent
+    component: MethodComponent,
+    data: {
+      pageTitle: 'model'
+    }
   },
   {
     path: 'contact',
-    component: ContactComponent
+    component: ContactComponent,
+    data: {
+      pageTitle: 'contact'
+    }
   },
   {
     path: '**',
