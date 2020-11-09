@@ -14,6 +14,8 @@ from ..features.rdkit_descriptors import RDKitDescriptorsGenerator
 from ..cypp450 import cypp450_models_dict
 import time
 from tqdm import tqdm
+import multiprocessing as mp
+from copy import deepcopy
 
 class CYPP450redictior:
     """
@@ -140,6 +142,12 @@ class CYPP450redictior:
                 probs_matrix[model_number, :probs.shape[0]] = probs.T[1]
                 if model_has_error == False and len(self.predictions_df.index) > len(probs):
                     model_has_error = True
+
+            # pool = mp.Pool()
+            # probs_matrix = np.ma.array([pool.apply(self._predict_rf, args=(deepcopy(cypp450_models_dict[model_name][f'model_{model_number}']), features.copy())) for model_number in range(0, 64)])
+            # pool.close()
+            # pool.terminate()
+            # probs_matrix.mask = True
 
             mean_probs = probs_matrix.mean(axis=0)
 
