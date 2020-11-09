@@ -21,16 +21,10 @@ cypp450_models_dict = {
     'CYP3A4_subs': {}
 }
 
-# temp_dir = tempfile.TemporaryDirectory()
-# base_url = 'https://tripod.nih.gov/pub/adme/models/CYPP450/'
-# temp_dir_path = temp_dir.name
-
-# try:
-    # print(f'{temp_dir_path}', file=sys.stdout)
-    # print(f'unzipping CYPP450 models', file=sys.stdout)
-    # with zipfile.ZipFile(f'./models/CYPP450.zip', 'r') as zip_ref:
-    #     zip_ref.extractall(temp_dir_path)
-    # print(f'finished unzipping CYPP450 models', file=sys.stdout)
+# for model_name in cypp450_models_dict.keys():
+#     for model_number in range(0, 64):
+#         model_path = os.path.join(os.getcwd(), f'models/CYPP450/{model_name}/model_{model_number}')
+#         cypp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(open(model_path, 'rb'))
 
 def download_file(base_url, model_name, model_number, models_dict):
     cypp450_rf_pkl_url = f'{base_url}/{model_name}/model_{model_number}'
@@ -44,8 +38,6 @@ def download_file(base_url, model_name, model_number, models_dict):
     ) as fout:
         for chunk in cypp450_rf_pkl_file_request.iter_content(chunk_size=4096):
             fout.write(chunk)
-    # model_path = os.path.join(os.getcwd(), f'{temp_dir_path}/CYPP450/{model_name}/model_{model_number}')
-    # cypp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(open(model_path, 'rb'))
     models_dict[model_name][f'model_{model_number}'] = pickle.load(BytesIO(cypp450_rf_pkl_file_request.content))
 
 processes = []
@@ -58,6 +50,3 @@ with ThreadPoolExecutor() as executor:
     
         
 print(f'Finished loading CYPP450 model files', file=sys.stdout)
-    # shutil.rmtree(temp_dir_path, ignore_errors=True)
-# except:
-    # shutil.rmtree(temp_dir_path, ignore_errors=True)

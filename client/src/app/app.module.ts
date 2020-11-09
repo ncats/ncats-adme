@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
@@ -32,6 +32,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
 import { ContactComponent } from './contact/contact.component';
 import { PredictionsTableComponent } from './predictions-table/predictions-table.component';
+import { ConfigService } from './config/config.service';
+import { configServiceFactory } from './config/config.factory';
 
 @NgModule({
   declarations: [
@@ -75,7 +77,15 @@ import { PredictionsTableComponent } from './predictions-table/predictions-table
   entryComponents: [
     StructureImageDialogComponent
   ],
-  providers: [],
+  providers: [
+    ConfigService,
+    {
+        provide: APP_INITIALIZER,
+        useFactory: configServiceFactory,
+        deps: [ConfigService],
+        multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
