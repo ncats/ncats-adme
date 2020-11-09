@@ -93,6 +93,9 @@ pipeline {
                    configFile(fileId: 'adme-dev-compose', targetLocation: 'docker-compose.yml'),
                    configFile(fileId: 'config.json', targetLocation: 'config.json') 
                 ]) {
+                   sh  """  
+                       chmod 755 config.json
+                   """
                    script {
                         def docker = new org.labshare.Docker()
                         docker.deployDockerUI()
