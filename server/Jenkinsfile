@@ -2,6 +2,7 @@ pipeline {
     options {
         timestamps()
         skipDefaultCheckout true
+        disableConcurrentBuilds()
     }
     parameters {
         string(name: 'BUILD_VERSION', defaultValue: '', description: 'The build version to deploy (optional)')
