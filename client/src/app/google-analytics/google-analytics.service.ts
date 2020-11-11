@@ -10,6 +10,7 @@ import { GAPageView, GAEvent, GAException } from './google-analytics.model';
 export class GoogleAnalyticsService {
   private googleAnanlyticsId: string;
   private isActive = false;
+  private gtag: any;
 
   constructor(
     public configService: ConfigService,
@@ -25,16 +26,8 @@ export class GoogleAnalyticsService {
   }
 
   init() {
-    const a = document.createElement('script');
-    const m = document.getElementsByTagName('script')[0];
-    a.async = true;
-    a.src = `https://www.googletagmanager.com/gtag/js?id=${this.googleAnanlyticsId}`;
-    m.parentNode.insertBefore(a, m);
-
-    window['dataLayer'] = window['dataLayer'] || [];
-    window['gtag'] = () => { window['dataLayer'].push(arguments); };
-    window['gtag']('js', new Date());
-    window['gtag']('config', this.googleAnanlyticsId, { send_page_view: false });
+    this.gtag = window['gtag'];
+    this.gtag('config', 'G-RM2JHGHYEK', { send_page_view: false });
     this.isActive = true;
   }
 
@@ -51,8 +44,8 @@ export class GoogleAnalyticsService {
         page_title: title,
         page_path: path
       };
-
-      window['gtag']('config', this.googleAnanlyticsId, sendFields);
+      console.log(this.gtag);
+      this.gtag('config', this.googleAnanlyticsId, sendFields);
     }
   }
 
@@ -64,7 +57,7 @@ export class GoogleAnalyticsService {
         event_label: eventLabel,
         value: eventValue
       };
-      window['gtag']('event', eventAction, sendFields);
+      this.gtag('event', eventAction, sendFields);
     }
   }
 
@@ -75,7 +68,7 @@ export class GoogleAnalyticsService {
         fatal: exFatal
       };
 
-      window['gtag']('event', 'exception', sendFields);
+      this.gtag('event', 'exception', sendFields);
     }
   }
 }
