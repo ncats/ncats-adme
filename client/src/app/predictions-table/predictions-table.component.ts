@@ -4,6 +4,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { Sort } from '@angular/material/sort';
 import { StructureImageDialogComponent } from '../structure-image-dialog/structure-image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { GoogleAnalyticsService } from '../google-analytics/google-analytics.service';
 
 @Component({
   selector: 'adme-predictions-table',
@@ -24,9 +25,11 @@ export class PredictionsTableComponent implements OnInit {
   errorMessage: string;
   errorMessages: Array<string> = [];
   @Output() download: EventEmitter<DownloadEvent> = new EventEmitter<DownloadEvent>();
+  @Input() model: string;
 
   constructor(
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private gaService: GoogleAnalyticsService
   ) { }
 
   ngOnInit(): void {
@@ -63,7 +66,13 @@ export class PredictionsTableComponent implements OnInit {
   pageChange(pageEvent?: PageEvent): void {
     this.clearErrorMessage();
     if (pageEvent != null) {
+      if (pageEvent.pageIndex !== this.page) {
+        this.gaService.sendEvent('click:button', 'page-change', `predictions:${this.model}`);
+      }
       this.page = pageEvent.pageIndex;
+      if (pageEvent.pageSize !== this.pageSize) {
+        this.gaService.sendEvent('click:select', 'page-size-change', `predictions:${this.model}`);
+      }
       this.pageSize = pageEvent.pageSize;
     } else {
       this.page = 0;
@@ -118,6 +127,7 @@ export class PredictionsTableComponent implements OnInit {
   }
 
   downloadCSV(): void {
+    this.gaService.sendEvent('click:button', 'download', `predictions:${this.model}`);
     this.download.emit({
       data: this.data,
       allColumns: this.allColumns

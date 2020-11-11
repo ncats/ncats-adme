@@ -5,6 +5,8 @@ import { environment } from '../../environments/environment';
 import { FileForm } from '../text-file/file-form.model';
 import { LoadingService } from '../loading/loading.service';
 import { DownloadEvent, PredictionsData } from '../predictions-table/predictions.model';
+import { GoogleAnalyticsService } from '../google-analytics/google-analytics.service';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 @Component({
   selector: 'adme-predictions',
@@ -30,7 +32,8 @@ export class PredictionsComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private gaService: GoogleAnalyticsService
   ) {
   }
 
@@ -39,6 +42,7 @@ export class PredictionsComponent implements OnInit {
   }
 
   processSketcherInput(smiles: string): void {
+    this.gaService.sendEvent('click:button', 'predict', 'sketcher');
     this.clearErrorMessage();
     this.loadingService.setLoadingState(true);
     this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
@@ -58,6 +62,7 @@ export class PredictionsComponent implements OnInit {
   }
 
   processFile(fileForm: FileForm): void {
+    this.gaService.sendEvent('click:button', 'predict', 'file');
     this.clearErrorMessage();
     this.loadingService.setLoadingState(true);
     const formData = new FormData();
@@ -105,5 +110,9 @@ export class PredictionsComponent implements OnInit {
     this.link.href = window.URL.createObjectURL(this.file);
     this.link.click();
     // window.open(url);
+  }
+
+  selectedTabChange(event: MatTabChangeEvent, category?: string): void {
+    this.gaService.sendEvent('click:tab', category, event.tab.textLabel);
   }
 }

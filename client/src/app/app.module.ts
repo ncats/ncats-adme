@@ -34,6 +34,7 @@ import { ContactComponent } from './contact/contact.component';
 import { PredictionsTableComponent } from './predictions-table/predictions-table.component';
 import { ConfigService } from './config/config.service';
 import { configServiceFactory } from './config/config.factory';
+import { TrackLinkEventDirective } from './google-analytics/track-link-event/track-link-event.directive';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { configServiceFactory } from './config/config.factory';
     StructureImageDirective,
     StructureImageDialogComponent,
     ContactComponent,
-    PredictionsTableComponent
+    PredictionsTableComponent,
+    TrackLinkEventDirective
   ],
   imports: [
     BrowserModule,

@@ -1,15 +1,18 @@
 export type HitType = 'pageview' | 'screenview' | 'event' | 'transaction' | 'item' | 'social' | 'exception' | 'timing';
 
-export interface SendFields {
-    hitType?: HitType;
-    page?: string;
-    title?: string;
-    sessionControl?: 'start' | 'end';
-    eventCategory?: string;
-    eventAction?: string;
-    eventLabel?: string;
-    eventValue?: number;
-    exDescription?: string;
-    exFatal?: boolean;
-    viewportSize?: string;
+export interface GAPageView {
+    page_title: string;
+    page_location?: string;
+    page_path?: string;
+}
+
+export interface GAEvent {
+    event_category?: string;
+    event_label?: string;
+    value?: number;
+}
+
+export interface GAException {
+    description: string;
+    fatal?: boolean;
 }
