@@ -17,6 +17,6 @@ export class TrackLinkEventDirective {
   @HostListener('click', ['$event.target'])
   onClick(element: HTMLAnchorElement) {
     this.evLabel = element.href;
-    this.gaService.sendEvent(this.evCategory, this.evAction, this.evLabel, this.evValue);
+    this.gaService.sendEvent(this.evAction, this.evCategory, this.evLabel, this.evValue);
   }
 }

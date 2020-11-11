@@ -1,15 +1,16 @@
 import { Injectable, PLATFORM_ID, Inject, HostListener } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ConfigService } from '../config/config.service';
-import { SendFields } from './google-analytics.model';
+import { GAPageView, GAEvent, GAException } from './google-analytics.model';
 
 @Injectable({
   providedIn: 'root'
 })
+// tslint:disable:no-string-literal
 export class GoogleAnalyticsService {
   private googleAnanlyticsId: string;
-  private analyticsObjectKey: string;
   private isActive = false;
+  private gtag: any;
 
   constructor(
     public configService: ConfigService,
@@ -25,34 +26,9 @@ export class GoogleAnalyticsService {
   }
 
   init() {
-
-    let analyticsObjectKey;
-
-    this.analyticsObjectKey = analyticsObjectKey = Math.random().toString(36).replace('0.', '');
-
-    // tslint:disable-next-line:no-string-literal
-    window['GoogleAnalyticsObject'] = this.analyticsObjectKey;
-
-    window[this.analyticsObjectKey] = window[this.analyticsObjectKey] || (() => {
-      // tslint:disable-next-line:no-string-literal
-      (window[analyticsObjectKey]['q'] = window[analyticsObjectKey] && window[analyticsObjectKey]['q'] || []).push(arguments);
-    });
-
-    window[this.analyticsObjectKey].l = + new Date();
-
-    window[this.analyticsObjectKey]('create', this.googleAnanlyticsId, { cookieName: 'admeCookie' });
-    window[this.analyticsObjectKey]('set', 'screenResolution', `${window.screen.availWidth}x${window.screen.availHeight}`);
-
-    window[this.analyticsObjectKey]('set', 'hostname', window.location.hostname);
-
+    this.gtag = window['gtag'];
+    this.gtag('config', 'G-RM2JHGHYEK', { send_page_view: false });
     this.isActive = true;
-
-    const node = document.createElement('script');
-    node.src = 'https://www.google-analytics.com/analytics.js';
-    node.type = 'text/javascript';
-    node.async = true;
-    // node.charset = 'utf-8';
-    document.getElementsByTagName('head')[0].appendChild(node);
   }
 
   @HostListener('window:error', ['$event'])
@@ -61,48 +37,38 @@ export class GoogleAnalyticsService {
     this.sendException(errorDescription);
   }
 
-  sendPageView(title?: string, path?: string): void {
+  sendPageView(title?: string, path: string = location.href): void {
     if (this.isActive) {
-      if (path == null && title != null) {
-        path = `/${title.replace(/ /g, '-').toLowerCase()}`;
-      }
 
-      const sendFields: SendFields = {
-        hitType: 'pageview',
-        title,
-        page: path,
-        viewportSize: `${window.innerHeight}x${window.innerWidth}`
+      const sendFields: GAPageView = {
+        page_title: title,
+        page_path: path
       };
-      window[this.analyticsObjectKey]('send', sendFields);
+      console.log(this.gtag);
+      this.gtag('config', this.googleAnanlyticsId, sendFields);
     }
   }
 
-  sendEvent(eventCategory?: string, eventAction?: string, eventLabel?: string, eventValue?: number): void {
+  sendEvent(eventAction: string, eventCategory?: string, eventLabel?: string, eventValue?: number): void {
 
     if (this.isActive) {
-      const sendFields: SendFields = {
-        hitType: 'event',
-        eventCategory,
-        eventAction,
-        eventLabel,
-        eventValue,
-        viewportSize: `${window.innerHeight}x${window.innerWidth}`
+      const sendFields: GAEvent = {
+        event_category: eventCategory,
+        event_label: eventLabel,
+        value: eventValue
       };
-
-      window[this.analyticsObjectKey]('send', sendFields);
+      this.gtag('event', eventAction, sendFields);
     }
   }
 
   sendException(exDescription: string, exFatal: boolean = false): void {
     if (this.isActive) {
-      const sendFields: SendFields = {
-        hitType: 'exception',
-        exDescription,
-        exFatal,
-        viewportSize: `${window.innerHeight}x${window.innerWidth}`
+      const sendFields: GAException = {
+        description: exDescription,
+        fatal: exFatal
       };
 
-      window[this.analyticsObjectKey]('send', sendFields);
+      this.gtag('event', 'exception', sendFields);
     }
   }
 }

@@ -1,6 +1,6 @@
 <div class="content-container">
   <div class="molecule-input">
-    <mat-tab-group>
+    <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:input-type')">
       <mat-tab label="Sketcher">
         <div class="tab-body">
           <adme-sketcher (moleculeInput)="processSketcherInput($event)"></adme-sketcher>
@@ -21,10 +21,10 @@
           </div>
         </div>
         <div *ngIf="sketcherData">
-          <mat-tab-group>
+          <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
             <mat-tab *ngFor="let model of models" [label]="model">
               <div>
-                <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" (download)="downloadCSV($event)"></adme-predictions-table>
+                <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>
             </mat-tab>
           </mat-tab-group>
@@ -51,10 +51,10 @@
           </div>
         </div>
         <div *ngIf="fileData">
-          <mat-tab-group>
+          <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
             <mat-tab *ngFor="let model of models" [label]="model">
               <div>
-                <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" (download)="downloadCSV($event)"></adme-predictions-table>
+                <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>
             </mat-tab>
           </mat-tab-group>
