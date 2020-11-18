@@ -21,7 +21,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'method',
+    path: 'models/:model',
     component: MethodComponent,
     data: {
       pageTitle: 'model'

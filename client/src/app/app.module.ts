@@ -35,6 +35,7 @@ import { PredictionsTableComponent } from './predictions-table/predictions-table
 import { ConfigService } from './config/config.service';
 import { configServiceFactory } from './config/config.factory';
 import { TrackLinkEventDirective } from './google-analytics/track-link-event/track-link-event.directive';
+import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { TrackLinkEventDirective } from './google-analytics/track-link-event/tra
     MatDialogModule,
     MatSortModule,
     MatTooltipModule,
-    MatIconModule
+    MatIconModule,
+    MatMenuModule
   ],
   entryComponents: [
     StructureImageDialogComponent
