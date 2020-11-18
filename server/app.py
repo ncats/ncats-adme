@@ -18,7 +18,7 @@ from rdkit.Chem.Draw import IPythonConsole
 import rdkit
 from flask import send_file
 from predictors.rlm.rlm_predictor import RLMPredictior
-from predictors.cypp450.cypp450_predictor import CYPP450redictior
+from predictors.cyp450.cyp450_predictor import CYP450redictior
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -45,8 +45,8 @@ def predict():
 
         if model.lower() == 'rlm':
             predictor = RLMPredictior(df, 0, morgan_fp_matrix)
-        elif model.lower() == 'cypp450':
-            predictor = CYPP450redictior(df, 0, morgan_fp_matrix)
+        elif model.lower() == 'cyp450':
+            predictor = CYP450redictior(df, 0, morgan_fp_matrix)
         
         pred_df = predictor.get_predictions()
 
@@ -126,8 +126,8 @@ def upload_file():
 
             if model.lower() == 'rlm':
                 predictor = RLMPredictior(df, indexIdentifierColumn, morgan_fp_matrix)
-            elif model.lower() == 'cypp450':
-                predictor = CYPP450redictior(df, indexIdentifierColumn, morgan_fp_matrix)
+            elif model.lower() == 'cyp450':
+                predictor = CYP450redictior(df, indexIdentifierColumn, morgan_fp_matrix)
 
             pred_df = predictor.get_predictions()
 

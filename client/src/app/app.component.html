@@ -3,7 +3,11 @@
   <a class="title" routerLink="/home">ADME @ NCATS</a>
   <div class="navigation">
     <a class="nav-item" routerLink="/predictions">Predict</a>
-    <a class="nav-item" routerLink="/method">Model</a>
+    <a class="nav-item" [matMenuTriggerFor]="navMenu" >Models</a>
+    <mat-menu #navMenu="matMenu">
+      <button mat-menu-item routerLink="/models/rlm">RLM</button>
+      <button mat-menu-item routerLink="/models/cyp450">CYP450</button>
+    </mat-menu>
     <a class="nav-item" routerLink="/contact">Contact</a>
   </div>
   <span class="fill-middle"></span>

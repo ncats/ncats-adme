@@ -7,7 +7,7 @@ setup(
     author_email='jorge.neyra@nih.gov, vishalbabu.siramshetty@nih.gov, sankalp.jain@nih.gov',
     packages=find_namespace_packages(include=[
         'rlm.*',
-        'cypp450.*'
+        'cyp450.*'
         'features.*'
         'utilities.*'
     ]),
