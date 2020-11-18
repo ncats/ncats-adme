@@ -11,13 +11,13 @@ from ..features.morgan_fp import MorganFPGenerator
 from ..utilities.processors import get_processed_smi
 from rdkit import Chem
 from ..features.rdkit_descriptors import RDKitDescriptorsGenerator
-from ..cypp450 import cypp450_models_dict
+from ..cyp450 import cyp450_models_dict
 import time
 from tqdm import tqdm
 import multiprocessing as mp
 from copy import deepcopy
 
-class CYPP450redictior:
+class CYP450redictior:
     """
     Makes RLM stability preditions
 
@@ -45,17 +45,17 @@ class CYPP450redictior:
         },
         'CYP2D6_subs': {
             'order': 4,
-            'description': 'CYPP450 CYP2D6 substrate',
+            'description': 'CYP450 CYP2D6 substrate',
             'isSmilesColumn': False
         },
         'CYP3A4_inhib': {
             'order': 5,
-            'description': 'CYPP450 CYP3A4 inhibitor',
+            'description': 'CYP450 CYP3A4 inhibitor',
             'isSmilesColumn': False
         },
         'CYP3A4_subs': {
             'order': 6,
-            'description': 'CYPP450 CYP3A4 substrate',
+            'description': 'CYP450 CYP3A4 substrate',
             'isSmilesColumn': False
         }
     }
@@ -129,7 +129,7 @@ class CYPP450redictior:
 
         start = time.time()
 
-        for model_name in tqdm(cypp450_models_dict.keys()):
+        for model_name in tqdm(cyp450_models_dict.keys()):
 
             model_has_error = False
 
@@ -138,13 +138,13 @@ class CYPP450redictior:
             probs_matrix.mask = True
 
             for model_number in tqdm(range(0, 64)):
-                probs = cypp450_models_dict[model_name][f'model_{model_number}'].predict_proba(features)
+                probs = cyp450_models_dict[model_name][f'model_{model_number}'].predict_proba(features)
                 probs_matrix[model_number, :probs.shape[0]] = probs.T[1]
                 if model_has_error == False and len(self.predictions_df.index) > len(probs):
                     model_has_error = True
 
             # pool = mp.Pool()
-            # probs_matrix = np.ma.array([pool.apply(self._predict_rf, args=(deepcopy(cypp450_models_dict[model_name][f'model_{model_number}']), features.copy())) for model_number in range(0, 64)])
+            # probs_matrix = np.ma.array([pool.apply(self._predict_rf, args=(deepcopy(cyp450_models_dict[model_name][f'model_{model_number}']), features.copy())) for model_number in range(0, 64)])
             # pool.close()
             # pool.terminate()
             # probs_matrix.mask = True
@@ -162,7 +162,7 @@ class CYPP450redictior:
             )
 
         end = time.time()
-        print(f'{end - start} seconds to CYPP450 predict {len(self.predictions_df.index)} molecules')
+        print(f'{end - start} seconds to CYP450 predict {len(self.predictions_df.index)} molecules')
 
         self.predictions_df.drop([self._mol_column_name], axis=1, inplace=True)
 
