@@ -9,7 +9,7 @@ RUN conda env create -f environment.yml
 RUN chmod +x startup.sh
 
 # Make RUN commands use the new environment:
-SHELL ["conda", "run", "-n", "ncats-adme", "/bin/bash", "-c"]
+#SHELL ["conda", "run", "-n", "ncats-adme", "/bin/bash", "-c"]
 
 # Make sure the environment is activated:
 RUN echo "Make sure flask is installed:"
