@@ -15,6 +15,6 @@ SHELL ["conda", "run", "-n", "ncats-adme", "/bin/bash", "-c"]
 RUN echo "Make sure flask is installed:"
 RUN python -c "import flask"
 
-ENTRYPOINT ["conda", "run", "-n", "ncats-adme", "/bin/bash", "startup.sh"]
+#ENTRYPOINT ["conda", "run", "-n", "ncats-adme", "/bin/bash", "startup.sh"]
 
 EXPOSE 5000
