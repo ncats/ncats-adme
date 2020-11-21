@@ -15,6 +15,6 @@ RUN chmod +x startup.sh
 #RUN echo "Make sure flask is installed:"
 #RUN python -c "import flask"
 
-CMD /bin/bash start.sh
+CMD /bin/bash startup.sh
 
 EXPOSE 5000
