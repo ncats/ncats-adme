@@ -12,8 +12,8 @@ RUN chmod +x startup.sh
 #SHELL ["conda", "run", "-n", "ncats-adme", "/bin/bash", "-c"]
 
 # Make sure the environment is activated:
-RUN echo "Make sure flask is installed:"
-RUN python -c "import flask"
+#RUN echo "Make sure flask is installed:"
+#RUN python -c "import flask"
 
 ENV PATH /opt/conda/envs/ncats-adme/bin:$PATH
 
