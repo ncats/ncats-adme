@@ -17,7 +17,6 @@ from chemprop.train import predict
 from rdkit.Chem import PandasTools
 import random
 import string
-import settings
 from rdkit.Chem.rdchem import Mol
 from numpy import array
 from typing import Tuple
@@ -138,7 +137,6 @@ class RLMPredictior:
         Returns:
             Predictions (DataFrame): DataFrame with all predictions
         """
-
         if len(self.predictions_df.index) > 0:
 
             start = time.time()
@@ -170,7 +168,6 @@ class RLMPredictior:
             )
 
         self.predictions_df.drop([self._mol_column_name], axis=1, inplace=True)
-
         return self.df.merge(self.predictions_df, on=self._smi_column_name, how='left')
 
     def rf_predict(self) -> Tuple[array, array]:
