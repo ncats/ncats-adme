@@ -46,7 +46,7 @@ def download_file(base_url, model_name, model_number, models_dict):
         cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(cyp450_rf_pkl_file)
         
 def load_models(cyp450_models_dict):
-    processes = []
+    # processes = []
     with ThreadPoolExecutor() as executor:
         base_url = 'https://tripod.nih.gov/pub/adme/models/CYPP450/'
         print(f'Loading CYP450 random forest models', file=sys.stdout)
