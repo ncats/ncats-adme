@@ -17,7 +17,7 @@ from tqdm import tqdm
 import multiprocessing as mp
 from copy import deepcopy
 
-class CYP450redictior:
+class CYP450Predictor:
     """
     Makes RLM stability preditions
 
