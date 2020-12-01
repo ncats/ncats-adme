@@ -1,6 +1,3 @@
-[submodule "client/ketcher"]
-	path = client/ketcher
-	url = git@github.com:epam/ketcher.git
 [submodule "server/chemprop"]
 	path = server/predictors/chemprop
 	url = git@github.com:chemprop/chemprop.git
