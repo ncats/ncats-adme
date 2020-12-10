@@ -16,7 +16,10 @@ import time
 from tqdm import tqdm
 import multiprocessing as mp
 from copy import deepcopy
+import multiprocessing
 from multiprocessing import Process, Pipe
+from multiprocessing import Pool
+import os
 
 class CYP450Predictor:
     """
@@ -133,41 +136,46 @@ class CYP450Predictor:
         processes_dict = {}
         conns_dict = {}
 
-        for model_name in tqdm(cyp450_models_dict.keys()):
+        if multiprocessing.cpu_count() > 1:
+            processes = multiprocessing.cpu_count() - 1
+        else:
+            processes = 1
 
-            parent_conn, child_conn = Pipe()
+        with Pool(processes=processes) as pool:
 
-            conns_dict[model_name] = parent_conn
+            for model_name in cyp450_models_dict.keys():
 
-            params_dict = {
-                "model_name": model_name,
-                "features": features,
-                "error_threshold_length": len(self.predictions_df.index)
-            }
+                parent_conn, child_conn = Pipe()
 
-            processes_dict[model_name] = Process(target=self._get_model_predictions, args=(child_conn,))
-            parent_conn.send(params_dict)
+                conns_dict[model_name] = parent_conn
 
-        for model_name in processes_dict:
-            processes_dict[model_name].start()
+                params_dict = {
+                    "model_name": model_name,
+                    "features": features,
+                    "error_threshold_length": len(self.predictions_df.index)
+                }
 
-        for model_name in processes_dict:
-            response_dict = conns_dict[model_name].recv()
-            model_has_error = response_dict["model_has_error"]
-            mean_probs = response_dict["mean_probs"]
+                parent_conn.send(params_dict)
+                processes_dict[model_name] = pool.apply_async(self._get_model_predictions, args=(child_conn,))
 
-            if model_has_error:
-                self.model_errors.append(self._columns_dict[model_name]['description'])
+            for model_name in processes_dict:
+                processes_dict[model_name].wait()
 
-            self.predictions_df[f'{model_name}'] = pd.Series(
-                pd.Series(np.where(mean_probs>=0.5, 1, 0)).round(2).astype(str)
-                +' ('
-                +pd.Series(mean_probs).round(2).astype(str)
-                +')'
-            )
-            conns_dict[model_name].close()
-            processes_dict[model_name].join()
-            processes_dict[model_name].close()
+            for model_name in processes_dict:
+                response_dict = conns_dict[model_name].recv()
+                model_has_error = response_dict["model_has_error"]
+                mean_probs = response_dict["mean_probs"]
+
+                if model_has_error:
+                    self.model_errors.append(self._columns_dict[model_name]['description'])
+
+                self.predictions_df[f'{model_name}'] = pd.Series(
+                    pd.Series(np.where(mean_probs>=0.5, 1, 0)).round(2).astype(str)
+                    +' ('
+                    +pd.Series(mean_probs).round(2).astype(str)
+                    +')'
+                )
+                conns_dict[model_name].close()
 
         end = time.time()
         print(f'{end - start} seconds to CYP450 predict {len(self.predictions_df.index)} molecules')
