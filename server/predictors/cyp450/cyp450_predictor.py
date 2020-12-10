@@ -1,3 +1,4 @@
+import os
 import random
 import string
 import pandas as pd
@@ -14,12 +15,11 @@ from ..features.rdkit_descriptors import RDKitDescriptorsGenerator
 from ..cyp450 import cyp450_models_dict
 import time
 from tqdm import tqdm
-import multiprocessing as mp
 from copy import deepcopy
 import multiprocessing
-from multiprocessing import Process, Pipe
-from multiprocessing import Pool
-import os
+# from multiprocessing import Pipe, Pool
+# import multiprocessing as mp
+mp = multiprocessing.get_context('forkserver')
 
 class CYP450Predictor:
     """
@@ -141,11 +141,11 @@ class CYP450Predictor:
         else:
             processes = 1
 
-        with Pool(processes=processes) as pool:
+        with mp.Pool(processes=processes) as pool:
 
             for model_name in cyp450_models_dict.keys():
 
-                parent_conn, child_conn = Pipe()
+                parent_conn, child_conn = mp.Pipe()
 
                 conns_dict[model_name] = parent_conn
 
