@@ -16,8 +16,6 @@ from ..cyp450 import cyp450_models_dict
 import time
 from tqdm import tqdm
 from copy import deepcopy
-from multiprocessing import set_start_method
-set_start_method('forkserver', force=True)
 import multiprocessing as mp
 import platform
 # if platform.system() == 'Linux' and 'Microsoft' not in platform.uname().release:
