@@ -17,11 +17,10 @@ import time
 from tqdm import tqdm
 from copy import deepcopy
 import multiprocessing
-from multiprocessing import set_start_method
 import multiprocessing as mp
 import platform
-if platform.system() == 'Linux' and 'Microsoft' not in platform.uname().release:
-    set_start_method('forkserver')
+# if platform.system() == 'Linux' and 'Microsoft' not in platform.uname().release:
+#     set_start_method('forkserver')
     #mp = multiprocessing.get_context('forkserver')
 # else:
 #     import multiprocessing as mp

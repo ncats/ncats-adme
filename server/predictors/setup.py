@@ -1,4 +1,6 @@
 from setuptools import setup, find_namespace_packages
+from multiprocessing import set_start_method
+set_start_method('forkserver')
 
 setup(
     name='ncats-adme-predictors',
