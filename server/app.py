@@ -184,6 +184,4 @@ def return_index(path):
     return app.send_static_file('index.html')
 
 if __name__ == "__main__":
-    from multiprocessing import set_start_method
-    set_start_method('forkserver')
     app.run()
