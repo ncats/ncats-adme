@@ -40,28 +40,32 @@ def download_file(base_url, model_name, model_number, models_dict):
     ) as fout:
         for chunk in cyp450_rf_pkl_file_request.iter_content(chunk_size=4096):
             fout.write(chunk)
-    with open(cyp450_model_path, 'wb') as cyp450_rf_pkl_file:
-        cyp450_rf_pkl_file.write(cyp450_rf_pkl_file_request.content)
-    with open(cyp450_model_path, 'rb') as cyp450_rf_pkl_file:
-        cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(cyp450_rf_pkl_file)
+    with open(cyp450_model_path, 'wb') as cyp450_rf_pkl_file_writer:
+        cyp450_rf_pkl_file_writer.write(cyp450_rf_pkl_file_request.content)
+
+    cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(BytesIO(cyp450_rf_pkl_file_request.content))
+    # with open(cyp450_model_path, 'r') as cyp450_rf_pkl_file_reader:
+    #     print(model_name)
+    #     print(model_number)
+    #     cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(cyp450_rf_pkl_file_reader)
         
 def load_models(cyp450_models_dict):
     # processes = []
-    with ThreadPoolExecutor() as executor:
-        base_url = 'https://tripod.nih.gov/pub/adme/models/CYPP450/'
-        print(f'Loading CYP450 random forest models', file=sys.stdout)
-        for model_name in tqdm(cyp450_models_dict.keys()):
-        # for model_name in cyp450_models_dict.keys():
-            for model_number in tqdm(range(0, 64)):
-            # for model_number in range(0, 64):
-                cyp450_model_path = f'./models/CYP450/{model_name}/model_{model_number}'
-                if path.exists(cyp450_model_path):
-                    with open(cyp450_model_path, 'rb') as pkl_file:
-                        cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(pkl_file)
-                else:
-                    os.makedirs(f'./models/CYP450/{model_name}', exist_ok=True)
-                    # processes.append(executor.submit(download_file, base_url, model_name, model_number, cyp450_models_dict))
-                    download_file(base_url, model_name, model_number, cyp450_models_dict)
+    #with ThreadPoolExecutor() as executor:
+    base_url = 'https://tripod.nih.gov/pub/adme/models/CYPP450/'
+    print(f'Loading CYP450 random forest models', file=sys.stdout)
+    for model_name in tqdm(cyp450_models_dict.keys()):
+    # for model_name in cyp450_models_dict.keys():
+        for model_number in tqdm(range(0, 64)):
+        # for model_number in range(0, 64):
+            cyp450_model_path = f'./models/CYP450/{model_name}/model_{model_number}'
+            if path.exists(cyp450_model_path) and os.path.getsize(cyp450_model_path) > 0:
+                with open(cyp450_model_path, 'rb') as pkl_file:
+                    cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(pkl_file)
+            else:
+                os.makedirs(f'./models/CYP450/{model_name}', exist_ok=True)
+                # processes.append(executor.submit(download_file, base_url, model_name, model_number, cyp450_models_dict))
+                download_file(base_url, model_name, model_number, cyp450_models_dict)
 
     print(f'Finished loading CYP450 model files', file=sys.stdout)
 

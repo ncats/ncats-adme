@@ -19,7 +19,6 @@ import rdkit
 from flask import send_file
 from predictors.rlm.rlm_predictor import RLMPredictior
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
-# from multiprocessing import set_start_method
 
 
 app = flask.Flask(__name__, static_folder ='./client')
@@ -185,5 +184,6 @@ def return_index(path):
     return app.send_static_file('index.html')
 
 if __name__ == "__main__":
-    # set_start_method('forkserver')
+    from multiprocessing import set_start_method
+    set_start_method('forkserver')
     app.run()
