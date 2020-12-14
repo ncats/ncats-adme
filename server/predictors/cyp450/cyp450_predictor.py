@@ -142,8 +142,8 @@ class CYP450Predictor:
         processes_dict = {}
         conns_dict = {}
 
-        if multiprocessing.cpu_count() > 1:
-            processes = multiprocessing.cpu_count() - 1
+        if mp.cpu_count() > 1:
+            processes = mp.cpu_count() - 1
         else:
             processes = 1
 
