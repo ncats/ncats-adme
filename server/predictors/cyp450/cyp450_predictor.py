@@ -181,6 +181,10 @@ class CYP450Predictor:
                 )
                 conns_dict[model_name].close()
 
+            pool.close()
+            pool.terminate()
+            pool.join()
+
         end = time.time()
         print(f'{end - start} seconds to CYP450 predict {len(self.predictions_df.index)} molecules')
 
