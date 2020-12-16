@@ -20,6 +20,7 @@ from flask import send_file
 from predictors.rlm.rlm_predictor import RLMPredictior
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
 
+
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
 app.config["DEBUG"] = False

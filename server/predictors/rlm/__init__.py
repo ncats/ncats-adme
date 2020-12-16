@@ -164,6 +164,7 @@ def load_gcnn_model():
 
     return rlm_gcnn_scaler, rlm_gcnn_model
 
+
 rlm_rf_model = load_rlm_rf_model()
 rlm_dnn_model = load_rlm_dnn_model()
 rlm_dnn_tokenizer = load_rlm_dnn_tokenizer()
