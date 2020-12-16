@@ -214,9 +214,10 @@ class CYP450Predictor:
             "mean_probs": mean_probs,
             "model_has_error": model_has_error
         }
+
         con.send(response_dict)
         con.close()
-        return
+        return None
 
     def get_errors(self):
         return {
