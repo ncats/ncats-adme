@@ -75,6 +75,7 @@ def load_models():
             if path.exists(cyp450_model_path) and os.path.getsize(cyp450_model_path) > 0:
                 with open(cyp450_model_path, 'rb') as pkl_file:
                     cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(pkl_file)
+                    print(sys.getsizeof(cyp450_models_dict[model_name][f'model_{model_number}']))
             else:
                 os.makedirs(f'./models/CYP450/{model_name}', exist_ok=True)
                 # processes.append(executor.submit(download_file, base_url, model_name, model_number, cyp450_models_dict))
