@@ -18,7 +18,10 @@ from rdkit.Chem.Draw import IPythonConsole
 import rdkit
 from flask import send_file
 from predictors.rlm.rlm_predictor import RLMPredictior
+from predictors.pampa.pampa_predictor import PAMPAPredictior
+from predictors.solubility.solubility_predictor import SolubilityPredictior
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
+from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
 
 
 app = flask.Flask(__name__, static_folder ='./client')
@@ -31,46 +34,20 @@ root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
 @app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():
     response = {}
-    smiles = request.args.get('smiles')
+    smiles_list = request.args.getlist('smiles')
+    if len(smiles_list) == 0 or smiles_list == None:
+        response['hasErrors'] = True
+        response['errorMessages'] = 'Please provide at least one smiles'
+        return jsonify(response)
     models = request.args.getlist('model')
-    base_models_error_message = 'We were not able to make predictions using the following model(s): '
+    if len(models) == 0 or models == None:
+        response['hasErrors'] = True
+        response['errorMessages'] = 'Please provide at least one model'
+        return jsonify(response)
 
-    morgan_fp_matrix = None
-    
-    for model in models:
-        response[model] = {}
-        df = pd.DataFrame([[smiles]], columns=['mol'])
-        error_messages = []
-
-        if model.lower() == 'rlm':
-            predictor = RLMPredictior(df, 0, morgan_fp_matrix)
-        elif model.lower() == 'cyp450':
-            predictor = CYP450Predictor(df, 0, morgan_fp_matrix)
-        
-        pred_df = predictor.get_predictions()
-        if morgan_fp_matrix is None:
-            morgan_fp_matrix = predictor.morgan_fp_matrix
-        
-        errors_dict = predictor.get_errors()
-        response[model]['hasErrors'] = predictor.has_errors
-        model_errors = errors_dict['model_errors']
-
-        if errors_dict['has_smi_errors']:
-            smi_error_message = 'We were not able to parse the structure you submitted'
-            error_messages.append(smi_error_message)
-
-        if len(model_errors) > 0:
-            error_message = base_models_error_message + model_errors.join(', ')
-            error_messages.append(error_message)
-
-        response[model]['errorMessages'] = error_messages
-        response[model]['columns'] = list(pred_df.columns.values)
-
-        columns_dict =  predictor.columns_dict()
-        dict_length = len(columns_dict.keys())
-        columns_dict['mol'] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
-        response[model]['mainColumnsDict'] = columns_dict
-        response[model]['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+    smi_column_name = 'smiles'
+    df = pd.DataFrame([smiles_list], columns=[smi_column_name])
+    response = predict_df(df, smi_column_name, models)
     return jsonify(response)
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
@@ -96,15 +73,13 @@ def upload_file():
         response['hasErrors'] = True
         response['errorMessages'] = 'A file with a file name needs to be attached to the request'
         return jsonify(response)
+
     if file and allowed_file(file.filename):
 
         filename = secure_filename(file.filename)
         data = dict(request.form)
         indexIdentifierColumn = int(data['indexIdentifierColumn'])
         models = data['models'].split(';')
-        base_models_error_message = 'We were not able to make predictions on some of your molecules using the following model(s): '
-
-        morgan_fp_matrix = None
 
         if data['hasHeaderRow'] == 'true':
             df = pd.read_csv(file, header=0, sep=data['columnSeparator'])
@@ -118,42 +93,9 @@ def upload_file():
                     column_name_mapper[column_name] = f'col_{column_name}'
             df.rename(columns=column_name_mapper, inplace=True)
 
-        for model in models:
-            response[model] = {}
-            error_messages = []
+        smi_column_name = df.columns.values[indexIdentifierColumn]
 
-            if model.lower() == 'rlm':
-                predictor = RLMPredictior(df, indexIdentifierColumn, morgan_fp_matrix)
-            elif model.lower() == 'cyp450':
-                predictor = CYP450Predictor(df, indexIdentifierColumn, morgan_fp_matrix)
-
-            pred_df = predictor.get_predictions()
-
-            if morgan_fp_matrix is None:
-                morgan_fp_matrix = predictor.morgan_fp_matrix
-            
-            errors_dict = predictor.get_errors()
-            response[model]['hasErrors'] = predictor.has_errors
-            model_errors = errors_dict['model_errors']
-    
-            if errors_dict['has_smi_errors']:
-                smi_error_message = 'We were not able to parse some of the structure you submitted'
-                error_messages.append(smi_error_message)
-
-            if len(model_errors) > 0:
-                error_message = base_models_error_message + model_errors.join(', ')
-                error_messages.append(error_message)
-
-            response[model]['errorMessages'] = error_messages
-            response[model]['columns'] = list(pred_df.columns.values)
-
-            columns_dict =  predictor.columns_dict()
-            dict_length = len(columns_dict.keys())
-            smi_column_name = df.columns.values[indexIdentifierColumn]
-            columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
-            response[model]['mainColumnsDict'] = columns_dict
-            response[model]['data'] = pred_df.replace(np.nan, '', regex=True).to_dict(orient='records')
-
+        response = predict_df(df, smi_column_name, models)
         return jsonify(response)
     else:
         response['hasErrors'] = True
@@ -171,6 +113,59 @@ def get_structure_image(smiles):
     except:
         return send_file('./images/no_image_available.png', mimetype='image/png')
 
+
+def predict_df(df, smi_column_name, models):
+    response = {}
+    working_df = df.copy()
+    addMolsKekuleSmilesToFrame(working_df, smi_column_name)
+    working_df = working_df[~working_df['mols'].isnull() & ~working_df['kekule_smiles'].isnull()]
+
+    if len(working_df.index) == 0:
+        response['hasErrors'] = True
+        response['errorMessages'] = 'We were not able to parse the smiles you provided'
+        return jsonify(response)
+
+    base_models_error_message = 'We were not able to make predictions using the following model(s): '
+    
+    for model in models:
+        response[model] = {}
+        error_messages = []
+
+        if model.lower() == 'rlm':
+            predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+        if model.lower() == 'pampa':
+            predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+        if model.lower() == 'solubility':
+            predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+        elif model.lower() == 'cyp450':
+            predictor = CYP450Predictor(kekule_mols = working_df['mols'].values)
+        
+        pred_df = predictor.get_predictions()
+        
+        pred_df = working_df.join(pred_df)
+
+        pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
+
+        response_df = pd.merge(df, pred_df, how='left', left_on=smi_column_name, right_on=smi_column_name)
+
+        errors_dict = predictor.get_errors()
+        response[model]['hasErrors'] = predictor.has_errors
+        model_errors = errors_dict['model_errors']
+
+        if len(model_errors) > 0:
+            error_message = base_models_error_message + model_errors.join(', ')
+            error_messages.append(error_message)
+
+        response[model]['errorMessages'] = error_messages
+        response[model]['columns'] = list(response_df.columns.values)
+
+        columns_dict =  predictor.columns_dict()
+        dict_length = len(columns_dict.keys())
+        columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+        response[model]['mainColumnsDict'] = columns_dict
+        response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+
+    return response
 
 @app.route(f'{root_route_path}/client/<path:path>')
 def send_js(path):
