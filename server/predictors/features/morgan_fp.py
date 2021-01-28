@@ -18,7 +18,7 @@ class MorganFPGenerator:
         df (DataFrame): DataFrame containing column with smiles
     """
 
-    def __init__(self, df: DataFrame):
+    def __init__(self, kekule_mols: array = None):
         """
         Constructor for MorganFPGenerator class
 
@@ -26,11 +26,10 @@ class MorganFPGenerator:
             df (DataFrame): DataFrame containing column with smiles.
         """
 
-        self.df = df.copy()
+        self.kekule_mols = kekule_mols
 
     def get_morgan_features(
         self,
-        smi_column_name: str,
         radius: int = 2,
         nBits: int = 1024,
         invariants: List[AtomPairsParameters] = [],
@@ -52,11 +51,10 @@ class MorganFPGenerator:
             fingerprints_matrix (array): a numpy array containing the Morgan fingerprints
         """
 
-        morgan_cols = [ 'morgan_'+str(i) for i in range(nBits) ]
-        for index, row in self.df.iterrows():
-            
-            smi = row[smi_column_name]
-            mol = Chem.MolFromSmiles(smi)
+        fingerprint_matrix = np.zeros((len(self.kekule_mols), nBits), dtype=int)
+
+        for index, mol in enumerate(self.kekule_mols):
+
             fp = self.get_morgan_fp(
                 mol=mol,
                 radius=radius,
@@ -68,12 +66,9 @@ class MorganFPGenerator:
                 useFeatures=useFeatures,
                 bitInfo=bitInfo
             )
-            fpl = fp.tolist()
-            fps = ','.join(str(e) for e in fpl)
-            self.df.at[index,'morganfp'] = fps
+            fingerprint_matrix[index] = fp.ravel()
 
-        morgan_df = pd.DataFrame(self.df['morganfp'].str.split(',', expand=True).values, columns=morgan_cols)
-        return morgan_df.iloc[:,0:].values
+        return fingerprint_matrix
 
     def get_morgan_fp(
         self,

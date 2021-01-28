@@ -80,6 +80,44 @@
             </li>
         </ol>
     </div>
+    <div class="inner-container" *ngIf="model == 'pampa'">
+        <h2>
+            PAMPA Model
+        </h2>
+        <p>
+            The stirring double-sink PAMPA method patented by pION Inc. (Billerica, MA) was
+            employed to determine the permeability of compounds via PAMPA passive diffusion.
+            The PAMPA lipid membrane, which consisted of an artificial membrane of a proprietary
+            lipid mixture and dodecane (Pion Inc.), was optimized to predict gastrointestinal tract (GIT)
+            passive diffusion permeability. This membrane was immobilized on a plastic matrix of a 96
+            well “donor” filter plate placed below a 96 well “acceptor” plate. This artificial membrane
+            mimicked the GIT membrane in the human body. Both “donor” and “acceptor” wells were
+            buffered to pH 7.4. The test articles, stocked in 10 mM DMSO solutions, were diluted to
+            0.05 mM in aqueous buffer (pH 7.4) and the concentration of DMSO was 0.5% in the final
+            solution. During the 30-minute permeation period at room temperature the test samples in
+            the donor compartment were stirred using the Gutbox technology (Pion Inc.) to reduce the
+            unstirred water layer. The test article concentrations in the “donor” and “acceptor”
+            compartments were measured using a UV plate reader (Nano Quant, Infinite® 200 PRO,
+            Tecan Inc., Männedorf, Switzerland). Permeability calculations were performed using Pion
+            Inc. software and were expressed in the units of 10−6cm/s.
+        </p>
+    </div>
+    <div class="inner-container" *ngIf="model == 'solubility'">
+        <h2>
+            Solubility Model
+        </h2>
+        <p>
+            Pion’s patented µSOL assay was used for kinetic solubility determination. In this assay, the classical saturation shake-flask solubility method was adapted as previously described by Avdeef et al., 2001. Test compounds were prepared in 10 mM DMSO stock and diluted to a final drug concentration of 150 µM in the aqueous solution (pH 7.4, 100 mM phosphate buffer). Samples were incubated at room temperature for 6 h and vacuum-filtered using Tecan Te-Vac to remove any precipitates. The concentration of the compound in the filtrate was measured via UV absorbance (λ: 250–498 nm). The filtrate drug concentration was determined by comparing the fully solubilized reference plate which contains 17 µM of compound dissolved in spectroscopically pure n-propanol. All compounds were tested in duplicates. The kinetic solubility (µg/mL) of compounds was calculated using the µSOL Evolution software. The three experimental controls used were albendazole (low solubility), phenazopyridine (moderate solubility) and furosemide (high solubility).
+        </p>
+        <h3>
+            References:
+        </h3>
+        <ol>
+            <li>
+                A. Avdeef. Absorption And Drug Development. John Wiley & Sons Inc, Hoboken, New Jersey (2001)
+            </li>
+        </ol>
+    </div>
     <div class="inner-container" *ngIf="model == 'cyp450'">
         <h2>
             CYP450 Models
