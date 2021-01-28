@@ -9,7 +9,7 @@ from numpy import array
 from typing import Tuple
 from rdkit.Chem.rdchem import Mol
 from ..features.morgan_fp import MorganFPGenerator
-from ..utilities.processors import get_processed_smi
+from ..utilities.utilities import get_processed_smi
 from rdkit import Chem
 from ..features.rdkit_descriptors import RDKitDescriptorsGenerator
 from ..cyp450 import cyp450_models_dict
@@ -18,11 +18,6 @@ from tqdm import tqdm
 from copy import deepcopy
 import multiprocessing as mp
 import platform
-# if platform.system() == 'Linux' and 'Microsoft' not in platform.uname().release:
-#     set_start_method('forkserver')
-    #mp = multiprocessing.get_context('forkserver')
-# else:
-#     import multiprocessing as mp
     
 
 class CYP450Predictor:
@@ -68,68 +63,41 @@ class CYP450Predictor:
         }
     }
 
-    def __init__(self, df: DataFrame, smiles_column_index: int, morgan_fp_matrix: array = None):
+    def __init__(self, kekule_mols: array = None, rdkit_descriptors_matrix: array = None, morgan_fp_matrix: array = None):
         """
         Constructor for RLMPredictior class
 
         Parameters:
-            df (DataFrame): DataFrame containing column with smiles
-            smiles_column_index (int): index of column containing smiles,
-            morgan_fp_matrix (array): optional numpy array with morgan fingerprints for each molecule
+            rdkit_descriptors_matri (array): optional numpy array of rdkit descriptors for each molecule,
+            morgan_fp_matrix (array): optional numpy array of morgan fingerprints for each molecule
         """
 
-        self.df = df.copy()
-        self.smiles_column_index = smiles_column_index
+        self.kekule_mols = kekule_mols
 
         # create dataframe to be filled with predictions
         columns = self._columns_dict.keys()
         self.predictions_df = pd.DataFrame(columns=columns)
 
-        # insert smiles into predictions df
-        smi_series = self.df.iloc[:, self.smiles_column_index]
-        self._smi_column_name = smi_series.name
-        self.predictions_df.insert(0, self._smi_column_name, smi_series)
-
-        # create random column name for molecules
-        letters = string.ascii_letters
-        self._mol_column_name = ''.join(random.choice(letters) for i in range(10))
-
-        # converts smiles in self._smi_column_name column, converts them RDKit molecules and adds them to self._mol_column_name
-        PandasTools.AddMoleculeColumnToFrame(
-            self.predictions_df,
-            self._smi_column_name,
-            self._mol_column_name,
-            includeFingerprints=False
-        )
-
-        # this step omits mols for which smiles could not be parsed
-        self.predictions_df = self.predictions_df[~self.predictions_df[self._mol_column_name].isnull()]
-
-        if len(self.predictions_df.index) == 0:
+        if len(self.kekule_mols) == 0:
             raise ValueError('Please provide valid smiles')
 
-        # add column with kekule smiles
-        self.predictions_df[self._mol_column_name] = self.predictions_df[self._mol_column_name].apply(self._get_kekule_smiles)
 
         if morgan_fp_matrix is None:
             # generate morgan fingerprints
-            morgan_fp_generator = MorganFPGenerator(self.predictions_df)
-            self.morgan_fp_matrix = morgan_fp_generator.get_morgan_features(self._mol_column_name)
+            morgan_fp_generator = MorganFPGenerator(self.kekule_mols)
+            self.morgan_fp_matrix = morgan_fp_generator.get_morgan_features()
         else:
             self.morgan_fp_matrix = morgan_fp_matrix
 
-        # generate rdkit descriptors
-        rdkit_descriptors_generator = RDKitDescriptorsGenerator(self.predictions_df)
-        self.rdkit_desc_matrix = rdkit_descriptors_generator.get_rdkit_descriptors(self._mol_column_name, ['MolLogP', 'TPSA', 'ExactMolWt', 'NumHDonors', 'NumHAcceptors'])
+        if rdkit_descriptors_matrix is None:
+            # generate rdkit descriptors
+            rdkit_descriptors_generator = RDKitDescriptorsGenerator(self.kekule_mols)
+            self.rdkit_desc_matrix = rdkit_descriptors_generator.get_rdkit_descriptors(['MolLogP', 'TPSA', 'ExactMolWt', 'NumHDonors', 'NumHAcceptors'])
+        else:
+            self.rdkit_desc_matrix = rdkit_descriptors_matrix
 
-        # error properties
-        self.has_errors = self.has_smi_errors = len(self.df.index) > len(self.predictions_df.index)
+        self.has_errors = False
         self.model_errors = []
-
-    def _get_kekule_smiles(self, mol: Mol) -> str:
-        Chem.Kekulize(mol)
-        kek_smi = Chem.MolToSmiles(mol,kekuleSmiles=True)
-        return kek_smi
 
     def get_predictions(self):
 
@@ -171,6 +139,7 @@ class CYP450Predictor:
                 mean_probs = response_dict["mean_probs"]
 
                 if model_has_error:
+                    self.has_errors = True
                     self.model_errors.append(self._columns_dict[model_name]['description'])
 
                 self.predictions_df[f'{model_name}'] = pd.Series(
@@ -188,9 +157,7 @@ class CYP450Predictor:
         end = time.time()
         print(f'{end - start} seconds to CYP450 predict {len(self.predictions_df.index)} molecules')
 
-        self.predictions_df.drop([self._mol_column_name], axis=1, inplace=True)
-
-        return self.df.merge(self.predictions_df, on=self._smi_column_name, how='left')
+        return self.predictions_df
 
     def _get_model_predictions(self, con):
         
@@ -221,7 +188,6 @@ class CYP450Predictor:
 
     def get_errors(self):
         return {
-            'has_smi_errors': self.has_smi_errors,
             'model_errors': self.model_errors
         }
 

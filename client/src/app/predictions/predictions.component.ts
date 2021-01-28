@@ -28,7 +28,7 @@ export class PredictionsComponent implements OnInit {
   private sketcherIndexIdentifierColumn = 0;
   private fileIndexIdentifierColumn: number;
   indexIdentifierColumn: number;
-  models = ['RLM', 'CYP450'];
+  models = ['RLM', 'PAMPA', 'Solubility', 'CYP450'];
 
   constructor(
     private http: HttpClient,
