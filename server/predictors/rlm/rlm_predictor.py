@@ -44,7 +44,7 @@ class RLMPredictior(GcnnBase):
             kekule_smiles (Array): numpy array of RDkit molecules
         """
 
-        GcnnBase.__init__(self, kekule_smiles, columns_dict_order = 1)
+        GcnnBase.__init__(self, kekule_smiles, column_dict_key='Predicted Class (Probability)', columns_dict_order = 1)
 
         self._columns_dict['Prediction'] = {
             'order': 2,

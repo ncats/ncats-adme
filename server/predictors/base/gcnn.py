@@ -10,7 +10,7 @@ from typing import Tuple
 
 class GcnnBase(PredictorBase):
 
-    def __init__(self, kekule_smiles: array = None, columns_dict_order: int = 1):
+    def __init__(self, kekule_smiles: array = None, column_dict_key = 'GCNN', columns_dict_order: int = 1):
         PredictorBase.__init__(self)
 
         if kekule_smiles is None or len(kekule_smiles) == 0:
@@ -18,9 +18,11 @@ class GcnnBase(PredictorBase):
 
         self.kekule_smiles = kekule_smiles
 
-        self._columns_dict['GCNN'] = {
+        self.column_dict_key = column_dict_key
+
+        self._columns_dict[column_dict_key] = {
             'order': columns_dict_order,
-            'description': 'graph convolutional neural network',
+            'description': 'graph convolutional neural network prediction',
             'isSmilesColumn': False
         }
 
@@ -68,7 +70,7 @@ class GcnnBase(PredictorBase):
             predictions[full_index] = model_preds[full_to_valid_indices[key]][0]
             labels[full_index] = np.round(model_preds[full_to_valid_indices[key]][0], 0)
 
-        self.predictions_df['GCNN'] = pd.Series(pd.Series(labels).fillna('').astype(str) + ' (' + pd.Series(predictions).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
+        self.predictions_df[self.column_dict_key] = pd.Series(pd.Series(labels).fillna('').astype(str) + ' (' + pd.Series(predictions).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
         if len(self.predictions_df.index) > len(predictions) or np.ma.count_masked(predictions) > 0:
             self.model_errors.append('graph convolutional neural network')
             self.has_errors = True

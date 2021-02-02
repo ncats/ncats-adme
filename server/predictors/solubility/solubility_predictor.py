@@ -44,7 +44,7 @@ class SolubilityPredictior(GcnnBase):
             kekule_smiles (Array): numpy array of RDkit molecules
         """
 
-        GcnnBase.__init__(self, kekule_smiles, columns_dict_order = 1)
+        GcnnBase.__init__(self, kekule_smiles, column_dict_key='Predicted Class (Probability)', columns_dict_order = 1)
 
         self._columns_dict['Prediction'] = {
             'order': 2,
@@ -68,7 +68,7 @@ class SolubilityPredictior(GcnnBase):
             print(f'{end - start} seconds to Solubility predict {len(self.predictions_df.index)} molecules')
 
             self.predictions_df['Prediction'] = pd.Series(
-                pd.Series(np.where(gcnn_predictions>=0.5, 'high solubility', 'low solubility'))
+                pd.Series(np.where(gcnn_predictions>=0.5, 'low solubility', 'high solubility'))
             )
             
         return self.predictions_df

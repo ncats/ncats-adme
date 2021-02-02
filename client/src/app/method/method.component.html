@@ -14,7 +14,7 @@
             </div>
             <div class="definition">
                 <div class="name">Dataset Size:</div>
-                <div class="value">20,216</div>
+                <div class="value">20,216 compounds</div>
             </div>
             <div class="definition">
                 <div class="name">Validation:</div>
@@ -22,18 +22,17 @@
             </div>
             <div class="definition">
                 <div class="name">Descriptors:</div>
-                <div class="value">Morgan fingerprints; RDKit descriptors; SMILES; Molecular Graphs</div>
+                <div class="value">Molecular Graphs</div>
             </div>
             <div class="definition">
                 <div class="name">Model Details:</div>
                 <div class="value">
-                    The consensus model includes four individual models: random forest, deep neural network, long-short
-                    term memory network and graph convolutional neural network. The first three models were implemented using the Python libraries <a href="https://scikit-learn.org/stable/" target="_blank">scikit-learn</a>, <a href="https://keras.io/" target="_blank">Keras</a> and <a href="https://www.tensorflow.org/" target="_blank">Tensorflow</a>. The graph convolutional neural network model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, a graph neural network architecture described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>.</div>
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.</div>
             </div>
             <div class="definition">
-                <div class="name">Interpretation of Model Predictions:</div>
+                <div class="name">Interpretation of Models:</div>
                 <div class="value">
-                    Each model provides a predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class. The predicted class (unstable or stable) based on the consesus model is shown in the last column.</div>
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
             </div>
             <div class="definition">
                 <div class="name">Data for Download:</div>
@@ -84,7 +83,43 @@
         <h2>
             PAMPA Model
         </h2>
-        <p>
+        <div class="definitions-container">
+            <div class="definition">
+                <div class="name">Name:</div>
+                <div class="value">Parallel artificial membrane permeability assay (PAMPA)</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Type:</div>
+                <div class="value">Classification</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Size:</div>
+                <div class="value">16,624 compounds</div>
+            </div>
+            <div class="definition">
+                <div class="name">Validation:</div>
+                <div class="value">5-Fold CV</div>
+            </div>
+            <div class="definition">
+                <div class="name">Descriptors:</div>
+                <div class="value">Molecular Graphs</div>
+            </div>
+            <div class="definition">
+                <div class="name">Model Details:</div>
+                <div class="value">
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in this <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Interpretation of Models:</div>
+                <div class="value">
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have ‘low permeability’ and if the predicted class is '0', the compound is predicted to have ‘high permeability’. The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>PAMPA Assay Protocol:</h3>
+        <p style="text-align: justify;">
             The stirring double-sink PAMPA method patented by pION Inc. (Billerica, MA) was
             employed to determine the permeability of compounds via PAMPA passive diffusion.
             The PAMPA lipid membrane, which consisted of an artificial membrane of a proprietary
@@ -106,7 +141,43 @@
         <h2>
             Solubility Model
         </h2>
-        <p>
+        <div class="definitions-container">
+            <div class="definition">
+                <div class="name">Name:</div>
+                <div class="value">Pion’s patented µSOL assay (Solubility)</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Type:</div>
+                <div class="value">Classification</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Size:</div>
+                <div class="value">22,209 compounds</div>
+            </div>
+            <div class="definition">
+                <div class="name">Validation:</div>
+                <div class="value">5-Fold CV</div>
+            </div>
+            <div class="definition">
+                <div class="name">Descriptors:</div>
+                <div class="value">Molecular graphs</div>
+            </div>
+            <div class="definition">
+                <div class="name">Model Details:</div>
+                <div class="value">
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in this <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Interpretation of Models:</div>
+                <div class="value">
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have ‘low solubility’ and if the predicted class is '0', the compound is predicted to have ‘high solubility. The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>Solubility Assay Protocol:</h3>
+        <p style="text-align: justify;">
             Pion’s patented µSOL assay was used for kinetic solubility determination. In this assay, the classical saturation shake-flask solubility method was adapted as previously described by Avdeef et al., 2001. Test compounds were prepared in 10 mM DMSO stock and diluted to a final drug concentration of 150 µM in the aqueous solution (pH 7.4, 100 mM phosphate buffer). Samples were incubated at room temperature for 6 h and vacuum-filtered using Tecan Te-Vac to remove any precipitates. The concentration of the compound in the filtrate was measured via UV absorbance (λ: 250–498 nm). The filtrate drug concentration was determined by comparing the fully solubilized reference plate which contains 17 µM of compound dissolved in spectroscopically pure n-propanol. All compounds were tested in duplicates. The kinetic solubility (µg/mL) of compounds was calculated using the µSOL Evolution software. The three experimental controls used were albendazole (low solubility), phenazopyridine (moderate solubility) and furosemide (high solubility).
         </p>
         <h3>
