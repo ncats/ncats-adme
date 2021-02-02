@@ -63,7 +63,7 @@ class GcnnBase(PredictorBase):
         )
         predictions = np.ma.empty(len(full_data))
         predictions.mask = True
-        labels = np.ma.empty(len(full_data))
+        labels = np.ma.empty(len(full_data), dtype=np.int32)
         labels.mask = True
         for key in full_to_valid_indices.keys():
             full_index = int(key)
