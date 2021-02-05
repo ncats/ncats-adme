@@ -68,7 +68,7 @@ class PAMPAPredictior(GcnnBase):
             print(f'{end - start} seconds to PAMPA predict {len(self.predictions_df.index)} molecules')
 
             self.predictions_df['Prediction'] = pd.Series(
-                pd.Series(np.where(gcnn_predictions>=0.5, 'low permeability', 'high permeability'))
+                pd.Series(np.where(gcnn_predictions>=0.5, 'low or moderate permeability', 'high permeability'))
             )
             
         return self.predictions_df

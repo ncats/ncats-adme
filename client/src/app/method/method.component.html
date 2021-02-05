@@ -113,7 +113,7 @@
             <div class="definition">
                 <div class="name">Interpretation of Models:</div>
                 <div class="value">
-                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have ‘low permeability’ and if the predicted class is '0', the compound is predicted to have ‘high permeability’. The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low or moderate permeability' (i.e., log P<sub><i>eff</i></sub> &#60; 2.0) and if the predicted class is '0', the compound is predicted to have 'high permeability' (i.e., log P<sub><i>eff</i></sub> > 2.5). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
                 </div>
             </div>
         </div>
@@ -134,7 +134,7 @@
             unstirred water layer. The test article concentrations in the “donor” and “acceptor”
             compartments were measured using a UV plate reader (Nano Quant, Infinite® 200 PRO,
             Tecan Inc., Männedorf, Switzerland). Permeability calculations were performed using Pion
-            Inc. software and were expressed in the units of 10−6cm/s.
+            Inc. software and were expressed in the units of 10<sup>-6</sup>cm/s.
         </p>
     </div>
     <div class="inner-container" *ngIf="model == 'solubility'">
@@ -171,7 +171,7 @@
             <div class="definition">
                 <div class="name">Interpretation of Models:</div>
                 <div class="value">
-                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have ‘low solubility’ and if the predicted class is '0', the compound is predicted to have ‘high solubility. The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low solubility' (i.e., &#60;10 µg/ml) and if the predicted class is '0', the compound is predicted to have 'high solubility' (i.e., &#62;10 µg/ml). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
                 </div>
             </div>
         </div>
