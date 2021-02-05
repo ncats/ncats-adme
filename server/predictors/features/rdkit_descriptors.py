@@ -11,7 +11,7 @@ class RDKitDescriptorsGenerator:
     Generates RDKit Descriptors
 
     Attributes:
-        df (DataFrame): DataFrame containing column with smiles
+        kekule_mols (array): numpy array with kekule rdkit mol objects.
     """
 
     def __init__(self, kekule_mols: array = None):
@@ -19,7 +19,7 @@ class RDKitDescriptorsGenerator:
         Constructor for RDKitDescriptorsGenerator class
 
         Parameters:
-            df (DataFrame): DataFrame containing column with smiles.
+            kekule_mols (array): numpy array with kekule rdkit mol objects.
         """
 
         self.kekule_mols = kekule_mols

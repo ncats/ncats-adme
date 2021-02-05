@@ -133,12 +133,14 @@ def predict_df(df, smi_column_name, models):
 
         if model.lower() == 'rlm':
             predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values)
-        if model.lower() == 'pampa':
+        elif model.lower() == 'pampa':
             predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values)
-        if model.lower() == 'solubility':
+        elif model.lower() == 'solubility':
             predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values)
         elif model.lower() == 'cyp450':
             predictor = CYP450Predictor(kekule_mols = working_df['mols'].values)
+        else:
+            break
         
         pred_df = predictor.get_predictions()
         
