@@ -22,11 +22,11 @@ from numpy import array
 from typing import Tuple
 from ..features.morgan_fp import MorganFPGenerator
 from ..utilities.utilities import get_processed_smi
-from . import rlm_gcnn_scaler, rlm_gcnn_model
+from . import pampa_gcnn_scaler, pampa_gcnn_model
 from ..base.gcnn import GcnnBase
 import time
 
-class RLMPredictior(GcnnBase):
+class PAMPAPredictior(GcnnBase):
     """
     Makes RLM stability preditions
 
@@ -44,7 +44,7 @@ class RLMPredictior(GcnnBase):
             kekule_smiles (Array): numpy array of RDkit molecules
         """
 
-        GcnnBase.__init__(self, kekule_smiles, column_dict_key='Predicted Class (Probability)', columns_dict_order = 1)
+        GcnnBase.__init__(self, kekule_smiles, column_dict_key='Predicted Class (Probability)', columns_dict_order=1)
 
         self._columns_dict['Prediction'] = {
             'order': 2,
@@ -63,12 +63,12 @@ class RLMPredictior(GcnnBase):
         if len(self.kekule_smiles) > 0:
 
             start = time.time()
-            gcnn_predictions, gcnn_labels = self.gcnn_predict(rlm_gcnn_model, rlm_gcnn_scaler)
+            gcnn_predictions, gcnn_labels = self.gcnn_predict(pampa_gcnn_model, pampa_gcnn_scaler)
             end = time.time()
-            print(f'{end - start} seconds to RLM predict {len(self.predictions_df.index)} molecules')
+            print(f'{end - start} seconds to PAMPA predict {len(self.predictions_df.index)} molecules')
 
             self.predictions_df['Prediction'] = pd.Series(
-                pd.Series(np.where(gcnn_predictions>=0.5, 'unstable', 'stable'))
+                pd.Series(np.where(gcnn_predictions>=0.5, 'low or moderate permeability', 'high permeability'))
             )
             
         return self.predictions_df
