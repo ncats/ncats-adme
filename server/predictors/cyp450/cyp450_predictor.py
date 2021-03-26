@@ -176,7 +176,7 @@ class CYP450Predictor:
     def _get_model_predictions(self, request_queue, response_queue):
         #params_dict = con.recv()
         params_dict = request_queue.get()
-        #request_queue.close()
+
         model_name = params_dict['model_name']
         features = params_dict['features']
         error_threshold_length = params_dict['error_threshold_length']
