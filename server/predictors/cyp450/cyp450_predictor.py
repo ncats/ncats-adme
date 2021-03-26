@@ -120,7 +120,7 @@ class CYP450Predictor:
 
                 # parent_conn, child_conn = mp.Pipe()
                 # conns_dict[model_name] = parent_conn
-                
+
                 manager = mp.Manager()
                 request_queue = manager.Queue()
                 response_queue = manager.Queue()
@@ -155,7 +155,7 @@ class CYP450Predictor:
                 self.predictions_df[f'{model_name}'] = pd.Series(
                     pd.Series(np.where(mean_probs>=0.5, 1, 0)).round(2).astype(str)
                     +' ('
-                    +pd.Series(mean_probs).round(2).astype(str)
+                    + pd.Series(np.where(mean_probs>=0.5, mean_probs, (1-mean_probs))).round(2).astype(str)
                     +')'
                 )
                 #conns_dict[model_name].close()
