@@ -1,6 +1,7 @@
 import os
 import random
 import string
+import sys
 import pandas as pd
 from pandas import DataFrame
 import numpy as np
@@ -18,7 +19,6 @@ from tqdm import tqdm
 from copy import deepcopy
 import multiprocessing as mp
 import platform
-    
 
 class CYP450Predictor:
     """
@@ -102,11 +102,12 @@ class CYP450Predictor:
     def get_predictions(self):
 
         features = np.append(self.morgan_fp_matrix, self.rdkit_desc_matrix, axis=1)
-
+        
         start = time.time()
 
         processes_dict = {}
-        conns_dict = {}
+        #conns_dict = {}
+        response_queues_dict ={}
 
         if mp.cpu_count() > 1:
             processes = mp.cpu_count() - 1
@@ -114,12 +115,16 @@ class CYP450Predictor:
             processes = 1
 
         with mp.Pool(processes=processes) as pool:
-
+            
             for model_name in cyp450_models_dict.keys():
 
-                parent_conn, child_conn = mp.Pipe()
+                # parent_conn, child_conn = mp.Pipe()
+                # conns_dict[model_name] = parent_conn
 
-                conns_dict[model_name] = parent_conn
+                manager = mp.Manager()
+                request_queue = manager.Queue()
+                response_queue = manager.Queue()
+                response_queues_dict[model_name] = response_queue
 
                 params_dict = {
                     "model_name": model_name,
@@ -127,14 +132,19 @@ class CYP450Predictor:
                     "error_threshold_length": len(self.predictions_df.index)
                 }
 
-                parent_conn.send(params_dict)
-                processes_dict[model_name] = pool.apply_async(self._get_model_predictions, args=(child_conn,))
+                #parent_conn.send(params_dict)
+                request_queue.put(params_dict)
 
-            for model_name in processes_dict:
+                #processes_dict[model_name] = pool.apply_async(self._get_model_predictions, args=(child_conn,))
+                processes_dict[model_name] = pool.apply_async(self._get_model_predictions, args=(request_queue, response_queue,), error_callback=self._error_callback)
+
+            for model_name in cyp450_models_dict.keys():
                 processes_dict[model_name].wait()
 
-            for model_name in processes_dict:
-                response_dict = conns_dict[model_name].recv()
+            for model_name in cyp450_models_dict.keys():
+                #response_dict = conns_dict[model_name].recv()
+
+                response_dict = response_queues_dict[model_name].get()
                 model_has_error = response_dict["model_has_error"]
                 mean_probs = response_dict["mean_probs"]
 
@@ -145,10 +155,10 @@ class CYP450Predictor:
                 self.predictions_df[f'{model_name}'] = pd.Series(
                     pd.Series(np.where(mean_probs>=0.5, 1, 0)).round(2).astype(str)
                     +' ('
-                    +pd.Series(mean_probs).round(2).astype(str)
+                    + pd.Series(np.where(mean_probs>=0.5, mean_probs, (1-mean_probs))).round(2).astype(str)
                     +')'
                 )
-                conns_dict[model_name].close()
+                #conns_dict[model_name].close()
 
             pool.close()
             pool.terminate()
@@ -159,9 +169,14 @@ class CYP450Predictor:
 
         return self.predictions_df
 
-    def _get_model_predictions(self, con):
-        
-        params_dict = con.recv()
+    def _error_callback(self, error):
+        print(error)
+
+    #def _get_model_predictions(self, con):
+    def _get_model_predictions(self, request_queue, response_queue):
+        #params_dict = con.recv()
+        params_dict = request_queue.get()
+
         model_name = params_dict['model_name']
         features = params_dict['features']
         error_threshold_length = params_dict['error_threshold_length']
@@ -169,8 +184,7 @@ class CYP450Predictor:
         model_has_error = False
         probs_matrix = np.ma.empty((64, features.shape[0]))
         probs_matrix.mask = True
-
-        for model_number in tqdm(range(0, 64)):
+        for model_number in range(0, 64):
             probs = models[f'model_{model_number}'].predict_proba(features)
             probs_matrix[model_number, :probs.shape[0]] = probs.T[1]
             if model_has_error == False and error_threshold_length > len(probs):
@@ -182,8 +196,9 @@ class CYP450Predictor:
             "model_has_error": model_has_error
         }
 
-        con.send(response_dict)
-        con.close()
+        #con.send(response_dict)
+        #con.close()
+        response_queue.put(response_dict)
         return None
 
     def get_errors(self):

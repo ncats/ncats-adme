@@ -96,6 +96,7 @@ def upload_file():
         smi_column_name = df.columns.values[indexIdentifierColumn]
 
         response = predict_df(df, smi_column_name, models)
+
         return jsonify(response)
     else:
         response['hasErrors'] = True
@@ -141,11 +142,9 @@ def predict_df(df, smi_column_name, models):
             predictor = CYP450Predictor(kekule_mols = working_df['mols'].values)
         else:
             break
-        
-        pred_df = predictor.get_predictions()
-        
-        pred_df = working_df.join(pred_df)
 
+        pred_df = predictor.get_predictions()
+        pred_df = working_df.join(pred_df)
         pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
 
         response_df = pd.merge(df, pred_df, how='left', left_on=smi_column_name, right_on=smi_column_name)
