@@ -119,8 +119,8 @@ class CYP450Predictor:
             for model_name in cyp450_models_dict.keys():
 
                 # parent_conn, child_conn = mp.Pipe()
-
                 # conns_dict[model_name] = parent_conn
+                
                 manager = mp.Manager()
                 request_queue = manager.Queue()
                 response_queue = manager.Queue()
