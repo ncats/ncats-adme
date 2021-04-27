@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { SafeUrl, DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { APP_BASE_HREF } from '@angular/common';
 
 @Component({
   selector: 'adme-method',
@@ -16,9 +16,10 @@ export class MethodComponent implements OnInit, OnDestroy {
 
   constructor(
     private domSanatizer: DomSanitizer,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    @Inject(APP_BASE_HREF) public baseHref: string
   ) {
-    this.dataDownloadHref = domSanatizer.bypassSecurityTrustResourceUrl(`${environment.baseHref}assets/rlm_public_set.xlsx`);
+    this.dataDownloadHref = domSanatizer.bypassSecurityTrustResourceUrl(`${baseHref}assets/rlm_public_set.xlsx`);
   }
 
   ngOnInit(): void {

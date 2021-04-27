@@ -1,8 +1,9 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Inject } from '@angular/core';
 import { Ketcher } from './ketcher.model';
 import { environment } from '../../environments/environment';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LoadingService } from '../loading/loading.service';
+import { APP_BASE_HREF } from '@angular/common';
 
 @Component({
   selector: 'adme-sketcher',
@@ -17,9 +18,10 @@ export class SketcherComponent implements OnInit {
 
   constructor(
     private domSanatizer: DomSanitizer,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    @Inject(APP_BASE_HREF) public baseHref: string
   ) {
-    this.ketcherSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${environment.baseHref}assets/ketcher/ketcher.html`);
+    this.ketcherSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${baseHref}assets/ketcher/ketcher.html`);
   }
 
   ngOnInit(): void {

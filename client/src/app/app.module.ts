@@ -36,6 +36,7 @@ import { ConfigService } from './config/config.service';
 import { configServiceFactory } from './config/config.factory';
 import { TrackLinkEventDirective } from './google-analytics/track-link-event/track-link-event.directive';
 import { MatMenuModule } from '@angular/material/menu';
+import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,11 @@ import { MatMenuModule } from '@angular/material/menu';
         useFactory: configServiceFactory,
         deps: [ConfigService],
         multi: true
+    },
+    {
+      provide: APP_BASE_HREF,
+      useFactory: (s: PlatformLocation) => s.getBaseHrefFromDOM(),
+      deps: [PlatformLocation]
     }
   ],
   bootstrap: [AppComponent]
