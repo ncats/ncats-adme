@@ -30,6 +30,9 @@ app.config["DEBUG"] = False
 
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
+data_path = os.getenv('DATA_PATH', '')
+
+# path for mounted volumen will be '/data'
 
 @app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():

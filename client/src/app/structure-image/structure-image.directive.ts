@@ -1,6 +1,6 @@
 import { Directive, ElementRef, AfterViewInit, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { ConfigService } from '../config/config.service';
 
 @Directive({
   selector: '[admeStructureImage]'
@@ -13,12 +13,15 @@ export class StructureImageDirective implements AfterViewInit {
   private isAfterViewInit = false;
   private privateAtomMaps?: Array<number>;
   private privateVersion?: number;
+  private apiBaseUrl: string;
 
   constructor(
     private el: ElementRef,
-    private http: HttpClient
+    private http: HttpClient,
+    private configService: ConfigService
   ) {
     this.imageElement = this.el.nativeElement as HTMLImageElement;
+    this.apiBaseUrl = configService.configData.apiBaseUrl;
   }
 
   ngAfterViewInit() {
@@ -68,7 +71,7 @@ export class StructureImageDirective implements AfterViewInit {
 
   private setImageSrc(): void {
     if (this.isAfterViewInit) {
-      const srcUrl = `${environment.apiBaseUrl}api/v1/structure_image/${encodeURIComponent(this.privateEntityId)}`;
+      const srcUrl = `${this.apiBaseUrl}api/v1/structure_image/${encodeURIComponent(this.privateEntityId)}`;
       this.imageElement.src = srcUrl;
       this.imageElement.alt = 'structure image';
     }
