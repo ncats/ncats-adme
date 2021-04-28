@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from './google-analytics/google-analytics.service';
 import { DOCUMENT } from '@angular/common';
 import { APP_BASE_HREF } from '@angular/common';
+import { DEPLOY_URL } from './utilities/deploy-url';
 
 @Component({
   selector: 'adme-root',
@@ -21,14 +22,14 @@ export class AppComponent implements OnInit, OnDestroy {
     private gaService: GoogleAnalyticsService,
     // tslint:disable-next-line:variable-name
     @Inject(DOCUMENT) private _document: HTMLDocument,
-    @Inject(APP_BASE_HREF) public baseHref: string
+    @Inject(DEPLOY_URL) private deployUrl: string
   ) {
     iconRegistry.addSvgIcon(
       'cancel',
-      sanitizer.bypassSecurityTrustResourceUrl(`${baseHref}assets/icons/cancel-24px.svg`));
+      sanitizer.bypassSecurityTrustResourceUrl(`${deployUrl}assets/icons/cancel-24px.svg`));
   }
   ngOnInit() {
-    this._document.getElementById('appFavicon').setAttribute('href', `${this.baseHref}assets/icons/favicon.ico`);
+    this._document.getElementById('appFavicon').setAttribute('href', `${this.deployUrl}assets/icons/favicon.ico`);
     this.routerSubscription = this.router.events.subscribe((event: RouterEvent) => {
       if (event instanceof ResolveEnd) {
         this.gaService.sendPageView(event.state.root.firstChild.data.pageTitle, event.state.url);

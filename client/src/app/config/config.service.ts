@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Config } from './config.model';
 import { environment } from 'src/environments/environment';
 import { APP_BASE_HREF } from '@angular/common';
+import { DEPLOY_URL } from '../utilities/deploy-url';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,8 @@ export class ConfigService {
 
     constructor(
         private http: HttpClient,
-        @Inject(APP_BASE_HREF) public baseHref: string
+        @Inject(APP_BASE_HREF) public baseHref: string,
+        @Inject(DEPLOY_URL) private deployUrl: string
     ) { }
 
     // This is the method you want to call at bootstrap
@@ -21,7 +23,7 @@ export class ConfigService {
     load(): Promise<any> {
         this._configData = null;
         const configFilePath = environment.configFileLocation ?
-            environment.configFileLocation : `${this.baseHref || '/'}assets/data/config.json`;
+            environment.configFileLocation : `${this.deployUrl || '/'}assets/data/config.json`;
 
         return this.http
             .get(configFilePath)
