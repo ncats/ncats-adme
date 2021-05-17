@@ -14,13 +14,13 @@ WORKDIR /opt/adme
 
 COPY server ./
 
-COPY --from=build /opt/adme/dist/client client
-
 RUN conda env create -f environment.yml
 
 ENV PATH /opt/conda/envs/ncats-adme/bin:$PATH
 
 RUN chmod +x startup.sh
+
+COPY --from=build /opt/adme/dist/client client
 
 CMD /bin/bash startup.sh
 
