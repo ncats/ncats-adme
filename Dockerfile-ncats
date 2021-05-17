@@ -21,6 +21,8 @@ ENV PATH /opt/conda/envs/ncats-adme/bin:$PATH
 
 RUN chmod +x startup.sh
 
+# clean existing client folder
+RUN rm -rf client
 COPY --from=build /opt/adme/dist/client client
 
 CMD /bin/bash startup.sh
