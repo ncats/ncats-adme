@@ -6,6 +6,7 @@ COPY client ./
 
 RUN npm install && npm install -g @angular/cli
 
+# build parameter for opendata subdomain
 RUN ng build --configuration production --deploy-url=/adme/client/ --base-href=/adme
 
 FROM continuumio/miniconda:4.7.12
