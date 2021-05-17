@@ -4,7 +4,7 @@ WORKDIR /opt/adme
 
 COPY client ./
 
-RUN npm install && npm install -g @angular/cli cpx
+RUN npm install && npm install -g @angular/cli
 
 RUN ng build --configuration production --deploy-url=/models/client/ --base-href=/models
 
