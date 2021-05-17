@@ -73,7 +73,7 @@ pipeline {
                             // build and push for opendata adme image
                             docker.withRegistry("https://registry.ncats.nih.gov:5000", "564b9230-c7e3-482d-b004-8e79e5e9720a") {
                                 def image = docker.build(
-                                    "${env.IMAGE_NAME}:${env.BUILD_VERSION}", "Dockerfile-opendata", 
+                                    "${env.IMAGE_NAME}:${env.BUILD_VERSION}", "-f Dockerfile-opendata", 
                                     "--no-cache ."
                                 )
                                 // Push the image to the registry
