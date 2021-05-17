@@ -1,7 +1,6 @@
 pipeline {
     options {
         timestamps()
-        skipDefaultCheckout true
         disableConcurrentBuilds()
     }
     parameters {
