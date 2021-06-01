@@ -1,7 +1,7 @@
 <div class="container">
     <div class="inner-container" *ngIf="model == 'rlm'">
         <h2>
-            RLM Model
+            RLM Stability
         </h2>
         <div class="definitions-container">
             <div class="definition">
@@ -26,20 +26,18 @@
             </div>
             <div class="definition">
                 <div class="name">Model Details:</div>
-                <div class="value">
+                <div class="value" style="text-align: justify;">
                     The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.</div>
             </div>
             <div class="definition">
                 <div class="name">Interpretation of Models:</div>
-                <div class="value">
+                <div class="value" style="text-align: justify;">
                     The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
             </div>
             <div class="definition">
-                <div class="name">Data for Download:</div>
+                <div class="name">Data Availability:</div>
                 <div class="value">
-                    A subset of the dataset used for developing these models is available for download. Click <a
-                        [href]="dataDownloadHref" target="_blank" admeTrackLinkEvent evAction="download" evLabel="rlm data subset">here</a> to download. Alternatively, this data is also
-                    available from PubChem Bioassay database: <a
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
                         href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1508591" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
                         1508591</a>.
                 </div>
@@ -79,14 +77,18 @@
             </li>
         </ol>
     </div>
-    <div class="inner-container" *ngIf="model == 'pampa'">
+    <div class="inner-container" *ngIf="model == 'pampa_ph74'">
         <h2>
-            PAMPA Model
+            PAMPA at pH 7.4
         </h2>
         <div class="definitions-container">
             <div class="definition">
                 <div class="name">Name:</div>
                 <div class="value">Parallel artificial membrane permeability assay (PAMPA)</div>
+            </div>
+            <div class="definition">
+                <div class="name">Assay pH:</div>
+                <div class="value">7.4</div>
             </div>
             <div class="definition">
                 <div class="name">Dataset Type:</div>
@@ -106,14 +108,22 @@
             </div>
             <div class="definition">
                 <div class="name">Model Details:</div>
-                <div class="value">
+                <div class="value" style="text-align: justify;">
                     The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in this <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
                 </div>
             </div>
             <div class="definition">
                 <div class="name">Interpretation of Models:</div>
-                <div class="value">
+                <div class="value" style="text-align: justify;">
                     The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low or moderate permeability' (i.e., log P<sub><i>eff</i></sub> &#60; 2.0) and if the predicted class is '0', the compound is predicted to have 'high permeability' (i.e., log P<sub><i>eff</i></sub> > 2.5). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Data Availability:</div>
+                <div class="value">
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1508612" target="_blank" admeTrackLinkEvent evLabel="pampa 74 pubchem">AID
+                        1508612</a>.
                 </div>
             </div>
         </div>
@@ -137,9 +147,65 @@
             Inc. software and were expressed in the units of 10<sup>-6</sup>cm/s.
         </p>
     </div>
+    <div class="inner-container" *ngIf="model == 'pampa_ph5'">
+        <h2>
+            PAMPA at pH 5.0
+        </h2>
+        <div class="definitions-container">
+            <div class="definition">
+                <div class="name">Name:</div>
+                <div class="value">Parallel artificial membrane permeability assay (PAMPA)</div>
+            </div>
+            <div class="definition">
+                <div class="name">Assay pH:</div>
+                <div class="value">5.0</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Type:</div>
+                <div class="value">Classification</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Size:</div>
+                <div class="value">5,227 compounds</div>
+            </div>
+            <div class="definition">
+                <div class="name">Validation:</div>
+                <div class="value">5-Fold CV</div>
+            </div>
+            <div class="definition">
+                <div class="name">Descriptors:</div>
+                <div class="value">Molecular Graphs</div>
+            </div>
+            <div class="definition">
+                <div class="name">Model Details:</div>
+                <div class="value" style="text-align: justify;">
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in this <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Interpretation of Models:</div>
+                <div class="value" style="text-align: justify;">
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low permeability' (i.e., log P<sub><i>eff</i></sub> &#60; 1.0) and if the predicted class is '0', the compound is predicted to have 'moderate to high permeability' (i.e., log P<sub><i>eff</i></sub> > 1.0). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Data Availability:</div>
+                <div class="value">
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1508612" target="_blank" admeTrackLinkEvent evLabel="pampa 50 pubchem">AID
+                        1508612</a>.
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>PAMPA Assay Protocol:</h3>
+        <p style="text-align: justify;">
+            Stirring double-sink PAMPA method (patented by Pion Inc.) was employed to determine the permeability of compounds in a high-throughput format. The lipid (proprietary Pion Inc. lipid, optimized to predict GI tract passive permeability) was immobilized on a plastic matrix of a 96-well “acceptor” filter plate placed atop a 96-well “donor” plate.  pH 5 buffer was used in the donor wells and pH 7.4 buffer was used in the acceptor wells. The test articles (in duplicates), stocked in 10 mM DMSO solutions, were diluted to 0.05 mM in aqueous buffer (pH 5), and the concentration of DMSO was 0.5% in the final solution. During the 30-minute incubation at room temperature, test samples in donor compartment were stirred using Gutbox technology (Pion Inc.) to reduce the aqueous boundary layer.  The test article concentrations in the donor and acceptor compartments were measured using a UV plate reader (Nano Quant, Infinite 200 PRO, Tecan Inc., Männedorf, Switzerland).  Calculations were performed using Pion Inc. software and effective permeability (Peff) was expressed in units of 10-6cm/s. If the permeability could not be determined via UV, the samples were plated for analysis via UPLC-MS by plating 8 µL of the incubation solutions in 192 µL of Acetonitrile/Internal Standard solution in a 96-well plate (350 µL, Waters, Milford, MA).
+        </p>
+    </div>
     <div class="inner-container" *ngIf="model == 'solubility'">
         <h2>
-            Solubility Model
+            Aqueous Kinetic Solubility
         </h2>
         <div class="definitions-container">
             <div class="definition">
@@ -164,14 +230,22 @@
             </div>
             <div class="definition">
                 <div class="name">Model Details:</div>
-                <div class="value">
+                <div class="value" style="text-align: justify;">
                     The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in this <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
                 </div>
             </div>
             <div class="definition">
                 <div class="name">Interpretation of Models:</div>
-                <div class="value">
+                <div class="value" style="text-align: justify;">
                     The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low solubility' (i.e., &#60;10 µg/ml) and if the predicted class is '0', the compound is predicted to have 'high solubility' (i.e., &#62;10 µg/ml). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Data Availability:</div>
+                <div class="value">
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1645848" target="_blank" admeTrackLinkEvent evLabel="sol pubchem">AID
+                        1645848</a>.
                 </div>
             </div>
         </div>
@@ -191,12 +265,12 @@
     </div>
     <div class="inner-container" *ngIf="model == 'cyp450'">
         <h2>
-            CYP450 Models
+            Cytochrome P450 Isoforms
         </h2>
         <h3>
             High-throughput metabolic stability assays:
         </h3>
-        <p>
+        <p style="text-align: justify;">
             The substrate depletion assay was employed to determine metabolic stability, using an established mid-density (384-well format) protocol<sup>1</sup>. The workflow included a robotic system for incubation and sample clean-up, coupled with an automated ultra-high performance liquid chromatography-high resolution mass spectrometry (UHPLC-HRMS) method for sample analysis. Briefly, each 110 µL reaction mixture consisted of 1 µM test article, supersomes, and an NADPH regenerating system in 100mM phosphate buffer at pH 7.4. The specific protein and enzyme concentrations, as well as the control compounds utilized are listed in Table 1. Incubations were conducted at 37°C, with mixing, and reaction aliquots were quenched at 0, 5, 10, 15, 30, and 60 min by addition of cold acetonitrile (ACN) with internal standard (IS), i.e. albendazole. Centrifugation at 3000 g, 4 °C for 20 min, was used to clear samples of precipitated protein and debris. Sample analysis in an UHPLC-HRMS instrument, data extraction, and half-life (t<sub>1/2</sub>) determinations were performed as previously described<sup>1</sup>.
         </p>
         <div class="table-container">
@@ -319,7 +393,7 @@
         <h3>
             P450-Glo qHTS:
         </h3>
-        <p>
+        <p style="text-align: justify;">
             The P450-Glo inhibition assay is a luminescent technique used to detect CYP activity, through the liberation of luciferin from CYP probe substrates. P450-Glo assays were performed using a previously described method with minor modifications<sup>2</sup>. Briefly, 2 µL of CYP-substrate mix was dispensed into medium-binding white/solid 1,536-well plates using a Flying Reagent Dispenser (FRD, Aurora Discovery, Carlsbad, CA) with the exception of adding Bovine Serum Albumin (BSA) to the mixture for CYP2C9 and CYP2C19. The initial optimization assays for CYP2C9 and CYP2C19 yielded lower signal to background ratios and higher well to well variation. To increase signal and prevent adhesion of protein to tubes of the plate dispenser, 0.4% BSA was added to these two enzyme assays. 23 nL of each positive control (columns 1-4) and test compound (columns 5-48) dissolved in DMSO was transferred to the assay plates using a Wako Pintool station (Wako Automation, San Diego, CA). Positive controls used in these experiments are listed in Table 2. After the control/test compounds were transferred, the assay plates were incubated at room temperature (RT) for 10 min before the addition of 2 µL NADPH regeneration solution using an FRD. The reaction incubation continued at either RT or 37 °C for 60 min, and then quenched by FRD addition of 4 µL of the detection reagent. After a 20 min incubation at room temperature, the luminescence intensity was measured and quantified using a ViewLux plate reader (PerkinElmer, Shelton, CT). Data was expressed as relative luminescence units. 
         </p>
         <div class="table-container">
@@ -484,6 +558,65 @@
                 </table>
             </div>
         </div>
+
+        <h3>
+            Data Availability:
+        </h3>
+
+        <p style="text-align: justify;">
+                The data used for developing these models is made publicly available at PubChem Bioassay database.
+        </p>
+
+        <div class="table-container">
+            <div class="table-responsive-container">
+                <table class="mat-table more-padding">
+                    <thead>
+                        <tr class="mat-header-row">
+                            <th class="mat-header-cell ">
+                                Enzyme
+                            </th>
+                            <th class="mat-header-cell ">
+                                PubChem Bioassay
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                CYP3A4
+                            </td>
+                            <td class="mat-cell center">
+                                <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1645841" target="_blank" admeTrackLinkEvent evLabel="cyp3a4 pubchem">AID
+                        1645841</a>
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                CYP2C9
+                            </td>
+                            <td class="mat-cell center">
+                                <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1645842" target="_blank" admeTrackLinkEvent evLabel="cyp2c9 pubchem">AID
+                        1645842</a>
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                CYP2D6
+                            </td>
+                            <td class="mat-cell center">
+                                <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1645840" target="_blank" admeTrackLinkEvent evLabel="cyp2d6 pubchem">AID
+                        1645840</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
         <h3>
             References:
         </h3>
