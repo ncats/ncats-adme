@@ -61,6 +61,7 @@ class GcnnBase(PredictorBase):
             data_loader=data_loader,
             scaler=scaler
         )
+
         predictions = np.ma.empty(len(full_data))
         predictions.mask = True
         labels = np.ma.empty(len(full_data), dtype=np.int32)
@@ -70,7 +71,7 @@ class GcnnBase(PredictorBase):
             predictions[full_index] = model_preds[full_to_valid_indices[key]][0]
             labels[full_index] = np.round(model_preds[full_to_valid_indices[key]][0], 0)
 
-        self.predictions_df[self.column_dict_key] = pd.Series(pd.Series(labels).fillna('').astype(str) + ' (' + pd.Series(np.where(predictions>=0.5, predictions, (1-predictions))).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
+        self.predictions_df[self.column_dict_key] = pd.Series(pd.Series(labels).fillna('').astype(str) + ' (' + pd.Series(np.where(predictions>=0.5, predictions, (1 - predictions))).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
         if len(self.predictions_df.index) > len(predictions) or np.ma.count_masked(predictions) > 0:
             self.model_errors.append('graph convolutional neural network')
             self.has_errors = True
