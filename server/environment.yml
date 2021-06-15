@@ -10,7 +10,7 @@ dependencies:
   - cpuonly=1.0
   - flask=1.1.2
   - flask-cors=3.0
-  - fpsim2=0.2.6
+  - efelix::fpsim2=0.2.6
   - hyperopt=0.2.4
   - ipython=7.16.1
   - joblib=0.15
