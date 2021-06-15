@@ -55,14 +55,14 @@ def predict():
     try:
         response = predict_df(df, smi_column_name, models)
     except Exception as e:
-        print(e, file=sys.stdout)
+        print(e)
         abort(418, 'There was an unknown error')
 
     try:
         json_response = jsonify(response)
     except Exception as e:
-        print(response, file=sys.stdout)
-        print(e, file=sys.stdout)
+        print(response)
+        print(e)
         abort(418, 'There was an unknown error')
     
     return json_response
@@ -115,14 +115,14 @@ def upload_file():
         try:
             response = predict_df(df, smi_column_name, models)
         except Exception as e:
-            print(e, file=sys.stdout)
+            print(e)
             abort(418, 'There was an unknown error')
 
         try:
             json_response = jsonify(response)
         except Exception as e:
-            print(response, file=sys.stdout)
-            print(e, file=sys.stdout)
+            print(response)
+            print(e)
             abort(418, 'There was an unknown error')
     else:
         response['hasErrors'] = True
