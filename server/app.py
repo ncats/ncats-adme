@@ -16,7 +16,7 @@ from rdkit.Chem import rdDepictor
 rdDepictor.SetPreferCoordGen(True)
 from rdkit.Chem.Draw import IPythonConsole
 import rdkit
-from flask import send_file
+from flask import abort, send_file
 from predictors.rlm.rlm_predictor import RLMPredictior
 from predictors.pampa.pampa_predictor import PAMPAPredictior
 from predictors.pampa50.pampa_predictor import PAMPA50Predictior
@@ -51,8 +51,21 @@ def predict():
 
     smi_column_name = 'smiles'
     df = pd.DataFrame([smiles_list], columns=[smi_column_name])
-    response = predict_df(df, smi_column_name, models)
-    return jsonify(response)
+
+    try:
+        response = predict_df(df, smi_column_name, models)
+    except Exception as e:
+        print(e, file=sys.stdout)
+        abort(418, 'There was an unknown error')
+
+    try:
+        json_response = jsonify(response)
+    except Exception as e:
+        print(response, file=sys.stdout)
+        print(e, file=sys.stdout)
+        abort(418, 'There was an unknown error')
+    
+    return json_response
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
@@ -99,9 +112,18 @@ def upload_file():
 
         smi_column_name = df.columns.values[indexIdentifierColumn]
 
-        response = predict_df(df, smi_column_name, models)
+        try:
+            response = predict_df(df, smi_column_name, models)
+        except Exception as e:
+            print(e, file=sys.stdout)
+            abort(418, 'There was an unknown error')
 
-        return jsonify(response)
+        try:
+            json_response = jsonify(response)
+        except Exception as e:
+            print(response, file=sys.stdout)
+            print(e, file=sys.stdout)
+            abort(418, 'There was an unknown error')
     else:
         response['hasErrors'] = True
         response['errorMessages'] = 'Only csv, txt or smi files can be processed'
