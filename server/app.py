@@ -52,20 +52,21 @@ def predict():
     smi_column_name = 'smiles'
     df = pd.DataFrame([smiles_list], columns=[smi_column_name])
 
-    try:
-        response = predict_df(df, smi_column_name, models)
-    except Exception as e:
-        print(e)
-        abort(418, 'There was an unknown error')
+    # try:
+    #     response = predict_df(df, smi_column_name, models)
+    # except Exception as e:
+    #     print(e)
+    #     abort(418, 'There was an unknown error')
 
-    try:
-        json_response = jsonify(response)
-    except Exception as e:
-        print(response)
-        print(e)
-        abort(418, 'There was an unknown error')
+    # try:
+    #     json_response = jsonify(response)
+    # except Exception as e:
+    #     print(response)
+    #     print(e)
+    #     abort(418, 'There was an unknown error')
     
-    return json_response
+    # return json_response
+    return jsonify(response)
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
