@@ -51,7 +51,8 @@ def predict():
 
     smi_column_name = 'smiles'
     df = pd.DataFrame([smiles_list], columns=[smi_column_name])
-
+    
+    response = predict_df(df, smi_column_name, models)
     # try:
     #     response = predict_df(df, smi_column_name, models)
     # except Exception as e:
