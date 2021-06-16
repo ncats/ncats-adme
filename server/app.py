@@ -137,6 +137,8 @@ def upload_file():
             app.logger.error(f'error type: {type(e)}')
             app.logger.error(e)
             abort(418, 'There was an unknown error')
+        
+        return json_response
     else:
         response['hasErrors'] = True
         response['errorMessages'] = 'Only csv, txt or smi files can be processed'
