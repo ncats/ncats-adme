@@ -51,23 +51,29 @@ def predict():
 
     smi_column_name = 'smiles'
     df = pd.DataFrame([smiles_list], columns=[smi_column_name])
-    
-    response = predict_df(df, smi_column_name, models)
-    # try:
-    #     response = predict_df(df, smi_column_name, models)
-    # except Exception as e:
-    #     print(e)
-    #     abort(418, 'There was an unknown error')
 
-    # try:
-    #     json_response = jsonify(response)
-    # except Exception as e:
-    #     print(response)
-    #     print(e)
-    #     abort(418, 'There was an unknown error')
+    try:
+        response = predict_df(df, smi_column_name, models)
+    except Exception as e:
+        app.logger.error('Error making a prediction')
+        app.logger.error(f'error type: {type(e)}')
+        app.logger.error(e)
+        abort(418, 'There was an unknown error')
+
+    try:
+        json_response = jsonify(response)
+    except Exception as e:
+        app.logger.error('Error converting the response to JSON')
+        app.logger.error(f'response type: {type(response)}')
+        app.logger.error(response)
+        app.logger.error(f'error type: {type(e)}')
+        app.logger.error(e)
+        abort(418, 'There was an unknown error')
     
-    # return json_response
-    return jsonify(response)
+    return json_response
+
+    # response = predict_df(df, smi_column_name, models)
+    # return jsonify(response)
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
@@ -117,14 +123,19 @@ def upload_file():
         try:
             response = predict_df(df, smi_column_name, models)
         except Exception as e:
-            print(e)
+            app.logger.error('Error making a prediction')
+            app.logger.error(f'error type: {type(e)}')
+            app.logger.error(e)
             abort(418, 'There was an unknown error')
 
         try:
             json_response = jsonify(response)
         except Exception as e:
-            print(response)
-            print(e)
+            app.logger.error('Error converting the response to JSON')
+            app.logger.error(f'response type: {type(response)}')
+            app.logger.error(response)
+            app.logger.error(f'error type: {type(e)}')
+            app.logger.error(e)
             abort(418, 'There was an unknown error')
     else:
         response['hasErrors'] = True

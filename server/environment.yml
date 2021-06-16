@@ -11,6 +11,8 @@ dependencies:
   - flask=1.1.2
   - flask-cors=3.0
   - efelix::fpsim2=0.2.6
+  - h5py=2.10.0
+  - hdf5=1.10.4
   - hyperopt=0.2.4
   - ipython=7.16.1
   - joblib=0.15
