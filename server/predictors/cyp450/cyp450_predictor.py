@@ -22,7 +22,7 @@ import platform
 
 class CYP450Predictor:
     """
-    Makes RLM stability preditions
+    Makes CYP450 preditions
 
     Attributes:
         df (DataFrame): DataFrame containing column with smiles
