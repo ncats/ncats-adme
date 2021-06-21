@@ -2,6 +2,7 @@ from numpy import array
 from rdkit import Chem
 from pandas import DataFrame
 from rdkit.Chem.rdchem import Mol
+from FPSim2 import FPSim2Engine
 import sys
 sys.path.insert(0, './predictors/chemprop')
 from chemprop.utils import load_checkpoint, load_scalers
@@ -9,6 +10,7 @@ from os import path
 import requests
 from tqdm import tqdm
 import os
+import os.path as path
 
 def get_processed_smi(rdkit_mols: array) -> array:
     """
@@ -73,3 +75,15 @@ def load_gcnn_model(model_file_path, model_file_url):
     gcnn_model = load_checkpoint(model_file_path)
 
     return gcnn_scaler, gcnn_model
+
+def get_similar_mols(kekule_smiles: list, model: str):
+
+    sim_vals = []
+    fp_dict_path = ''.join(['./train_data/', model, '_tier1.h5'])
+    fp_dict_path = path.abspath(path.join(os.getcwd(), fp_dict_path))
+    fp_engine = FPSim2Engine(fp_dict_path)
+    for smi in kekule_smiles:
+        res = fp_engine.on_disk_similarity(smi, 0.01)
+        sim_vals.append(res[0][1])
+
+    return sim_vals

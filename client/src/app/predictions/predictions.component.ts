@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Ketcher } from '../sketcher/ketcher.model';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import { FileForm } from '../text-file/file-form.model';
 import { LoadingService } from '../loading/loading.service';
 import { DownloadEvent, PredictionsData } from '../predictions-table/predictions.model';
 import { GoogleAnalyticsService } from '../google-analytics/google-analytics.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { ConfigService } from '../config/config.service';
 
 @Component({
   selector: 'adme-predictions',
@@ -18,6 +18,7 @@ export class PredictionsComponent implements OnInit {
   private sketcherDisplayedColumns = ['smiles', 'rlm'];
   sketcherData: { [modelName: string]: PredictionsData };
   fileData: { [modelName: string]: PredictionsData };
+  private apiBaseUrl: string;
 
   errorMessage: string;
   errorMessages: Array<string> = [];
@@ -28,10 +29,11 @@ export class PredictionsComponent implements OnInit {
   private sketcherIndexIdentifierColumn = 0;
   private fileIndexIdentifierColumn: number;
   indexIdentifierColumn: number;
-  models = ['RLM', 'PAMPA', 'Solubility', 'CYP450'];
+  models = ['RLM', 'PAMPA50', 'PAMPA', 'Solubility', 'CYP450'];
   tabLabels = {
     RLM: 'RLM Stability',
-    PAMPA: 'PAMPA Permeability',
+    PAMPA50: 'PAMPA Permeability (pH 5.0)',
+    PAMPA: 'PAMPA Permeability (pH 7.4)',
     Solubility: 'Solubility',
     CYP450: 'CYP450'
   };
@@ -39,8 +41,10 @@ export class PredictionsComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private loadingService: LoadingService,
-    private gaService: GoogleAnalyticsService
+    private gaService: GoogleAnalyticsService,
+    private configService: ConfigService
   ) {
+    this.apiBaseUrl = configService.configData.apiBaseUrl;
   }
 
   ngOnInit(): void {
@@ -58,7 +62,7 @@ export class PredictionsComponent implements OnInit {
         model: this.models
       }
     };
-    this.http.get(`${environment.apiBaseUrl}api/v1/predict`, options).subscribe((response: any) => {
+    this.http.get(`${this.apiBaseUrl}api/v1/predict`, options).subscribe((response: any) => {
       this.sketcherData = response;
       this.loadingService.setLoadingState(false);
     }, error => {
@@ -82,7 +86,7 @@ export class PredictionsComponent implements OnInit {
     this.fileIndexIdentifierColumn = fileForm.indexIdentifierColumn;
     this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
     formData.append('file', fileForm.file);
-    this.http.post(`${environment.apiBaseUrl}api/v1/predict-file`, formData).subscribe((response: any) => {
+    this.http.post(`${this.apiBaseUrl}api/v1/predict-file`, formData).subscribe((response: any) => {
       if (response.hasErrors) {
         this.errorMessage = response.errorMessages;
       } else if (response && Object.keys(response).length > 0) {

@@ -16,13 +16,14 @@ from rdkit.Chem import rdDepictor
 rdDepictor.SetPreferCoordGen(True)
 from rdkit.Chem.Draw import IPythonConsole
 import rdkit
-from flask import send_file
+from flask import abort, send_file
 from predictors.rlm.rlm_predictor import RLMPredictior
 from predictors.pampa.pampa_predictor import PAMPAPredictior
+from predictors.pampa50.pampa_predictor import PAMPA50Predictior
 from predictors.solubility.solubility_predictor import SolubilityPredictior
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
 from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
-
+from predictors.utilities.utilities import get_similar_mols
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -30,6 +31,9 @@ app.config["DEBUG"] = False
 
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
+data_path = os.getenv('DATA_PATH', '')
+
+# path for mounted volumen will be '/data'
 
 @app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():
@@ -47,8 +51,29 @@ def predict():
 
     smi_column_name = 'smiles'
     df = pd.DataFrame([smiles_list], columns=[smi_column_name])
-    response = predict_df(df, smi_column_name, models)
-    return jsonify(response)
+
+    try:
+        response = predict_df(df, smi_column_name, models)
+    except Exception as e:
+        app.logger.error('Error making a prediction')
+        app.logger.error(f'error type: {type(e)}')
+        app.logger.error(e)
+        abort(418, 'There was an unknown error')
+
+    try:
+        json_response = jsonify(response)
+    except Exception as e:
+        app.logger.error('Error converting the response to JSON')
+        app.logger.error(f'response type: {type(response)}')
+        app.logger.error(response)
+        app.logger.error(f'error type: {type(e)}')
+        app.logger.error(e)
+        abort(418, 'There was an unknown error')
+    
+    return json_response
+
+    # response = predict_df(df, smi_column_name, models)
+    # return jsonify(response)
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
@@ -95,9 +120,25 @@ def upload_file():
 
         smi_column_name = df.columns.values[indexIdentifierColumn]
 
-        response = predict_df(df, smi_column_name, models)
+        try:
+            response = predict_df(df, smi_column_name, models)
+        except Exception as e:
+            app.logger.error('Error making a prediction')
+            app.logger.error(f'error type: {type(e)}')
+            app.logger.error(e)
+            abort(418, 'There was an unknown error')
 
-        return jsonify(response)
+        try:
+            json_response = jsonify(response)
+        except Exception as e:
+            app.logger.error('Error converting the response to JSON')
+            app.logger.error(f'response type: {type(response)}')
+            app.logger.error(response)
+            app.logger.error(f'error type: {type(e)}')
+            app.logger.error(e)
+            abort(418, 'There was an unknown error')
+        
+        return json_response
     else:
         response['hasErrors'] = True
         response['errorMessages'] = 'Only csv, txt or smi files can be processed'
@@ -136,6 +177,8 @@ def predict_df(df, smi_column_name, models):
             predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values)
         elif model.lower() == 'pampa':
             predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+        elif model.lower() == 'pampa50':
+            predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values)
         elif model.lower() == 'solubility':
             predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values)
         elif model.lower() == 'cyp450':
@@ -161,8 +204,22 @@ def predict_df(df, smi_column_name, models):
         response[model]['columns'] = list(response_df.columns.values)
 
         columns_dict =  predictor.columns_dict()
+
         dict_length = len(columns_dict.keys())
         columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+
+        if model.lower() != 'cyp450':
+            # for all models except cyp450, calculate the nearest neigbors and add additional column to response_df
+            try:
+                sim_vals = get_similar_mols(response_df[smi_column_name].values, model.lower())
+                sim_series = pd.Series(sim_vals).round(2).astype(str)
+                response_df['Tanimoto Similarity'] = sim_series.values
+                columns_dict['Tanimoto Similarity'] = { 'order': 3, 'description': 'similarity towards nearest neighbor in training data', 'isSmilesColumn': False }
+            except Exception as e:
+                app.logger.error('Error making getting similarity')
+                app.logger.error(f'error type: {type(e)}')
+                app.logger.error(e)
+
         response[model]['mainColumnsDict'] = columns_dict
         response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
 
