@@ -211,10 +211,10 @@ def predict_df(df, smi_column_name, models):
         if model.lower() != 'cyp450':
             # for all models except cyp450, calculate the nearest neigbors and add additional column to response_df
             try:
-                columns_dict['Tanimoto Similarity'] = { 'order': 3, 'description': 'similarity towards nearest neighbor in training data', 'isSmilesColumn': False }
                 sim_vals = get_similar_mols(response_df[smi_column_name].values, model.lower())
                 sim_series = pd.Series(sim_vals).round(2).astype(str)
                 response_df['Tanimoto Similarity'] = sim_series.values
+                columns_dict['Tanimoto Similarity'] = { 'order': 3, 'description': 'similarity towards nearest neighbor in training data', 'isSmilesColumn': False }
             except Exception as e:
                 app.logger.error('Error making getting similarity')
                 app.logger.error(f'error type: {type(e)}')
