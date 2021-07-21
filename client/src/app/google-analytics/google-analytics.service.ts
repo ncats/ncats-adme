@@ -27,7 +27,7 @@ export class GoogleAnalyticsService {
 
   init() {
     this.gtag = window['gtag'];
-    this.gtag('config', 'G-RM2JHGHYEK', { send_page_view: false });
+    this.gtag('config', this.googleAnanlyticsId, { send_page_view: false });
     this.isActive = true;
   }
 
@@ -44,7 +44,6 @@ export class GoogleAnalyticsService {
         page_title: title,
         page_path: path
       };
-      console.log(this.gtag);
       this.gtag('config', this.googleAnanlyticsId, sendFields);
     }
   }
