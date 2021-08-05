@@ -36,7 +36,7 @@ class SolubilityPredictior(GcnnBase):
         predictions_df (DataFrame): DataFrame hosting all predictions
     """
 
-    def __init__(self, kekule_smiles: array = None):
+    def __init__(self, kekule_smiles: array = None, smiles: array = None):
         """
         Constructor for RLMPredictior class
 
@@ -44,13 +44,15 @@ class SolubilityPredictior(GcnnBase):
             kekule_smiles (Array): numpy array of RDkit molecules
         """
 
-        GcnnBase.__init__(self, kekule_smiles, column_dict_key='Predicted Class (Probability)', columns_dict_order = 1)
+        GcnnBase.__init__(self, kekule_smiles, column_dict_key='Predicted Class (Probability)', columns_dict_order = 1, smiles=smiles)
 
         self._columns_dict['Prediction'] = {
             'order': 2,
             'description': 'class label',
             'isSmilesColumn': False
         }
+
+        self.model_name = 'solubility'
         
     def get_predictions(self) -> DataFrame:
         """

@@ -31,7 +31,12 @@ app.config["DEBUG"] = False
 
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
+
+global data_path
 data_path = os.getenv('DATA_PATH', '')
+
+if data_path != '' and not os.path.isfile(f'{data_path}predictions.csv'):
+    pd.DataFrame(columns=['SMILES', 'model', 'prediction', 'timestamp']).to_csv(f'{data_path}predictions.csv', index=False)
 
 # path for mounted volumen will be '/data'
 
@@ -174,19 +179,21 @@ def predict_df(df, smi_column_name, models):
         error_messages = []
 
         if model.lower() == 'rlm':
-            predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+            predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa':
-            predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+            predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa50':
-            predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values)
+            predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'solubility':
-            predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+            predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'cyp450':
-            predictor = CYP450Predictor(kekule_mols = working_df['mols'].values)
+            predictor = CYP450Predictor(kekule_mols = working_df['mols'].values, smiles=working_df[smi_column_name].values)
         else:
             break
 
         pred_df = predictor.get_predictions()
+        if data_path != '':
+            predictor.record_predictions(f'{data_path}predictions.csv')
         pred_df = working_df.join(pred_df)
         pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
 

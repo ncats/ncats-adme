@@ -7,10 +7,12 @@ from chemprop.data import MoleculeDataLoader, MoleculeDataset
 from chemprop.train import predict
 from .base import PredictorBase
 from typing import Tuple
+from datetime import timezone
+import datetime
 
 class GcnnBase(PredictorBase):
 
-    def __init__(self, kekule_smiles: array = None, column_dict_key = 'GCNN', columns_dict_order: int = 1):
+    def __init__(self, kekule_smiles: array = None, column_dict_key = 'GCNN', columns_dict_order: int = 1, smiles: array = None):
         PredictorBase.__init__(self)
 
         if kekule_smiles is None or len(kekule_smiles) == 0:
@@ -25,6 +27,10 @@ class GcnnBase(PredictorBase):
             'description': 'graph convolutional neural network prediction',
             'isSmilesColumn': False
         }
+
+        self.smiles = smiles
+
+        self.model_name = None
 
     def gcnn_predict(self, model, scaler) -> Tuple[array, array]:
         """
@@ -70,6 +76,17 @@ class GcnnBase(PredictorBase):
             full_index = int(key)
             predictions[full_index] = model_preds[full_to_valid_indices[key]][0]
             labels[full_index] = np.round(model_preds[full_to_valid_indices[key]][0], 0)
+
+        if self.smiles is not None:
+            dt = datetime.datetime.now(timezone.utc)
+            utc_time = dt.replace(tzinfo=timezone.utc)
+            utc_timestamp = utc_time.timestamp()
+            self.raw_predictions_df = self.raw_predictions_df.append(
+                pd.DataFrame(
+                    { 'SMILES': self.smiles, 'model': self.model_name, 'prediction': predictions, 'timestamp': utc_timestamp }
+                ),
+                ignore_index = True
+            )
 
         self.predictions_df[self.column_dict_key] = pd.Series(pd.Series(labels).fillna('').astype(str) + ' (' + pd.Series(np.where(predictions>=0.5, predictions, (1 - predictions))).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
         if len(self.predictions_df.index) > len(predictions) or np.ma.count_masked(predictions) > 0:
