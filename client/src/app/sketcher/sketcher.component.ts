@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Inject, Input } from '@angular/core';
 import { Ketcher } from './ketcher.model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LoadingService } from '../loading/loading.service';
@@ -21,6 +21,13 @@ export class SketcherComponent implements OnInit {
     @Inject(DEPLOY_URL) public deployUrl: string
   ) {
     this.ketcherSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${deployUrl}assets/ketcher/ketcher.html`);
+  }
+
+  @Input()
+  set apiBaseUrl(apiBaseUrl: string) {
+    this.ketcherSrc = this.domSanatizer.bypassSecurityTrustResourceUrl(
+      `${this.deployUrl}assets/ketcher/ketcher.html?api_path=${apiBaseUrl}`
+    );
   }
 
   ngOnInit(): void {
