@@ -28,6 +28,7 @@ export class SketcherComponent implements OnInit {
     this.ketcherFrame.nativeElement.onload = () => {
       // tslint:disable-next-line:no-string-literal
       this.ketcher = this.ketcherFrame.nativeElement.contentWindow['ketcher'];
+      this.ketcher.apiPath = '/api/';
       this.loadingService.setLoadingState(false);
     };
   }

@@ -5,7 +5,6 @@ import { ResolveEnd, Router, RouterEvent } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from './google-analytics/google-analytics.service';
 import { DOCUMENT } from '@angular/common';
-import { APP_BASE_HREF } from '@angular/common';
 import { DEPLOY_URL } from './utilities/deploy-url';
 
 @Component({

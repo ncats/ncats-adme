@@ -72,9 +72,6 @@ def predict():
     
     return json_response
 
-    # response = predict_df(df, smi_column_name, models)
-    # return jsonify(response)
-
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
 def allowed_file(filename):
