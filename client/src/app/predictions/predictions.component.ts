@@ -18,7 +18,8 @@ export class PredictionsComponent implements OnInit {
   private sketcherDisplayedColumns = ['smiles', 'rlm'];
   sketcherData: { [modelName: string]: PredictionsData };
   fileData: { [modelName: string]: PredictionsData };
-  private apiBaseUrl: string;
+  apiBaseUrl: string;
+  apiKetcherUrl: string;
 
   errorMessage: string;
   errorMessages: Array<string> = [];
@@ -45,6 +46,7 @@ export class PredictionsComponent implements OnInit {
     private configService: ConfigService
   ) {
     this.apiBaseUrl = configService.configData.apiBaseUrl;
+    this.apiKetcherUrl = `${this.apiBaseUrl}ketcher`;
   }
 
   ngOnInit(): void {

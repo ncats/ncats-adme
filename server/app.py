@@ -77,9 +77,6 @@ def predict():
     
     return json_response
 
-    # response = predict_df(df, smi_column_name, models)
-    # return jsonify(response)
-
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
 def allowed_file(filename):
@@ -231,6 +228,132 @@ def predict_df(df, smi_column_name, models):
         response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
 
     return response
+
+@app.route(f'{root_route_path}/ketcher/info', methods=['GET'])
+def ketcher_info():
+    response = {
+        "imago_versions": [], 
+        "indigo_version": "N/A",
+    }
+
+    return jsonify(response)
+
+@app.route(f'{root_route_path}/ketcher/indigo/layout', methods=['POST'])
+def ketcher_layout():
+
+    mol = Chem.MolFromSmiles(request.json['struct'])
+
+    if mol is None:
+        mol = Chem.MolFromMolBlock(request.json['struct'])
+
+    if mol is not None:
+
+        if 'output_format' in request.json.keys():
+            output_format = request.json['output_format']
+        else:
+            output_format = 'chemical/x-mdl-molfile'
+
+        response = {
+            'format': output_format,
+            'struct': Chem.MolToMolBlock(mol)
+        }
+        return response
+    else:
+        response = {
+            'error': 'Please provide valid SMILES or molfile'
+        }
+        return response, 400
+
+@app.route(f'{root_route_path}/ketcher/indigo/clean', methods=['POST'])
+def ketcher_clean():
+
+    mol = Chem.MolFromMolBlock(request.json['struct'])
+
+    if mol is not None:
+
+        output_format = 'chemical/x-mdl-molfile'
+        Chem.Cleanup(mol)
+        response = {
+            'format': output_format,
+            'struct': Chem.MolToMolBlock(mol)
+        }
+
+        return response
+    else:
+        response = {
+            'error': 'Please provide valid structures'
+        }
+        return response, 400
+
+@app.route(f'{root_route_path}/ketcher/indigo/aromatize', methods=['POST'])
+def ketcher_aromatize():
+
+    mol = Chem.MolFromMolBlock(request.json['struct'])
+
+    if mol is not None:
+
+        output_format = 'chemical/x-mdl-molfile'
+        Chem.SanitizeMol(mol)
+        response = {
+            'format': output_format,
+            'struct': Chem.MolToMolBlock(mol)
+        }
+
+        return response
+    else:
+        response = {
+            'error': 'Please provide valid structures'
+        }
+        return response, 400
+
+@app.route(f'{root_route_path}/ketcher/indigo/dearomatize', methods=['POST'])
+def ketcher_dearomatize():
+
+    mol = Chem.MolFromMolBlock(request.json['struct'])
+
+    if mol is not None:
+
+        output_format = 'chemical/x-mdl-molfile'
+        Chem.Kekulize(mol)
+        response = {
+            'format': output_format,
+            'struct': Chem.MolToMolBlock(mol)
+        }
+
+        return response
+    else:
+        response = {
+            'error': 'Please provide valid structures'
+        }
+        return response, 400
+
+@app.route(f'{root_route_path}/ketcher/indigo/calculate_cip', methods=['POST'])
+def ketcher_calculate_cip():
+    response = {
+        'error': 'This feature is not supported at the moment'
+    }
+    return response, 501
+
+@app.route(f'{root_route_path}/ketcher/indigo/check', methods=['POST'])
+def ketcher_chek():
+    response = {
+        'error': 'This feature is not supported at the moment'
+    }
+    return response, 501
+
+@app.route(f'{root_route_path}/ketcher/indigo/calculate', methods=['POST'])
+def ketcher_calculate():
+    response = {
+        'error': 'This feature is not supported at the moment'
+    }
+    return response, 501
+
+@app.route(f'{root_route_path}/ketcher/imago/uploads', methods=['POST'])
+def ketcher_uploads():
+    response = {
+        'error': 'This feature is not supported at the moment'
+    }
+    return response, 501
 
 @app.route(f'{root_route_path}/client/<path:path>')
 def send_js(path):
