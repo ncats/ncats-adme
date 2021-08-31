@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Inject, Input } from '@angular/core';
 import { Ketcher } from './ketcher.model';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LoadingService } from '../loading/loading.service';
@@ -23,11 +23,19 @@ export class SketcherComponent implements OnInit {
     this.ketcherSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${deployUrl}assets/ketcher/ketcher.html`);
   }
 
+  @Input()
+  set apiBaseUrl(apiBaseUrl: string) {
+    this.ketcherSrc = this.domSanatizer.bypassSecurityTrustResourceUrl(
+      `${this.deployUrl}assets/ketcher/ketcher.html?api_path=${apiBaseUrl}`
+    );
+  }
+
   ngOnInit(): void {
     // this.loadingService.setLoadingState(true);
     this.ketcherFrame.nativeElement.onload = () => {
       // tslint:disable-next-line:no-string-literal
       this.ketcher = this.ketcherFrame.nativeElement.contentWindow['ketcher'];
+      this.ketcher.apiPath = '/api/';
       this.loadingService.setLoadingState(false);
     };
   }

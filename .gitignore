@@ -12,6 +12,8 @@ notebooks
 notebooks/
 env
 env/
+temp
+temp/
 
 server/models
 server/models/

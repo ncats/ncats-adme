@@ -19,6 +19,9 @@ from tqdm import tqdm
 from copy import deepcopy
 import multiprocessing as mp
 import platform
+import csv
+from datetime import timezone
+import datetime
 
 class CYP450Predictor:
     """
@@ -63,13 +66,15 @@ class CYP450Predictor:
         }
     }
 
-    def __init__(self, kekule_mols: array = None, rdkit_descriptors_matrix: array = None, morgan_fp_matrix: array = None):
+    def __init__(self, kekule_mols: array = None, rdkit_descriptors_matrix: array = None, morgan_fp_matrix: array = None, smiles: array = None):
         """
         Constructor for RLMPredictior class
 
         Parameters:
-            rdkit_descriptors_matri (array): optional numpy array of rdkit descriptors for each molecule,
-            morgan_fp_matrix (array): optional numpy array of morgan fingerprints for each molecule
+            kekule_mols (array): n x 1 array of RDKit molecule objects kekulized
+            rdkit_descriptors_matrix (array): optional numpy array of rdkit descriptors for each molecule,
+            morgan_fp_matrix (array): optional numpy array of morgan fingerprints for each molecule,
+            smiles (array): optional n x 1 array of SMILES used to record raw predictions in raw_predictions_df property
         """
 
         self.kekule_mols = kekule_mols
@@ -77,6 +82,7 @@ class CYP450Predictor:
         # create dataframe to be filled with predictions
         columns = self._columns_dict.keys()
         self.predictions_df = pd.DataFrame(columns=columns)
+        self.raw_predictions_df = pd.DataFrame()
 
         if len(self.kekule_mols) == 0:
             raise ValueError('Please provide valid smiles')
@@ -95,6 +101,8 @@ class CYP450Predictor:
             self.rdkit_desc_matrix = rdkit_descriptors_generator.get_rdkit_descriptors(['MolLogP', 'TPSA', 'ExactMolWt', 'NumHDonors', 'NumHAcceptors'])
         else:
             self.rdkit_desc_matrix = rdkit_descriptors_matrix
+
+        self.smiles = smiles
 
         self.has_errors = False
         self.model_errors = []
@@ -158,6 +166,17 @@ class CYP450Predictor:
                     + pd.Series(np.where(mean_probs>=0.5, mean_probs, (1-mean_probs))).round(2).astype(str)
                     +')'
                 )
+
+                if self.smiles is not None:
+                    dt = datetime.datetime.now(timezone.utc)
+                    utc_time = dt.replace(tzinfo=timezone.utc)
+                    utc_timestamp = utc_time.timestamp()
+                    self.raw_predictions_df = self.raw_predictions_df.append(
+                        pd.DataFrame(
+                            { 'SMILES': self.smiles, 'model': model_name, 'prediction': mean_probs, 'timestamp': utc_timestamp }
+                        ),
+                        ignore_index = True
+                    )
                 #conns_dict[model_name].close()
 
             pool.close()
@@ -208,3 +227,10 @@ class CYP450Predictor:
 
     def columns_dict(self):
         return self._columns_dict.copy()
+
+    def record_predictions(self, file_path):
+        if len(self.raw_predictions_df.index) > 0:
+            with open(file_path, 'a') as fw:
+                rows = self.raw_predictions_df.values.tolist()
+                cw = csv.writer(fw)
+                cw.writerows(rows)

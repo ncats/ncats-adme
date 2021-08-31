@@ -31,7 +31,12 @@ app.config["DEBUG"] = False
 
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
+
+global data_path
 data_path = os.getenv('DATA_PATH', '')
+
+if data_path != '' and not os.path.isfile(f'{data_path}predictions.csv'):
+    pd.DataFrame(columns=['SMILES', 'model', 'prediction', 'timestamp']).to_csv(f'{data_path}predictions.csv', index=False)
 
 # path for mounted volumen will be '/data'
 
@@ -71,9 +76,6 @@ def predict():
         abort(418, 'There was an unknown error')
     
     return json_response
-
-    # response = predict_df(df, smi_column_name, models)
-    # return jsonify(response)
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
 
@@ -174,19 +176,21 @@ def predict_df(df, smi_column_name, models):
         error_messages = []
 
         if model.lower() == 'rlm':
-            predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+            predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa':
-            predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+            predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa50':
-            predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values)
+            predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'solubility':
-            predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values)
+            predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'cyp450':
-            predictor = CYP450Predictor(kekule_mols = working_df['mols'].values)
+            predictor = CYP450Predictor(kekule_mols = working_df['mols'].values, smiles=working_df[smi_column_name].values)
         else:
             break
 
         pred_df = predictor.get_predictions()
+        if data_path != '':
+            predictor.record_predictions(f'{data_path}predictions.csv')
         pred_df = working_df.join(pred_df)
         pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
 
@@ -224,6 +228,132 @@ def predict_df(df, smi_column_name, models):
         response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
 
     return response
+
+@app.route(f'{root_route_path}/ketcher/info', methods=['GET'])
+def ketcher_info():
+    response = {
+        "imago_versions": [], 
+        "indigo_version": "N/A",
+    }
+
+    return jsonify(response)
+
+@app.route(f'{root_route_path}/ketcher/indigo/layout', methods=['POST'])
+def ketcher_layout():
+
+    mol = Chem.MolFromSmiles(request.json['struct'])
+
+    if mol is None:
+        mol = Chem.MolFromMolBlock(request.json['struct'])
+
+    if mol is not None:
+
+        if 'output_format' in request.json.keys():
+            output_format = request.json['output_format']
+        else:
+            output_format = 'chemical/x-mdl-molfile'
+
+        response = {
+            'format': output_format,
+            'struct': Chem.MolToMolBlock(mol)
+        }
+        return response
+    else:
+        response = {
+            'error': 'Please provide valid SMILES or molfile'
+        }
+        return response, 400
+
+@app.route(f'{root_route_path}/ketcher/indigo/clean', methods=['POST'])
+def ketcher_clean():
+
+    mol = Chem.MolFromMolBlock(request.json['struct'])
+
+    if mol is not None:
+
+        output_format = 'chemical/x-mdl-molfile'
+        Chem.Cleanup(mol)
+        response = {
+            'format': output_format,
+            'struct': Chem.MolToMolBlock(mol)
+        }
+
+        return response
+    else:
+        response = {
+            'error': 'Please provide valid structures'
+        }
+        return response, 400
+
+@app.route(f'{root_route_path}/ketcher/indigo/aromatize', methods=['POST'])
+def ketcher_aromatize():
+
+    mol = Chem.MolFromMolBlock(request.json['struct'])
+
+    if mol is not None:
+
+        output_format = 'chemical/x-mdl-molfile'
+        Chem.SanitizeMol(mol)
+        response = {
+            'format': output_format,
+            'struct': Chem.MolToMolBlock(mol)
+        }
+
+        return response
+    else:
+        response = {
+            'error': 'Please provide valid structures'
+        }
+        return response, 400
+
+@app.route(f'{root_route_path}/ketcher/indigo/dearomatize', methods=['POST'])
+def ketcher_dearomatize():
+
+    mol = Chem.MolFromMolBlock(request.json['struct'])
+
+    if mol is not None:
+
+        output_format = 'chemical/x-mdl-molfile'
+        Chem.Kekulize(mol)
+        response = {
+            'format': output_format,
+            'struct': Chem.MolToMolBlock(mol)
+        }
+
+        return response
+    else:
+        response = {
+            'error': 'Please provide valid structures'
+        }
+        return response, 400
+
+@app.route(f'{root_route_path}/ketcher/indigo/calculate_cip', methods=['POST'])
+def ketcher_calculate_cip():
+    response = {
+        'error': 'This feature is not supported at the moment'
+    }
+    return response, 501
+
+@app.route(f'{root_route_path}/ketcher/indigo/check', methods=['POST'])
+def ketcher_chek():
+    response = {
+        'error': 'This feature is not supported at the moment'
+    }
+    return response, 501
+
+@app.route(f'{root_route_path}/ketcher/indigo/calculate', methods=['POST'])
+def ketcher_calculate():
+    response = {
+        'error': 'This feature is not supported at the moment'
+    }
+    return response, 501
+
+@app.route(f'{root_route_path}/ketcher/imago/uploads', methods=['POST'])
+def ketcher_uploads():
+    response = {
+        'error': 'This feature is not supported at the moment'
+    }
+    return response, 501
 
 @app.route(f'{root_route_path}/client/<path:path>')
 def send_js(path):
