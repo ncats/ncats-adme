@@ -19,7 +19,7 @@ def download_file(base_url, model_number, models_dict):
         open(os.devnull, "wb"),
         "write",
         miniters=1,
-        desc=f'{model_name}-model_{model_number}',
+        desc=f'model_{model_number}',
         total=int(lc_rf_pkl_file_request.headers.get('content-length', 0))
     ) as fout:
         for chunk in lc_rf_pkl_file_request.iter_content(chunk_size=4096):
