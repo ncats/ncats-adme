@@ -53,7 +53,7 @@ class RLMPredictior(GcnnBase):
         }
 
         self.model_name = 'rlm'
-        
+
     def get_predictions(self) -> DataFrame:
         """
         Function that calculates consensus predictions
@@ -72,5 +72,5 @@ class RLMPredictior(GcnnBase):
             self.predictions_df['Prediction'] = pd.Series(
                 pd.Series(np.where(gcnn_predictions>=0.5, 'unstable', 'stable'))
             )
-            
+
         return self.predictions_df
