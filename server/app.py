@@ -226,6 +226,18 @@ def predict_df(df, smi_column_name, models):
                 app.logger.error('Error making getting similarity')
                 app.logger.error(f'error type: {type(e)}')
                 app.logger.error(e)
+        else:
+            # for cyp450 models, a similarity value is calculated using a global dataset that is representative of all six cyp450 endpoints
+            try:
+                sim_vals = get_similar_mols(response_df[smi_column_name].values, model.lower())
+                sim_series = pd.Series(sim_vals).round(2).astype(str)
+                response_df['Tanimoto Similarity'] = sim_series.values
+                columns_dict['Tanimoto Similarity'] = { 'order': 7, 'description': 'similarity towards nearest neighbor in training data that was obtained by combining the compounds from all six individual datasets', 'isSmilesColumn': False }
+            except Exception as e:
+                app.logger.error('Error making getting similarity')
+                app.logger.error(f'error type: {type(e)}')
+                app.logger.error(e)
+
 
         response[model]['mainColumnsDict'] = columns_dict
         response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
