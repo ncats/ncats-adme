@@ -130,21 +130,7 @@
         <br>
         <h3>PAMPA Assay Protocol:</h3>
         <p style="text-align: justify;">
-            The stirring double-sink PAMPA method patented by pION Inc. (Billerica, MA) was
-            employed to determine the permeability of compounds via PAMPA passive diffusion.
-            The PAMPA lipid membrane, which consisted of an artificial membrane of a proprietary
-            lipid mixture and dodecane (Pion Inc.), was optimized to predict gastrointestinal tract (GIT)
-            passive diffusion permeability. This membrane was immobilized on a plastic matrix of a 96
-            well “donor” filter plate placed below a 96 well “acceptor” plate. This artificial membrane
-            mimicked the GIT membrane in the human body. Both “donor” and “acceptor” wells were
-            buffered to pH 7.4. The test articles, stocked in 10 mM DMSO solutions, were diluted to
-            0.05 mM in aqueous buffer (pH 7.4) and the concentration of DMSO was 0.5% in the final
-            solution. During the 30-minute permeation period at room temperature the test samples in
-            the donor compartment were stirred using the Gutbox technology (Pion Inc.) to reduce the
-            unstirred water layer. The test article concentrations in the “donor” and “acceptor”
-            compartments were measured using a UV plate reader (Nano Quant, Infinite® 200 PRO,
-            Tecan Inc., Männedorf, Switzerland). Permeability calculations were performed using Pion
-            Inc. software and were expressed in the units of 10<sup>-6</sup>cm/s.
+            The stirring double-sink PAMPA method patented by Pion Inc. (Billerica, MA) was employed to determine the permeability of compounds via PAMPA passive diffusion. The PAMPA lipid membrane, which consisted of an artificial membrane of a proprietary lipid mixture and dodecane (Pion Inc.), was optimized to predict gastrointestinal tract (GIT) passive diffusion permeability. This membrane was immobilized on a plastic matrix of a 96 well “acceptor” filter plate placed atop a 96 well “donor” plate. This artificial membrane mimics the GIT membrane in the human body. Both “donor” and “acceptor” wells were buffered to pH 7.4. The test articles, stocked in 10 mM DMSO solutions, were diluted to 0.05 mM in aqueous buffer (pH 7.4) and the concentration of DMSO was 0.5% in the final solution. During the 30-minute permeation period at room temperature the test samples in the donor compartment were stirred using the Gutbox technology (Pion Inc.) to reduce the unstirred water layer. The test article concentrations in the “donor” and “acceptor” compartments were measured using a UV plate reader (Nano Quant, Infinite® 200 PRO, Tecan Inc., Männedorf, Switzerland). Permeability calculations were performed using Pion Inc. software and were expressed in the units of 10<sup>-6</sup>cm/s.
         </p>
     </div>
     <div class="inner-container" *ngIf="model == 'pampa_ph5'">
@@ -262,6 +248,68 @@
                 A. Avdeef. Absorption And Drug Development. John Wiley & Sons Inc, Hoboken, New Jersey (2001)
             </li>
         </ol>
+    </div>
+    <div class="inner-container" *ngIf="model == 'hlc'">
+      <h2>
+          HLC Stability
+      </h2>
+      <div class="definitions-container">
+          <div class="definition">
+              <div class="name">Name:</div>
+              <div class="value">Human Liver Cytosolic Stability</div>
+          </div>
+          <div class="definition">
+              <div class="name">Dataset Type:</div>
+              <div class="value">Classification</div>
+          </div>
+          <div class="definition">
+              <div class="name">Dataset Size:</div>
+              <div class="value">1,214 compounds</div>
+          </div>
+          <div class="definition">
+              <div class="name">Validation:</div>
+              <div class="value">5-Fold CV</div>
+          </div>
+          <div class="definition">
+              <div class="name">Descriptors:</div>
+              <div class="value">Morgan Fingerprints</div>
+          </div>
+          <div class="definition">
+              <div class="name">Model Details:</div>
+              <div class="value" style="text-align: justify;">
+                  Due to high imbalance between the classes (stable and untable) in the training data, a consensus of three individual Random Forest models that are based on distinct subsets of the majority class (i.e., multiple-undersampling technique) was developed. Each individual Random Forest model comprises of 100 trees and uses Morgan fingerprints as features. The remaining parameters were set to default. The models were built using <a href="https://scikit-learn.org/stable/" target="_blank">scikit-learn</a> library.</div>
+          </div>
+          <div class="definition">
+              <div class="name">Interpretation of Models:</div>
+              <div class="value" style="text-align: justify;">
+                  The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
+          </div>
+          <div class="definition">
+              <div class="name">Data Availability:</div>
+              <div class="value">
+                  The external dataset used to validate these models is made publicly available at PubChem Bioassay database: <a
+                      href="https://pubchem.ncbi.nlm.nih.gov/assay/assay.cgi?aid=1508603" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
+                      1508603</a>.
+              </div>
+          </div>
+      </div>
+      <br>
+      <h3>
+          HLC Assay Protocol
+      </h3>
+      <p style="text-align: justify;">
+          Mixed gender human liver cytosol fractions (H0610.C) were purchased from Sekisui XenoTech, LLC (Kansas City, USA). Substrate depletion method was chosen to determine in vitro t<sub>1/2</sub>. The assay (384-well format) consisted of two parts; a robotic system for incubation and sample clean up and an integrated LC/MS method to calculate the percent remaining of parent compound. Briefly, each reaction mixture (110 μL) consisted of a test compound (1 μM) and human cytosol fractions (2 mg/mL) in phosphate buffer (100 mM) at pH 7.4. Samples were incubated in 384-well plates at 37 °C for 0, 5, 10, 15, 30 and 60 min. Sample analysis and t<sub>1/2</sub> calculations were performed using a previously described method (Shah et al., 2016). Using this high-throughput method, t<sub>1/2</sub> data was generated for 1450 compounds. A majority of these compounds were part of three in-house projects. A set of control compounds for low and high cytosolic stability were routinely run in each plate. The minimum significant ratio (MSR) for famciclovir as well as carbazeran were found to be below 3 which indicates the robustness of the assay.
+      </p>
+      <h3>
+          References:
+      </h3>
+      <ol>
+          <li>
+              Shah, P. et al. An Automated High-Throughput Metabolic Stability Assay Using an Integrated High
+              Resolution Accurate Mass Method and Automated Data Analysis Software. Drug Metab Dispos. 44,
+              1653-1661 (2016).
+          </li>
+      </ol>
     </div>
     <div class="inner-container" *ngIf="model == 'cyp450'">
         <h2>
@@ -394,7 +442,7 @@
             P450-Glo qHTS:
         </h3>
         <p style="text-align: justify;">
-            The P450-Glo inhibition assay is a luminescent technique used to detect CYP activity, through the liberation of luciferin from CYP probe substrates. P450-Glo assays were performed using a previously described method with minor modifications<sup>2</sup>. Briefly, 2 µL of CYP-substrate mix was dispensed into medium-binding white/solid 1,536-well plates using a Flying Reagent Dispenser (FRD, Aurora Discovery, Carlsbad, CA) with the exception of adding Bovine Serum Albumin (BSA) to the mixture for CYP2C9 and CYP2C19. The initial optimization assays for CYP2C9 and CYP2C19 yielded lower signal to background ratios and higher well to well variation. To increase signal and prevent adhesion of protein to tubes of the plate dispenser, 0.4% BSA was added to these two enzyme assays. 23 nL of each positive control (columns 1-4) and test compound (columns 5-48) dissolved in DMSO was transferred to the assay plates using a Wako Pintool station (Wako Automation, San Diego, CA). Positive controls used in these experiments are listed in Table 2. After the control/test compounds were transferred, the assay plates were incubated at room temperature (RT) for 10 min before the addition of 2 µL NADPH regeneration solution using an FRD. The reaction incubation continued at either RT or 37 °C for 60 min, and then quenched by FRD addition of 4 µL of the detection reagent. After a 20 min incubation at room temperature, the luminescence intensity was measured and quantified using a ViewLux plate reader (PerkinElmer, Shelton, CT). Data was expressed as relative luminescence units. 
+            The P450-Glo inhibition assay is a luminescent technique used to detect CYP activity, through the liberation of luciferin from CYP probe substrates. P450-Glo assays were performed using a previously described method with minor modifications<sup>2</sup>. Briefly, 2 µL of CYP-substrate mix was dispensed into medium-binding white/solid 1,536-well plates using a Flying Reagent Dispenser (FRD, Aurora Discovery, Carlsbad, CA) with the exception of adding Bovine Serum Albumin (BSA) to the mixture for CYP2C9 and CYP2C19. The initial optimization assays for CYP2C9 and CYP2C19 yielded lower signal to background ratios and higher well to well variation. To increase signal and prevent adhesion of protein to tubes of the plate dispenser, 0.4% BSA was added to these two enzyme assays. 23 nL of each positive control (columns 1-4) and test compound (columns 5-48) dissolved in DMSO was transferred to the assay plates using a Wako Pintool station (Wako Automation, San Diego, CA). Positive controls used in these experiments are listed in Table 2. After the control/test compounds were transferred, the assay plates were incubated at room temperature (RT) for 10 min before the addition of 2 µL NADPH regeneration solution using an FRD. The reaction incubation continued at either RT or 37 °C for 60 min, and then quenched by FRD addition of 4 µL of the detection reagent. After a 20 min incubation at room temperature, the luminescence intensity was measured and quantified using a ViewLux plate reader (PerkinElmer, Shelton, CT). Data was expressed as relative luminescence units.
         </p>
         <div class="table-container">
             <div class="table-description">
@@ -622,10 +670,10 @@
         </h3>
         <ol>
             <li>
-                Shah, P. et al. An Automated High-Throughput Metabolic Stability Assay Using an Integrated High-Resolution Accurate Mass Method and Automated Data Analysis Software. Drug metabolism and disposition: the biological fate of chemicals 44, 1653-1661 (2016).
+                Shah, P. et al. An Automated High-Throughput Metabolic Stability Assay Using an Integrated High-Resolution Accurate Mass Method and Automated Data Analysis Software. Drug Metab Dispos. 2016 Oct;44(10):1653-61.
             </li>
             <li>
-                Veith, H. et al. Comprehensive characterization of cytochrome P450 isozyme selectivity across chemical libraries. Nat Biotechnol 27, 1050-1055 (2009).
+                Veith, H. et al. Comprehensive characterization of cytochrome P450 isozyme selectivity across chemical libraries. Nat Biotechnol. 2009 Nov;27(11):1050-5.
             </li>
         </ol>
     </div>

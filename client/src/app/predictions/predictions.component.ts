@@ -30,12 +30,13 @@ export class PredictionsComponent implements OnInit {
   private sketcherIndexIdentifierColumn = 0;
   private fileIndexIdentifierColumn: number;
   indexIdentifierColumn: number;
-  models = ['RLM', 'PAMPA50', 'PAMPA', 'Solubility', 'CYP450'];
+  models = ['RLM', 'PAMPA50', 'PAMPA', 'Solubility', 'HLC', 'CYP450'];
   tabLabels = {
-    RLM: 'RLM Stability',
+    RLM: 'Rat Liver Microsomal Stability',
     PAMPA50: 'PAMPA Permeability (pH 5.0)',
     PAMPA: 'PAMPA Permeability (pH 7.4)',
     Solubility: 'Solubility',
+    HLC: 'Human Liver Cytosolic Stability',
     CYP450: 'CYP450'
   };
 

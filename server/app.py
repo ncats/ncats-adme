@@ -21,6 +21,7 @@ from predictors.rlm.rlm_predictor import RLMPredictior
 from predictors.pampa.pampa_predictor import PAMPAPredictior
 from predictors.pampa50.pampa_predictor import PAMPA50Predictior
 from predictors.solubility.solubility_predictor import SolubilityPredictior
+from predictors.liver_cytosol.lc_predictor import LCPredictor
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
 from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
 from predictors.utilities.utilities import get_similar_mols
@@ -74,7 +75,7 @@ def predict():
         app.logger.error(f'error type: {type(e)}')
         app.logger.error(e)
         abort(418, 'There was an unknown error')
-    
+
     return json_response
 
 ALLOWED_EXTENSIONS = {'csv', 'txt', 'smi'}
@@ -139,13 +140,13 @@ def upload_file():
             app.logger.error(f'error type: {type(e)}')
             app.logger.error(e)
             abort(418, 'There was an unknown error')
-        
+
         return json_response
     else:
         response['hasErrors'] = True
         response['errorMessages'] = 'Only csv, txt or smi files can be processed'
         return jsonify(response)
-        
+
 @app.route(f'{root_route_path}/api/v1/structure_image/<path:smiles>', methods=['GET'])
 def get_structure_image(smiles):
     try:
@@ -170,7 +171,7 @@ def predict_df(df, smi_column_name, models):
         return jsonify(response)
 
     base_models_error_message = 'We were not able to make predictions using the following model(s): '
-    
+
     for model in models:
         response[model] = {}
         error_messages = []
@@ -183,6 +184,8 @@ def predict_df(df, smi_column_name, models):
             predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'solubility':
             predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+        elif model.lower() == 'hlc':
+            predictor = LCPredictor(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'cyp450':
             predictor = CYP450Predictor(kekule_mols = working_df['mols'].values, smiles=working_df[smi_column_name].values)
         else:
@@ -232,7 +235,7 @@ def predict_df(df, smi_column_name, models):
 @app.route(f'{root_route_path}/ketcher/info', methods=['GET'])
 def ketcher_info():
     response = {
-        "imago_versions": [], 
+        "imago_versions": [],
         "indigo_version": "N/A",
     }
 

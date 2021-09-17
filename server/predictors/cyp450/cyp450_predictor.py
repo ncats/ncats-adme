@@ -110,7 +110,7 @@ class CYP450Predictor:
     def get_predictions(self):
 
         features = np.append(self.morgan_fp_matrix, self.rdkit_desc_matrix, axis=1)
-        
+
         start = time.time()
 
         processes_dict = {}
@@ -123,7 +123,7 @@ class CYP450Predictor:
             processes = 1
 
         with mp.Pool(processes=processes) as pool:
-            
+
             for model_name in cyp450_models_dict.keys():
 
                 # parent_conn, child_conn = mp.Pipe()
