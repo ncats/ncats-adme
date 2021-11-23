@@ -65,7 +65,6 @@ class LCPredictor:
         self.predictions_df = pd.DataFrame(columns=columns)
         self.raw_predictions_df = pd.DataFrame()
 
-        print('Generating Morgan FPs...')
         desc_gen = DescriptorGen()
         kekule_smiles_df['desc'] = kekule_smiles_df['kekule_smiles'].apply(desc_gen.from_smiles)
         self.morgan_fp = np.stack(kekule_smiles_df.desc)
@@ -84,14 +83,29 @@ class LCPredictor:
             pred_probs = model.predict_proba(features).T[1]
             self.raw_predictions_df[model_name] =  pred_probs
 
-        end = time.time()
-        print(f'{end - start} seconds to HLC predict {len(self.raw_predictions_df.index)} molecules')
-
         self.raw_predictions_df['average'] = self.raw_predictions_df.mean(axis=1)
         avg_pred_probs = self.raw_predictions_df['average'].tolist()
         #self.predictions_df['Predicted Class (Probability)'] = pd.Series(pd.Series(avg_pred_probs).round().astype(int).astype(str) + ' (' + pd.Series(avg_pred_probs).round(2).astype(str) + ')')
         self.predictions_df['Predicted Class (Probability)'] = pd.Series(pd.Series(avg_pred_probs).round().astype(int).astype(str) + ' (' + pd.Series(np.where(np.asarray(avg_pred_probs)>=0.5, np.asarray(avg_pred_probs), (1-np.asarray(avg_pred_probs)))).round(2).astype(str) + ')')
         self.predictions_df['Prediction'] = pd.Series(pd.Series(np.where(np.asarray(avg_pred_probs)>=0.5, 'unstable', 'stable')))
+
+        # empyting the raw df
+        self.raw_predictions_df = pd.DataFrame(None)
+
+        # populate raw df for recording preds
+        if self.smiles is not None:
+            dt = datetime.datetime.now(timezone.utc)
+            utc_time = dt.replace(tzinfo=timezone.utc)
+            utc_timestamp = utc_time.timestamp()
+            self.raw_predictions_df = self.raw_predictions_df.append(
+                pd.DataFrame(
+                    { 'SMILES': self.smiles, 'model': 'hlc', 'prediction': avg_pred_probs, 'timestamp': utc_timestamp }
+                ),
+                ignore_index = True
+            )
+
+        end = time.time()
+        print(f'HLC: {end - start} seconds to predict {len(self.raw_predictions_df.index)} molecules')
 
         return self.predictions_df
 
@@ -105,3 +119,10 @@ class LCPredictor:
 
     def columns_dict(self):
         return self._columns_dict.copy()
+
+    def record_predictions(self, file_path):
+        if len(self.raw_predictions_df.index) > 0:
+            with open(file_path, 'a') as fw:
+                rows = self.raw_predictions_df.values.tolist()
+                cw = csv.writer(fw)
+                cw.writerows(rows)

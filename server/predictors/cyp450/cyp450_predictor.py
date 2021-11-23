@@ -184,7 +184,7 @@ class CYP450Predictor:
             pool.join()
 
         end = time.time()
-        print(f'{end - start} seconds to CYP450 predict {len(self.predictions_df.index)} molecules')
+        print(f'CYP450: {end - start} seconds to predict {len(self.predictions_df.index)} molecules')
 
         return self.predictions_df
 

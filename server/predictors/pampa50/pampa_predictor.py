@@ -53,7 +53,7 @@ class PAMPA50Predictior(GcnnBase):
         }
 
         self.model_name = 'pampa50'
-        
+
     def get_predictions(self) -> DataFrame:
         """
         Function that calculates consensus predictions
@@ -67,10 +67,10 @@ class PAMPA50Predictior(GcnnBase):
             start = time.time()
             gcnn_predictions, gcnn_labels = self.gcnn_predict(pampa_gcnn_model, pampa_gcnn_scaler)
             end = time.time()
-            print(f'{end - start} seconds to PAMPA predict {len(self.predictions_df.index)} molecules')
+            print(f'PAMPA 5.0: {end - start} seconds to predict {len(self.predictions_df.index)} molecules')
 
             self.predictions_df['Prediction'] = pd.Series(
                 pd.Series(np.where(gcnn_predictions>=0.5, 'low permeability', 'moderate or high permeability'))
             )
-            
+
         return self.predictions_df
