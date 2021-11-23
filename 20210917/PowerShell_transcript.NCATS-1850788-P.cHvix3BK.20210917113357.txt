@@ -40,3 +40,8 @@ Command start time: 20210917140546
 **********************
 PS C:\Users\neyraj2\Spotlight\NCATS-ADME\client> npm run build:embedded
 
+**********************
+Command start time: 20210917155929
+**********************
+PS C:\Users\neyraj2\Spotlight\NCATS-ADME\client> npm run build:embedded
+
