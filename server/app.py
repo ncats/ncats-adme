@@ -193,7 +193,7 @@ def predict_df(df, smi_column_name, models):
 
         pred_df = predictor.get_predictions()
         if data_path != '':
-            predictor.record_predictions(f'{data_path}predictions.csv')
+            predictor.record_predictions(f'{data_path}/predictions.csv')
         pred_df = working_df.join(pred_df)
         pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
 

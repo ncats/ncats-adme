@@ -53,7 +53,7 @@ class SolubilityPredictior(GcnnBase):
         }
 
         self.model_name = 'solubility'
-        
+
     def get_predictions(self) -> DataFrame:
         """
         Function that calculates consensus predictions
@@ -67,10 +67,10 @@ class SolubilityPredictior(GcnnBase):
             start = time.time()
             gcnn_predictions, gcnn_labels = self.gcnn_predict(solubility_gcnn_model, solubility_gcnn_scaler)
             end = time.time()
-            print(f'{end - start} seconds to Solubility predict {len(self.predictions_df.index)} molecules')
+            print(f'Solubility: {end - start} seconds to predict {len(self.predictions_df.index)} molecules')
 
             self.predictions_df['Prediction'] = pd.Series(
                 pd.Series(np.where(gcnn_predictions>=0.5, 'low solubility', 'high solubility'))
             )
-            
+
         return self.predictions_df

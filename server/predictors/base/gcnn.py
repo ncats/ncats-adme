@@ -81,6 +81,7 @@ class GcnnBase(PredictorBase):
             dt = datetime.datetime.now(timezone.utc)
             utc_time = dt.replace(tzinfo=timezone.utc)
             utc_timestamp = utc_time.timestamp()
+
             self.raw_predictions_df = self.raw_predictions_df.append(
                 pd.DataFrame(
                     { 'SMILES': self.smiles, 'model': self.model_name, 'prediction': predictions, 'timestamp': utc_timestamp }
@@ -92,5 +93,5 @@ class GcnnBase(PredictorBase):
         if len(self.predictions_df.index) > len(predictions) or np.ma.count_masked(predictions) > 0:
             self.model_errors.append('graph convolutional neural network')
             self.has_errors = True
-        
+
         return predictions, labels
