@@ -186,8 +186,8 @@ def predict_df(df, smi_column_name, models):
             predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'hlc':
             predictor = LCPredictor(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        #elif model.lower() == 'cyp450':
-        #    predictor = CYP450Predictor(kekule_mols = working_df['mols'].values, smiles=working_df[smi_column_name].values)
+        elif model.lower() == 'cyp450':
+            predictor = CYP450Predictor(kekule_mols = working_df['mols'].values, smiles=working_df[smi_column_name].values)
         else:
             break
 
