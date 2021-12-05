@@ -117,8 +117,8 @@ class CYP450Predictor:
         #conns_dict = {}
         response_queues_dict ={}
 
-        if mp.cpu_count() > 2:
-            processes = mp.cpu_count() - 2 # changing to 2 insteasd of 1
+        if mp.cpu_count() > 1:
+            processes = mp.cpu_count() - 1
         else:
             processes = 1
 
@@ -179,9 +179,9 @@ class CYP450Predictor:
                     )
                 #conns_dict[model_name].close()
 
-            pool.close()
-            pool.terminate()
-            pool.join()
+        pool.close()
+        pool.terminate()
+        pool.join()
 
         end = time.time()
         print(f'CYP450: {end - start} seconds to predict {len(self.predictions_df.index)} molecules')
