@@ -41,7 +41,7 @@ class RLMPredictior(GcnnBase):
         Constructor for RLMPredictior class
 
         Parameters:
-            kekule_smiles (Array): numpy array of RDkit molecules
+            kekule_smiles (Array): numpy array of RDKit molecules
         """
 
         GcnnBase.__init__(self, kekule_smiles, column_dict_key='Predicted Class (Probability)', columns_dict_order = 1, smiles=smiles)
@@ -72,5 +72,9 @@ class RLMPredictior(GcnnBase):
             self.predictions_df['Prediction'] = pd.Series(
                 pd.Series(np.where(gcnn_predictions>=0.5, 'unstable', 'stable'))
             )
+
+            # if not intrprt_df.empty:
+            #     intrprt_df['final_smiles'] = np.where(intrprt_df['rationale_score']>0, intrprt_df['smiles'].astype(str)+'_'+intrprt_df['rationale_smiles'].astype(str), intrprt_df['smiles'].astype(str))
+            #     self.predictions_df['mol'] = pd.Series(intrprt_df['final_smiles'].tolist())
 
         return self.predictions_df

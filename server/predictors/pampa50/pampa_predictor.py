@@ -73,4 +73,8 @@ class PAMPA50Predictior(GcnnBase):
                 pd.Series(np.where(gcnn_predictions>=0.5, 'low permeability', 'moderate or high permeability'))
             )
 
+            # if not intrprt_df.empty:
+            #     intrprt_df['final_smiles'] = np.where(intrprt_df['rationale_score']>0, intrprt_df['smiles'].astype(str)+'_'+intrprt_df['rationale_smiles'].astype(str), intrprt_df['smiles'].astype(str))
+            #     self.predictions_df['mol'] = pd.Series(intrprt_df['final_smiles'].tolist())
+
         return self.predictions_df

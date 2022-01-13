@@ -2,6 +2,7 @@ import math
 from typing import Callable, Dict, List, Set, Tuple
 
 import numpy as np
+import pandas as pd
 from rdkit import Chem
 
 from chemprop.args import InterpretArgs
@@ -235,6 +236,9 @@ def interpret(args: InterpretArgs) -> None:
     property_name = header[args.property_id] if len(header) > args.property_id else 'score'
     print(f'smiles,{property_name},rationale,rationale_score')
 
+    rat_smiles = []
+    rat_scores = []
+
     for smiles in all_smiles:
         score = scoring_function([smiles])[0]
         if score > args.prop_delta:
@@ -249,12 +253,18 @@ def interpret(args: InterpretArgs) -> None:
             rationales = []
 
         if len(rationales) == 0:
+            rat_smiles.append('N/A')
+            rat_scores.append(0)
             print(f'{smiles},{score:.3f},,')
         else:
             min_size = min(len(x.atoms) for x in rationales)
             min_rationales = [x for x in rationales if len(x.atoms) == min_size]
             rats = sorted(min_rationales, key=lambda x: x.P, reverse=True)
+            rat_smiles.append(rats[0].smiles)
+            rat_scores.append(rats[0].P)
             print(f'{smiles},{score:.3f},{rats[0].smiles},{rats[0].P:.3f}')
+
+    return pd.DataFrame(list(zip(all_smiles, rat_smiles, rat_scores)), columns =['smiles', 'rationale_smiles', 'rationale_score'])
 
 
 def chemprop_interpret() -> None:
