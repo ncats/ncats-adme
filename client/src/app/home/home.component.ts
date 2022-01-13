@@ -8,6 +8,7 @@ import { DEPLOY_URL } from '../utilities/deploy-url';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
+
 export class HomeComponent implements OnInit {
 
   bannerImgSrc: SafeResourceUrl;
