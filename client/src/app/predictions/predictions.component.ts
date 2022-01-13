@@ -2,11 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { Ketcher } from '../sketcher/ketcher.model';
 import { HttpClient } from '@angular/common/http';
 import { FileForm } from '../text-file/file-form.model';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { LoadingService } from '../loading/loading.service';
 import { DownloadEvent, PredictionsData } from '../predictions-table/predictions.model';
 import { GoogleAnalyticsService } from '../google-analytics/google-analytics.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ConfigService } from '../config/config.service';
+
+export interface PredModel {
+  id: number;
+  name: string;
+  val: string;
+}
 
 @Component({
   selector: 'adme-predictions',
@@ -31,6 +38,7 @@ export class PredictionsComponent implements OnInit {
   private fileIndexIdentifierColumn: number;
   indexIdentifierColumn: number;
   models = ['RLM', 'PAMPA50', 'PAMPA', 'Solubility', 'HLC', 'CYP450'];
+  models_checked = [];
   tabLabels = {
     RLM: 'Rat Liver Microsomal Stability',
     PAMPA50: 'PAMPA Permeability (pH 5.0)',
@@ -40,33 +48,72 @@ export class PredictionsComponent implements OnInit {
     CYP450: 'CYP450'
   };
 
+  form1: FormGroup;
+  // form2: FormGroup;
+  modelList: PredModel[] = [
+    { id: 0, name: 'RLM Stability', val: 'RLM' },
+    { id: 1, name: 'PAMPA pH 5', val: 'PAMPA50' },
+    { id: 2, name: 'PAMPA pH 7.4', val: 'PAMPA' },
+    { id: 3, name: 'Solubility', val: 'Solubility' },
+    { id: 4, name: 'HLC Stability', val: 'HLC' },
+    { id: 5, name: 'CYP450', val: 'CYP450' }
+  ];
+
   constructor(
     private http: HttpClient,
     private loadingService: LoadingService,
     private gaService: GoogleAnalyticsService,
-    private configService: ConfigService
-  ) {
+    private configService: ConfigService,
+    private fb: FormBuilder
+  )
+
+  {
     this.apiBaseUrl = configService.configData.apiBaseUrl;
     this.apiKetcherUrl = `${this.apiBaseUrl}ketcher`;
   }
 
+  onChange(name: string, isChecked: boolean) {
+    const models = (this.form1.controls.name as FormArray);
+    if (isChecked) {
+      models.push(new FormControl(name));
+    } else {
+      const index = models.controls.findIndex(x => x.value === name);
+      models.removeAt(index);
+    }
+  }
+
   ngOnInit(): void {
     this.link = document.createElement('a');
+    this.form1 = this.fb.group({
+      name: this.fb.array([])
+    });
+    /*
+    this.form2 = this.fb.group({
+      gcnnOption: ['', Validators.required]
+    });
+    */
   }
 
   processSketcherInput(smiles: string): void {
     this.gaService.sendEvent('click:button', 'predict', 'sketcher');
     this.clearErrorMessage();
+    this.clearSketcherData();
     this.loadingService.setLoadingState(true);
     this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
+    this.models_checked = this.form1.value.name;
     const options = {
       params: {
         smiles,
-        model: this.models
+        models: this.form1.value.name,
+        //gcnnOpt: this.form2.value.gcnnOption
       }
     };
     this.http.get(`${this.apiBaseUrl}api/v1/predict`, options).subscribe((response: any) => {
-      this.sketcherData = response;
+      if (response.hasErrors) {
+        this.errorMessage = response.errorMessages;
+      } else {
+        this.sketcherData = response;
+      }
       this.loadingService.setLoadingState(false);
     }, error => {
       this.errorMessage = 'There was an error processing your structure. Please modify it and try again.';
@@ -77,7 +124,9 @@ export class PredictionsComponent implements OnInit {
   processFile(fileForm: FileForm): void {
     this.gaService.sendEvent('click:button', 'predict', 'file');
     this.clearErrorMessage();
+    this.clearFileData();
     this.loadingService.setLoadingState(true);
+    this.models_checked = this.form1.value.name;
     const formData = new FormData();
     formData.append('lineBreak', fileForm.lineBreak);
     this.lineBreak = fileForm.lineBreak;
@@ -85,7 +134,8 @@ export class PredictionsComponent implements OnInit {
     this.columnSeparator = fileForm.columnSeparator;
     formData.append('hasHeaderRow', fileForm.hasHeaderRow.toString());
     formData.append('indexIdentifierColumn', fileForm.indexIdentifierColumn.toString());
-    formData.append('models', this.models.join(';'));
+    formData.append('models', this.form1.value.name.join(';'));
+    //formData.append('gcnnOpt', this.form2.value.gcnnOption);
     this.fileIndexIdentifierColumn = fileForm.indexIdentifierColumn;
     this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
     formData.append('file', fileForm.file);
@@ -106,6 +156,14 @@ export class PredictionsComponent implements OnInit {
   clearErrorMessage(): void {
     this.errorMessage = '';
     this.errorMessages = [];
+  }
+
+  clearSketcherData(): void {
+    this.sketcherData = null;
+  }
+
+  clearFileData(): void {
+    this.fileData = null;
   }
 
   downloadCSV(event: DownloadEvent): void {
