@@ -36,6 +36,8 @@ import { ConfigService } from './config/config.service';
 import { configServiceFactory } from './config/config.factory';
 import { TrackLinkEventDirective } from './google-analytics/track-link-event/track-link-event.directive';
 import { MatMenuModule } from '@angular/material/menu';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
 
 @NgModule({
@@ -77,7 +79,9 @@ import { APP_BASE_HREF, PlatformLocation } from '@angular/common';
     MatSortModule,
     MatTooltipModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatRadioModule,
+    MatCheckboxModule
   ],
   entryComponents: [
     StructureImageDialogComponent

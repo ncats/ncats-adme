@@ -44,15 +44,39 @@ if data_path != '' and not os.path.isfile(f'{data_path}predictions.csv'):
 @app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():
     response = {}
+    model_error = False
+    mol_error = False
+    #gcnnOpt_error = False
+
+    # checking for input - smiles
     smiles_list = request.args.getlist('smiles')
-    if len(smiles_list) == 0 or smiles_list == None:
-        response['hasErrors'] = True
-        response['errorMessages'] = 'Please provide at least one smiles'
-        return jsonify(response)
-    models = request.args.getlist('model')
+    smiles_list = [string for string in smiles_list if string != '']
+    if not smiles_list or smiles_list == None:
+        mol_error = True
+
+    # checking for input - models
+    models = request.args.getlist('models')
     if len(models) == 0 or models == None:
+        model_error = True
+
+    # checking for input - gcnnOpt
+    #gcnnOpt = request.args.getlist('gcnnOpt')
+    #gcnnOpt = [string for string in gcnnOpt if string != '']
+    #if not gcnnOpt or gcnnOpt == None:
+        #gcnnOpt_error = True
+
+    # error handling for invalid inputs
+    if mol_error == True and model_error == True:
         response['hasErrors'] = True
-        response['errorMessages'] = 'Please provide at least one model'
+        response['errorMessages'] = 'Please choose at least one model and provide at least one input molecule.'
+        return jsonify(response)
+    elif mol_error == True and model_error == False:
+        response['hasErrors'] = True
+        response['errorMessages'] = 'Please provide at least one input molecule.'
+        return jsonify(response)
+    elif mol_error == False and model_error == True:
+        response['hasErrors'] = True
+        response['errorMessages'] = 'Please choose at least one model.'
         return jsonify(response)
 
     smi_column_name = 'smiles'
@@ -64,17 +88,17 @@ def predict():
         app.logger.error('Error making a prediction')
         app.logger.error(f'error type: {type(e)}')
         app.logger.error(e)
-        abort(418, 'There was an unknown error')
+        abort(418, 'There was an unknown error.')
 
     try:
         json_response = jsonify(response)
     except Exception as e:
-        app.logger.error('Error converting the response to JSON')
+        app.logger.error('Error converting the response to JSON.')
         app.logger.error(f'response type: {type(response)}')
         app.logger.error(response)
         app.logger.error(f'error type: {type(e)}')
         app.logger.error(e)
-        abort(418, 'There was an unknown error')
+        abort(418, 'There was an unknown error.')
 
     return json_response
 
@@ -92,14 +116,14 @@ def upload_file():
     # check if the post request has the file part
     if 'file' not in request.files:
         response['hasErrors'] = True
-        response['errorMessages'] = 'A file needs to be attached to the request'
+        response['errorMessages'] = 'A file needs to be attached to the request.'
         return jsonify(response)
 
     file = request.files['file']
 
     if file.filename == '':
         response['hasErrors'] = True
-        response['errorMessages'] = 'A file with a file name needs to be attached to the request'
+        response['errorMessages'] = 'A file with a file name needs to be attached to the request.'
         return jsonify(response)
 
     if file and allowed_file(file.filename):
@@ -108,6 +132,13 @@ def upload_file():
         data = dict(request.form)
         indexIdentifierColumn = int(data['indexIdentifierColumn'])
         models = data['models'].split(';')
+        models = [string for string in models if string != '']
+        #gcnnOpt = data['gcnnOpt']
+
+        if len(models) == 0 or models == None:
+            response['hasErrors'] = True
+            response['errorMessages'] = 'Please choose at least one model.'
+            return jsonify(response)
 
         if data['hasHeaderRow'] == 'true':
             df = pd.read_csv(file, header=0, sep=data['columnSeparator'])
@@ -126,40 +157,70 @@ def upload_file():
         try:
             response = predict_df(df, smi_column_name, models)
         except Exception as e:
-            app.logger.error('Error making a prediction')
+            app.logger.error('Error making a prediction.')
             app.logger.error(f'error type: {type(e)}')
             app.logger.error(e)
-            abort(418, 'There was an unknown error')
+            abort(418, 'There was an unknown error.')
 
         try:
             json_response = jsonify(response)
         except Exception as e:
-            app.logger.error('Error converting the response to JSON')
+            app.logger.error('Error converting the response to JSON.')
             app.logger.error(f'response type: {type(response)}')
             app.logger.error(response)
             app.logger.error(f'error type: {type(e)}')
             app.logger.error(e)
-            abort(418, 'There was an unknown error')
+            abort(418, 'There was an unknown error.')
 
         return json_response
     else:
         response['hasErrors'] = True
-        response['errorMessages'] = 'Only csv, txt or smi files can be processed'
+        response['errorMessages'] = 'Only csv, txt or smi files can be processed.'
         return jsonify(response)
 
+# @app.route(f'{root_route_path}/api/v1/structure_image/<path:smiles>', methods=['GET'])
+# def get_structure_image(smiles):
+#     try:
+#         mol = Chem.MolFromSmiles(smiles)
+#         d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
+#         d2d.DrawMolecule(mol)
+#         d2d.FinishDrawing()
+#         return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
+#     except:
+#         return send_file('./images/no_image_available.png', mimetype='image/png')
+
 @app.route(f'{root_route_path}/api/v1/structure_image/<path:smiles>', methods=['GET'])
-def get_structure_image(smiles):
-    try:
-        diclofenac = Chem.MolFromSmiles(smiles)
-        d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
-        d2d.DrawMolecule(diclofenac)
-        d2d.FinishDrawing()
-        return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
-    except:
-        return send_file('./images/no_image_available.png', mimetype='image/png')
+def get_glowing_image(smiles):
+        if '_' in smiles:
+            mol_smi = smiles.split('_')[0]
+            mol_subs = smiles.split('_')[1]
+            try:
+                mol = Chem.MolFromSmiles(mol_smi)
+                patt = Chem.MolFromSmiles(mol_subs)
+                matching = mol.GetSubstructMatch(patt)
+                d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
+                d2d.DrawMolecule(mol, highlightAtoms=matching)
+                d2d.FinishDrawing()
+                return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
+            except:
+                return send_file('./images/no_image_available.png', mimetype='image/png')
+        else:
+            try:
+                mol = Chem.MolFromSmiles(smiles)
+                d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
+                d2d.DrawMolecule(mol)
+                d2d.FinishDrawing()
+                return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
+            except:
+                return send_file('./images/no_image_available.png', mimetype='image/png')
 
 
 def predict_df(df, smi_column_name, models):
+
+    #interpret = False
+    #if gcnnOpt == 'yes':
+    #    interpret = True
+
     response = {}
     working_df = df.copy()
     addMolsKekuleSmilesToFrame(working_df, smi_column_name)
@@ -238,6 +299,12 @@ def predict_df(df, smi_column_name, models):
                 app.logger.error(f'error type: {type(e)}')
                 app.logger.error(e)
 
+        # replace SMILES with interpret SMILES when interpretation available
+        if len(model_errors) == 0:
+            if 'mol' in response_df.columns:
+                response_df[smi_column_name] = response_df['mol']
+                response_df = response_df.drop('mol', 1)
+                print(response_df.head())
 
         response[model]['mainColumnsDict'] = columns_dict
         response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
