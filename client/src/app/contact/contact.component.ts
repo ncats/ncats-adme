@@ -8,12 +8,10 @@ import { DEPLOY_URL } from '../utilities/deploy-url';
   styleUrls: ['./contact.component.scss']
 })
 export class ContactComponent implements OnInit {
+  jordanImgSrc: SafeResourceUrl;
   vishalImgSrc: SafeResourceUrl;
   pranavImgSrc: SafeResourceUrl;
-  jorgeImgSrc: SafeResourceUrl;
-  jordanImgSrc: SafeResourceUrl;
-  noelImgSrc: SafeResourceUrl;
-  trungImgSrc: SafeResourceUrl;
+  ewyImgSrc: SafeResourceUrl;
   xinImgSrc: SafeResourceUrl;
   rdkitImgSrc: SafeResourceUrl;
   pythonImgSrc: SafeResourceUrl;
@@ -24,12 +22,10 @@ export class ContactComponent implements OnInit {
     private domSanatizer: DomSanitizer,
     @Inject(DEPLOY_URL) public deployUrl: string
   ) {
+    this.jordanImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/williamsjos.jpg`);
     this.vishalImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/siramshettyv2.jpg`);
     this.pranavImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/shahpa2.png`);
-    this.jorgeImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/neyraj2.jpg`);
-    this.jordanImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/williamsjos.jpg`);
-    this.noelImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/southalln.jpg`);
-    this.trungImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/nguyenda.png`);
+    this.ewyImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/mathee.jpg`);
     this.xinImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/xux7.jpg`);
 
     this.rdkitImgSrc = domSanatizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/images/rdkit.png`);
