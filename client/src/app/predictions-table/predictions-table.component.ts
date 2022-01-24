@@ -37,6 +37,7 @@ export class PredictionsTableComponent implements OnInit {
 
   @Input('predictions-data')
   set predictionsData(predictions: PredictionsData) {
+
     if (predictions != null) {
       this.predictions = predictions;
       this.displayedColumnsDict = predictions.mainColumnsDict;
@@ -48,8 +49,8 @@ export class PredictionsTableComponent implements OnInit {
         this.data = predictions.data;
         this.displayData = this.getNonEmptyPredictions(this.data);
       } else {
-        const predition = predictions.data[0];
-        this.data.push(predition);
+        const prediction = predictions.data[0];
+        this.data.push(prediction);
         this.displayData = this.displayData.concat(this.getNonEmptyPredictions(predictions.data));
       }
       this.pageChange();

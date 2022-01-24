@@ -6,6 +6,7 @@ from chemprop.data.utils import get_data, get_data_from_smiles
 from chemprop.data import MoleculeDataLoader, MoleculeDataset
 from chemprop.train import predict
 from .base import PredictorBase
+#from ..utilities.utilities import get_interpretation
 from typing import Tuple
 from datetime import timezone
 import datetime
@@ -29,7 +30,6 @@ class GcnnBase(PredictorBase):
         }
 
         self.smiles = smiles
-
         self.model_name = None
 
     def gcnn_predict(self, model, scaler) -> Tuple[array, array]:
@@ -88,6 +88,15 @@ class GcnnBase(PredictorBase):
                 ),
                 ignore_index = True
             )
+
+        # if self.interpret == True:
+        #     intrprt_df = get_interpretation(self.smiles, self.model_name)
+        # else:
+        #     col_names = ['smiles', 'rationale_smiles', 'rationale_score']
+        #     intrprt_df = pd.DataFrame(columns = col_names)
+
+
+        #self.predictions_df['smiles'] = pd.Series(np.where(intrprt_df['rationale_scores']>0, intrprt_df['smiles'] + '_' + intrprt_df['rationale_smiles'], intrprt_df['smiles']))
 
         self.predictions_df[self.column_dict_key] = pd.Series(pd.Series(labels).fillna('').astype(str) + ' (' + pd.Series(np.where(predictions>=0.5, predictions, (1 - predictions))).round(2).astype(str) + ')').str.replace('(nan)', '', regex=False)
         if len(self.predictions_df.index) > len(predictions) or np.ma.count_masked(predictions) > 0:

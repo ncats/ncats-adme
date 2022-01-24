@@ -49,3 +49,33 @@
         }
     }
 }
+
+.footer {
+  position: relative;
+  bottom: 0;
+  height: 80px;
+  width: 100%;
+  color:#fff;
+  padding-bottom: 0px;
+  padding-top: 10px;
+  font-size: 13px;
+  background-color: #673ab7;
+  margin-bottom: -25px;
+}
+
+.v-bar-1 {
+  padding: 0px 5px;
+  color:#fff;
+}
+
+.v-bar-2 {
+  padding: 0px 10px;
+  color:#fff;
+}
+
+.footer a {
+    /* color: #337ab7; */
+    color:#fff;
+    text-decoration: none;
+    background-color: transparent;
+}

@@ -53,7 +53,7 @@ class PAMPAPredictior(GcnnBase):
         }
 
         self.model_name = 'pampa'
-        
+
     def get_predictions(self) -> DataFrame:
         """
         Function that calculates consensus predictions
@@ -67,10 +67,14 @@ class PAMPAPredictior(GcnnBase):
             start = time.time()
             gcnn_predictions, gcnn_labels = self.gcnn_predict(pampa_gcnn_model, pampa_gcnn_scaler)
             end = time.time()
-            print(f'{end - start} seconds to PAMPA predict {len(self.predictions_df.index)} molecules')
+            print(f'PAMPA 7.4: {end - start} seconds to predict {len(self.predictions_df.index)} molecules')
 
             self.predictions_df['Prediction'] = pd.Series(
                 pd.Series(np.where(gcnn_predictions>=0.5, 'low or moderate permeability', 'high permeability'))
             )
-            
+
+            # if not intrprt_df.empty:
+            #     intrprt_df['final_smiles'] = np.where(intrprt_df['rationale_score']>0, intrprt_df['smiles'].astype(str)+'_'+intrprt_df['rationale_smiles'].astype(str), intrprt_df['smiles'].astype(str))
+            #     self.predictions_df['mol'] = pd.Series(intrprt_df['final_smiles'].tolist())
+
         return self.predictions_df

@@ -11,6 +11,10 @@ import requests
 from tqdm import tqdm
 import os
 import os.path as path
+from chemprop.args import InterpretArgs
+from chemprop.interpret import interpret
+import tempfile
+import time
 
 def get_processed_smi(rdkit_mols: array) -> array:
     """
@@ -87,3 +91,23 @@ def get_similar_mols(kekule_smiles: list, model: str):
         sim_vals.append(res[0][1])
 
     return sim_vals
+
+def get_interpretation(kekule_smiles, model):
+
+    start = time.time()
+
+    with tempfile.NamedTemporaryFile(delete=True) as temp:
+        kekule_smiles_df = DataFrame(kekule_smiles)
+        kekule_smiles_df.to_csv(temp.name + '.csv', index=None)
+
+        # interpretation arguments
+        intrprt_args = [
+        '--data_path', temp.name + '.csv',
+        '--checkpoint_path', './models/{}/gcnn_model.pt'.format(model),
+        '--property_id', '1',
+        ]
+
+        intrprt_df = interpret(args=InterpretArgs().parse_args(intrprt_args))
+    end = time.time()
+    print(f'{end - start} seconds to interpret {kekule_smiles_df.shape[0]} molecules')
+    return intrprt_df

@@ -1,5 +1,24 @@
 <div class="content-container">
 
+  <div class="model-input">
+    <form [formGroup]="form1">
+      <span>Choose the models to predict:</span>
+      <div *ngFor="let model of modelList" style="display: inline;">
+        <input type="checkbox" (change)="onChange(model.val, $event.target.checked)" />
+        {{ model.name }}
+      </div>
+    </form>
+    <!--
+    <br>
+    <form [formGroup]="form2">
+    <span matTooltip="Interpretation feature identifies substructures that explain GCNN model predictions." matTooltipPosition="right">GCNN Interpreation (this may take several minutes):</span>
+    <input id="yes" type="radio" value="yes" formControlName="gcnnOption" /> <label for="yes">Yes</label>
+    <input id="no" type="radio" value="no" formControlName="gcnnOption" /> <label for="yes">No</label>
+    </form>
+    -->
+  </div>
+
+
   <div class="molecule-input">
     <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:input-type')">
       <mat-tab label="Sketcher">
@@ -23,7 +42,7 @@
         </div>
         <div *ngIf="sketcherData">
           <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
-            <mat-tab *ngFor="let model of models" [label]="tabLabels[model]">
+            <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
               <div>
                 <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>
@@ -53,7 +72,7 @@
         </div>
         <div *ngIf="fileData">
           <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
-            <mat-tab *ngFor="let model of models" [label]="tabLabels[model]">
+            <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
               <div>
                 <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>

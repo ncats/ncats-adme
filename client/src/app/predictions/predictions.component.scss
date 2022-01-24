@@ -1,7 +1,9 @@
 .content-container {
+    min-height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
     padding: 10px 20px;
+    margin: 0px;
 }
 
 .mat-tab-group {
@@ -20,13 +22,10 @@
     display: flex;
     width: 100%;
     max-width: 100%;
-
     .mat-tab-header {
         margin-bottom: 10px;
-      }
+    }
 }
-
-
 
 .error-message-container {
     margin: 15px 0;
@@ -35,7 +34,6 @@
     border: solid 1px red;
     border-radius: 2px;
     display: flex;
-
 }
 
 .error-message {
@@ -47,4 +45,14 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+}
+
+.model-input input{
+  margin: 0 5px 0 20px;
+}
+
+.model-input {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
