@@ -1,6 +1,6 @@
-# ncats-adme
+# ADME@NCATS
 
-This repository contains the code for the application ADME @ NCATS which hosts QSAR models for different ADME endpoints. To use the application locally, you can either use [Git](https://git-scm.com/) to clone the respository, or you can simply download a ZIP file (by clicking the green "Code" button on the top right corner) and then unzip it. The next steps are described below.
+This repository contains the code for the application ADME@NCATS which hosts QSAR models for different ADME endpoints. To use the application locally, you can either use [Git](https://git-scm.com/) to clone the respository, or you can simply download a ZIP file (by clicking the green "Code" button on the top right corner) and then unzip it. The next steps are described below.
 
 If you use Git to clone this repository, please use the --recursive flag:
 
@@ -17,15 +17,14 @@ If you download the application, you also need to download and unzip [chemprop](
       - scripts
       - ...
 
-Model will be loaded from NCATS servers so you will need access to the internet when you first run the application.
+Models will be loaded from NCATS servers so you will need access to the internet when you first run the application. Alternatively, if you want to download the models, the files are available as follows:
 
-If you want to download the models, the file locations are as follows:
-
-- [https://tripod.nih.gov/pub/adme/models/rlm/dnn_morgan_all_data.pkl](https://tripod.nih.gov/pub/adme/models/rlm/dnn_morgan_all_data.pkl)
-- [https://tripod.nih.gov/pub/adme/models/rlm/gcnn_model.pt](https://tripod.nih.gov/pub/adme/models/rlm/gcnn_model.pt)
-- [https://tripod.nih.gov/pub/adme/models/rlm/lstm_all_data.h5](https://tripod.nih.gov/pub/adme/models/rlm/lstm_all_data.h5)
-- [https://tripod.nih.gov/pub/adme/models/rlm/rf_morgan_all_data.pkl](https://tripod.nih.gov/pub/adme/models/rlm/rf_morgan_all_data.pkl)
-- [https://tripod.nih.gov/pub/adme/models/rlm/tokenizer.pickle](https://tripod.nih.gov/pub/adme/models/rlm/tokenizer.pickle)
+- [Rat Liver Microsomal Stability](https://tripod.nih.gov/pub/adme/models/rlm)
+- [PAMPA 7.4 Permeability](https://tripod.nih.gov/pub/adme/models/pampa)
+- [PAMPA 5.0 Permeability](https://tripod.nih.gov/pub/adme/models/pampa50)
+- [Solubility](https://tripod.nih.gov/pub/adme/models/solubility)
+- [Human Liver Cytosol Stability](https://tripod.nih.gov/pub/adme/models/liver_cytosol)
+- [CYP450 isozymes - CYP2C9, CYP2D6, CYP3A4](https://tripod.nih.gov/pub/adme/models/CYPP450)
 
 ## Installing required software
 
