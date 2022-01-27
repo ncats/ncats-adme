@@ -226,6 +226,8 @@ def predict_df(df, smi_column_name, models):
     addMolsKekuleSmilesToFrame(working_df, smi_column_name)
     working_df = working_df[~working_df['mols'].isnull() & ~working_df['kekule_smiles'].isnull()]
 
+    print(f'The working df size is: {working_df.shape[0]}')
+
     if len(working_df.index) == 0:
         response['hasErrors'] = True
         response['errorMessages'] = 'We were not able to parse the smiles you provided'
@@ -258,7 +260,13 @@ def predict_df(df, smi_column_name, models):
         pred_df = working_df.join(pred_df)
         pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
 
-        response_df = pd.merge(df, pred_df, how='left', left_on=smi_column_name, right_on=smi_column_name)
+        # columns not present in original df
+        diff_cols = pred_df.columns.difference(df.columns)
+        df_res = pred_df[diff_cols]
+
+        #response_df = pd.merge(df, pred_df, how='inner', left_on=smi_column_name, right_on=smi_column_name)
+        # making sure the response df is of the exact same length (rows) as original df
+        response_df = pd.merge(df, df_res, left_index=True, right_index=True, how='inner')
 
         errors_dict = predictor.get_errors()
         response[model]['hasErrors'] = predictor.has_errors
