@@ -11,6 +11,9 @@ RUN ng build --configuration production --deploy-url=/adme/client/ --base-href=/
 
 FROM continuumio/miniconda:4.7.12
 
+# Install NCATS required packages
+RUN apt-get update -y && apt-get install -y net-tools
+
 WORKDIR /opt/adme
 
 COPY server ./
