@@ -4,8 +4,8 @@ from pandas import DataFrame
 import numpy as np
 import pandas as pd
 import pickle
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
+# from keras.preprocessing.text import Tokenizer
+# from keras.preprocessing.sequence import pad_sequences
 from rdkit import Chem
 import warnings
 warnings.filterwarnings('ignore')
@@ -20,7 +20,6 @@ import string
 from rdkit.Chem.rdchem import Mol
 from numpy import array
 from typing import Tuple
-from ..features.morgan_fp import MorganFPGenerator
 from ..utilities.utilities import get_processed_smi
 from . import rlm_gcnn_scaler, rlm_gcnn_model
 from ..base.gcnn import GcnnBase
