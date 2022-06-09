@@ -285,7 +285,7 @@ def predict_df(df, smi_column_name, models):
         dict_length = len(columns_dict.keys())
         columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
 
-        if response_df.shape[0] <= 1000: # go for similarity assessment only if the response df contains 1000 compounds or less
+        if response_df.shape[0] <= 100: # go for similarity assessment only if the response df contains 100 compounds or less
 
             if model.lower() != 'cyp450':
                 # for all models except cyp450, calculate the nearest neigbors and add additional column to response_df
