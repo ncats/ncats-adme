@@ -1,7 +1,7 @@
 <div class="text-file-body">
     <div class="description">
-        Select a text file containing a list of SMILES, but try to keep the size of the data to under 1,000 rows. Anything above 1,000 rows may take several minutes. If you have an Excel file, follow <a href="https://support.office.com/en-us/article/import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba" target="_blank">these instructions</a> to export it as Text or CSV.
-        Please note that Tanimoto similarity towards training data is not calculated if the input file contains more than 1,000 rows.
+        Select a text file containing a list of SMILES, but try to keep the size of the data to under 1000 rows. Anything above 1000 rows may take several minutes. If you have an Excel file, follow <a href="https://support.office.com/en-us/article/import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba" target="_blank">these instructions</a> to export it as Text or CSV.
+        Please note that Tanimoto similarity towards training data is not calculated if the input file contains more than 100 compounds.
     </div>
     <div>
         <button mat-raised-button color="primary" admeFileSelect (selectedFile)="fileSelected($event)">Browse</button>

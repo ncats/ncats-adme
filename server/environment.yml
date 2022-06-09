@@ -13,7 +13,6 @@ dependencies:
   - efelix::fpsim2=0.2.6
   - hyperopt=0.2.4
   - ipython=7.16.1
-  - joblib=0.15
   - matplotlib=3.3.0
   - networkx=2.4
   - numpy=1.18
