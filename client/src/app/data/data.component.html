@@ -29,14 +29,14 @@
                                 PubChem Bioassay
                             </th>
                             <th class="mat-header-cell ">
-                                Download File
+                                Data File
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="mat-row">
                             <td class="mat-cell center">
-                                Rat Liver Microsomal Stability
+                                RLM Stability
                             </td>
                             <td class="mat-cell center">
                                 22,016
@@ -50,31 +50,12 @@
                         1508591</a>
                             </td>
                             <td class="mat-cell center">
-                              <a [href]="rlm_DownloadHref" target="_blank">RLM</a>
+                              <a [href]="rlm_DownloadHref" target="_blank"><img class="img-icon" [src]="downloadIcon"></a>
                             </td>
                         </tr>
                         <tr class="mat-row">
                             <td class="mat-cell center">
-                                PAMPA Permeability pH 7.4
-                            </td>
-                            <td class="mat-cell center">
-                                16,624
-                            </td>
-                            <td class="mat-cell center">
-                                2,528
-                            </td>
-                            <td class="mat-cell center">
-                                <a
-                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508612" target="_blank" admeTrackLinkEvent evLabel="pampa 74 pubchem">AID
-                        1508612</a>
-                            </td>
-                            <td class="mat-cell center">
-                              <a [href]="pampa74_DownloadHref" target="_blank">PAMPA pH 7.4</a>
-                            </td>
-                        </tr>
-                        <tr class="mat-row">
-                            <td class="mat-cell center">
-                                PAMPA Permeability pH 5
+                                PAMPA pH 5
                             </td>
                             <td class="mat-cell center">
                                 5,227
@@ -88,12 +69,31 @@
                         1645871</a>
                             </td>
                             <td class="mat-cell center">
-                              <a [href]="pampa50_DownloadHref" target="_blank">PAMPA pH 5</a>
+                              <a [href]="pampa50_DownloadHref" target="_blank"><img class="img-icon" [src]="downloadIcon"></a>
                             </td>
                         </tr>
                         <tr class="mat-row">
                             <td class="mat-cell center">
-                                Kinetic Aqueous Solubility
+                                PAMPA pH 7.4
+                            </td>
+                            <td class="mat-cell center">
+                                16,624
+                            </td>
+                            <td class="mat-cell center">
+                                2,528
+                            </td>
+                            <td class="mat-cell center">
+                                <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508612" target="_blank" admeTrackLinkEvent evLabel="pampa 74 pubchem">AID
+                        1508612</a>
+                            </td>
+                            <td class="mat-cell center">
+                              <a [href]="pampa74_DownloadHref" target="_blank"><img class="img-icon" [src]="downloadIcon"></a>
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                Solubility
                             </td>
                             <td class="mat-cell center">
                                 22,209
@@ -107,12 +107,12 @@
                         1645848</a>
                             </td>
                             <td class="mat-cell center">
-                              <a [href]="sol_DownloadHref" target="_blank">Solubility</a>
+                              <a [href]="sol_DownloadHref" target="_blank"><img class="img-icon" [src]="downloadIcon"></a>
                             </td>
                         </tr>
                         <tr class="mat-row">
                             <td class="mat-cell center">
-                                Human Liver Cytosolic Stability
+                                HLC Stability
                             </td>
                             <td class="mat-cell center">
                                 1,214
@@ -126,12 +126,12 @@
                         1508603</a>
                             </td>
                             <td class="mat-cell center">
-                              <a [href]="hlc_DownloadHref" target="_blank">HLC</a>
+                              <a [href]="hlc_DownloadHref" target="_blank"><img class="img-icon" [src]="downloadIcon"></a>
                             </td>
                         </tr>
                         <tr class="mat-row">
                             <td class="mat-cell center">
-                                CYP450 Isoform 2D6
+                                CYP2D6
                             </td>
                             <td class="mat-cell center">
                                 5,094
@@ -145,12 +145,12 @@
                         1645840</a>
                             </td>
                             <td class="mat-cell center">
-                              <a [href]="cyp2d6_DownloadHref" target="_blank">CYP2D6</a>
+                              <a [href]="cyp2d6_DownloadHref" target="_blank"><img class="img-icon" [src]="downloadIcon"></a>
                             </td>
                         </tr>
                         <tr class="mat-row">
                             <td class="mat-cell center">
-                                CYP450 Isoform 3A4
+                                CYP3A4
                             </td>
                             <td class="mat-cell center">
                                 5,094
@@ -164,12 +164,12 @@
                         1645841</a>
                             </td>
                             <td class="mat-cell center">
-                              <a [href]="cyp3a4_DownloadHref" target="_blank">CYP3A4</a><br>
+                              <a [href]="cyp3a4_DownloadHref" target="_blank"><img class="img-icon" [src]="downloadIcon"></a><br>
                             </td>
                         </tr>
                         <tr class="mat-row">
                             <td class="mat-cell center">
-                                CYP450 Isoform 2C9
+                                CYP2C9
                             </td>
                             <td class="mat-cell center">
                                 5,094
@@ -183,13 +183,13 @@
                         1645842</a>
                             </td>
                             <td class="mat-cell center">
-                              <a [href]="cyp2c9_DownloadHref" target="_blank">CYP2C9</a>
+                              <a [href]="cyp2c9_DownloadHref" target="_blank"><img class="img-icon" [src]="downloadIcon"></a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <p class="footer-line"><sup>a</sup> <i>The total number of compounds present in the training dataset.</i><br>
-                  <sup>b</sup> <i>The total number of compounds in the publicly available dataset.</i>
+                <p class="footer-line"><sup>a</sup> <i>Total number of compounds present in the training dataset.</i><br>
+                  <sup>b</sup> <i>Total number of compounds present in the publicly available dataset.</i>
                 </p>
             </div>
         </div>
