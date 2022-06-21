@@ -157,7 +157,12 @@ def upload_file():
         smi_column_name = df.columns.values[indexIdentifierColumn]
 
         try:
-            response = predict_df(df, smi_column_name, models)
+            if len(df.index) > 1000:
+                response['hasErrors'] = True
+                response['errorMessages'] = 'The input file contains more than 1000 rows which exceeds the limit. Please try again with a maximum of 1000 rows.'
+                return jsonify(response)
+            else:
+                response = predict_df(df, smi_column_name, models)
         except Exception as e:
             app.logger.error('Error making a prediction.')
             app.logger.error(f'error type: {type(e)}')

@@ -121,7 +121,6 @@ class CYP450Predictor:
             processes = mp.cpu_count() - 1
         else:
             processes = 1
-
         with mp.Pool(processes=processes) as pool:
 
             for model_name in cyp450_models_dict.keys():
