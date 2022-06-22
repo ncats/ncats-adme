@@ -81,6 +81,7 @@ def load_gcnn_model(model_file_path, model_file_url):
     return gcnn_scaler, gcnn_model
 
 def get_similar_mols(kekule_smiles: list, model: str):
+    start = time.time()
 
     sim_vals = []
     fp_dict_path = ''.join(['./train_data/', model, '.h5'])
@@ -89,6 +90,9 @@ def get_similar_mols(kekule_smiles: list, model: str):
     for smi in kekule_smiles:
         res = fp_engine.on_disk_similarity(smi, 0.01)
         sim_vals.append(res[0][1])
+
+    end = time.time()
+    print(f'{end - start} seconds to calculate Tanimoto similarity for {len(kekule_smiles)} molecules')
 
     return sim_vals
 

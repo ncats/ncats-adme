@@ -1,7 +1,8 @@
 <adme-loading></adme-loading>
 <mat-toolbar color="primary">
-  <a class="title" routerLink="/home">ADME @ NCATS</a>
+  <a class="title" routerLink="/home">ADME@NCATS</a>
   <div class="navigation">
+    <a class="nav-item" routerLink="/predictions">Predict</a>
     <a class="nav-item" [matMenuTriggerFor]="navMenu" >Models</a>
     <mat-menu #navMenu="matMenu">
       <button mat-menu-item routerLink="/models/rlm">RLM Stability</button>
@@ -11,7 +12,7 @@
       <button mat-menu-item routerLink="/models/hlc">HLC Stability</button>
       <button mat-menu-item routerLink="/models/cyp450">CYP450</button>
     </mat-menu>
-    <a class="nav-item" routerLink="/predictions">Predict</a>
+    <a class="nav-item" routerLink="/data/">Data</a>
     <a class="nav-item" routerLink="/contact">Contact</a>
   </div>
   <span class="fill-middle"></span>

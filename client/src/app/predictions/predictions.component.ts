@@ -104,7 +104,7 @@ export class PredictionsComponent implements OnInit {
     const options = {
       params: {
         smiles,
-        models: this.form1.value.name,
+        model: this.form1.value.name,
         //gcnnOpt: this.form2.value.gcnnOption
       }
     };
@@ -134,7 +134,7 @@ export class PredictionsComponent implements OnInit {
     this.columnSeparator = fileForm.columnSeparator;
     formData.append('hasHeaderRow', fileForm.hasHeaderRow.toString());
     formData.append('indexIdentifierColumn', fileForm.indexIdentifierColumn.toString());
-    formData.append('models', this.form1.value.name.join(';'));
+    formData.append('model', this.form1.value.name.join(';'));
     //formData.append('gcnnOpt', this.form2.value.gcnnOption);
     this.fileIndexIdentifierColumn = fileForm.indexIdentifierColumn;
     this.indexIdentifierColumn = this.fileIndexIdentifierColumn;

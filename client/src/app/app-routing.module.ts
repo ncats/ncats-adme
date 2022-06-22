@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { PredictionsComponent } from './predictions/predictions.component';
 import { MethodComponent } from './method/method.component';
 import { ContactComponent } from './contact/contact.component';
+import { DataComponent } from './data/data.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,13 @@ const routes: Routes = [
     component: MethodComponent,
     data: {
       pageTitle: 'model'
+    }
+  },
+  {
+    path: 'data',
+    component: DataComponent,
+    data: {
+      pageTitle: 'data'
     }
   },
   {

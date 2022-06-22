@@ -4,8 +4,8 @@ from pandas import DataFrame
 import numpy as np
 import pandas as pd
 import pickle
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
+# from keras.preprocessing.text import Tokenizer
+# from keras.preprocessing.sequence import pad_sequences
 from rdkit import Chem
 import warnings
 warnings.filterwarnings('ignore')
