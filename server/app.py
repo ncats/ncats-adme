@@ -25,10 +25,23 @@ from predictors.liver_cytosol.lc_predictor import LCPredictor
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
 from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
 from predictors.utilities.utilities import get_similar_mols
+from flask_swagger_ui import get_swaggerui_blueprint
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
 app.config["DEBUG"] = False
+
+# flask swagger configs
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "ADME API"
+    }
+)
+app.register_blueprint(SWAGGERUI_BLUEPRINT)
 
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
