@@ -28,3 +28,4 @@ dependencies:
     - keras-self-attention==0.41.0
     - tensorflow==2.2.0
     - typed-argument-parser==1.5.4
+    - flask_swagger_ui==4.11.1
