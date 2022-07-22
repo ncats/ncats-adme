@@ -33,7 +33,7 @@ app.config["DEBUG"] = False
 
 # flask swagger configs
 SWAGGER_URL = '/swagger'
-API_URL = '/static/swagger.json'
+API_URL = '/client/static/swagger.yaml'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
@@ -41,7 +41,7 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
         'app_name': "ADME API"
     }
 )
-app.register_blueprint(SWAGGERUI_BLUEPRINT)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
