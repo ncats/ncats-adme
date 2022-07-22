@@ -8,11 +8,13 @@ import { DownloadEvent, PredictionsData } from '../predictions-table/predictions
 import { GoogleAnalyticsService } from '../google-analytics/google-analytics.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ConfigService } from '../config/config.service';
+import {SelectionModel} from '@angular/cdk/collections';
 
 export interface PredModel {
   id: number;
   name: string;
   val: string;
+  checked: boolean;
 }
 
 @Component({
@@ -27,7 +29,6 @@ export class PredictionsComponent implements OnInit {
   fileData: { [modelName: string]: PredictionsData };
   apiBaseUrl: string;
   apiKetcherUrl: string;
-
   errorMessage: string;
   errorMessages: Array<string> = [];
   file: Blob;
@@ -51,13 +52,15 @@ export class PredictionsComponent implements OnInit {
   form1: FormGroup;
   // form2: FormGroup;
   modelList: PredModel[] = [
-    { id: 0, name: 'RLM Stability', val: 'RLM' },
-    { id: 1, name: 'PAMPA pH 5', val: 'PAMPA50' },
-    { id: 2, name: 'PAMPA pH 7.4', val: 'PAMPA' },
-    { id: 3, name: 'Solubility', val: 'Solubility' },
-    { id: 4, name: 'HLC Stability', val: 'HLC' },
-    { id: 5, name: 'CYP450', val: 'CYP450' }
+    { id: 0, name: 'RLM Stability', val: 'RLM', checked: true },
+    { id: 1, name: 'PAMPA pH 5', val: 'PAMPA50', checked: true },
+    { id: 2, name: 'PAMPA pH 7.4', val: 'PAMPA', checked: true },
+    { id: 3, name: 'Solubility', val: 'Solubility', checked: true },
+    { id: 4, name: 'HLC Stability', val: 'HLC', checked: true },
+    { id: 5, name: 'CYP450', val: 'CYP450', checked: false }
   ];
+
+  selection = new SelectionModel<string>(true, ['RLM', 'PAMPA50', 'PAMPA', 'Solubility', 'HLC']);
 
   constructor(
     private http: HttpClient,
@@ -72,15 +75,15 @@ export class PredictionsComponent implements OnInit {
     this.apiKetcherUrl = `${this.apiBaseUrl}ketcher`;
   }
 
-  onChange(name: string, isChecked: boolean) {
-    const models = (this.form1.controls.name as FormArray);
-    if (isChecked) {
-      models.push(new FormControl(name));
-    } else {
-      const index = models.controls.findIndex(x => x.value === name);
-      models.removeAt(index);
-    }
-  }
+  // onChange(name: string, isChecked: boolean) {
+  //   const models = (this.form1.controls.name as FormArray);
+  //   if (isChecked) {
+  //     models.push(new FormControl(name));
+  //   } else {
+  //     const index = models.controls.findIndex(x => x.value === name);
+  //     models.removeAt(index);
+  //   }
+  // }
 
   ngOnInit(): void {
     this.link = document.createElement('a');
@@ -100,11 +103,11 @@ export class PredictionsComponent implements OnInit {
     this.clearSketcherData();
     this.loadingService.setLoadingState(true);
     this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
-    this.models_checked = this.form1.value.name;
+    this.models_checked = this.selection.selected;
     const options = {
       params: {
         smiles,
-        model: this.form1.value.name,
+        model: this.models_checked
         //gcnnOpt: this.form2.value.gcnnOption
       }
     };
@@ -126,7 +129,7 @@ export class PredictionsComponent implements OnInit {
     this.clearErrorMessage();
     this.clearFileData();
     this.loadingService.setLoadingState(true);
-    this.models_checked = this.form1.value.name;
+    this.models_checked = this.selection.selected;
     const formData = new FormData();
     formData.append('lineBreak', fileForm.lineBreak);
     this.lineBreak = fileForm.lineBreak;
@@ -134,7 +137,7 @@ export class PredictionsComponent implements OnInit {
     this.columnSeparator = fileForm.columnSeparator;
     formData.append('hasHeaderRow', fileForm.hasHeaderRow.toString());
     formData.append('indexIdentifierColumn', fileForm.indexIdentifierColumn.toString());
-    formData.append('model', this.form1.value.name.join(';'));
+    formData.append('model', this.models_checked.join(';'));
     //formData.append('gcnnOpt', this.form2.value.gcnnOption);
     this.fileIndexIdentifierColumn = fileForm.indexIdentifierColumn;
     this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
