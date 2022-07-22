@@ -1,6 +1,5 @@
 servers:
   - url: https://opendata.ncats.nih.gov/adme/
-  - url: https://adme.ncats.nih.gov/models/
 openapi: 3.0.3
 info:
   description: API documentation for ADME@NCATS prediction portal
