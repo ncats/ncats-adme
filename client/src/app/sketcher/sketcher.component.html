@@ -2,7 +2,7 @@
     <iframe id="ketcherFrame" [src]="ketcherSrc" id="ketcher-frame" scrolling="no" #ketcherFrame></iframe>
 </div>
 <div class="actions">
-    <button mat-raised-button color="accent" (click)="addMolecule()">
+    <button id="predict_btn" mat-raised-button color="accent" [disabled]="checkMolecule() === ''" (click)="addMolecule()">
         Predict
     </button>
 </div>
