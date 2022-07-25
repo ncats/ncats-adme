@@ -8,7 +8,7 @@ import { DEPLOY_URL } from '../utilities/deploy-url';
   styleUrls: ['./contact.component.scss']
 })
 export class ContactComponent implements OnInit {
-  jordanImgSrc: SafeResourceUrl;
+  rintaroImgSrc: SafeResourceUrl;
   vishalImgSrc: SafeResourceUrl;
   pranavImgSrc: SafeResourceUrl;
   ewyImgSrc: SafeResourceUrl;
@@ -22,7 +22,7 @@ export class ContactComponent implements OnInit {
     private domSanitizer: DomSanitizer,
     @Inject(DEPLOY_URL) public deployUrl: string
   ) {
-    this.jordanImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/williamsjos.jpg`);
+    this.rintaroImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/kator.jpg`);
     this.vishalImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/siramshettyv2.jpg`);
     this.pranavImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/shahpa2.png`);
     this.ewyImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/mathee.jpg`);
