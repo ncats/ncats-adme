@@ -466,6 +466,11 @@ def ketcher_uploads():
     }
     return response, 501
 
+@app.route(f'{root_route_path}/swagger')
+def send_apidoc():
+    print(file=sys.stdout)
+    return send_static_file('client/assets/apidoc/swagger.yaml')
+
 @app.route(f'{root_route_path}/client/<path:path>')
 def send_js(path):
     print(path, file=sys.stdout)
