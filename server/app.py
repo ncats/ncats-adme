@@ -33,7 +33,7 @@ app.config["DEBUG"] = False
 
 # flask swagger configs
 SWAGGER_URL = '/swagger'
-API_URL = '/client/assets/static/swagger.yml'
+API_URL = '/client/assets/apidoc/swagger.yaml'
 SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,

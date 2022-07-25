@@ -1,0 +1,45 @@
+swagger: '2.0'
+info:
+  description: 'This is the API documentation for ADME@NCATS prediction portal. You can find out more about ADME@NCATS at [https://opendata.ncats.nih.gov/adme](https://opendata.ncats.nih.gov/adme). The code for web application that is served by this API can be found on [GitHub](https://github.com/ncats/ncats-adme).'
+  version: 1.0.1
+  title: AMDE@NCATS API
+  termsOfService: https://opendata.ncats.nih.gov/adme/data
+  contact:
+    name: Vishal Siramshetty
+    x-role: responsible developer
+    email: siramshettyv2@nih.gov
+    x-id: https://github.com/iwwwish
+host: opendata.ncats.nih.gov
+basePath: /adme/
+tags:
+  - name: predict
+    description: fetches predictions for a query molecule for a specific ADME endpoint
+    externalDocs:
+      description: More about ADME endpoints
+      url: https://opendata.ncats.nih.gov/adme/
+schemes:
+  - https
+paths:
+  /api/v1/predict:
+    get:
+      tags:
+        - predict
+      summary: returns a class label (e.g., high solubility or low solubility) and a probability score
+      produces:
+        - application/json
+      parameters:
+        - name: smiles
+          in: query
+          description: query molecule provided in SMILES specification
+          required: true
+          type: string
+        - name: model
+          in: query
+          description: name of the ADME model (e.g., solubility)
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '500':
+          description: Internal Server Error
