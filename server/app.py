@@ -31,18 +31,6 @@ app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
 app.config["DEBUG"] = False
 
-# flask swagger configs
-SWAGGER_URL = '/swagger'
-API_URL = '/client/assets/apidoc/swagger.yaml'
-SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL,
-    config={
-        'app_name': "ADME API"
-    }
-)
-app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
-
 global root_route_path
 root_route_path = os.getenv('ROOT_ROUTE_PATH', '')
 
@@ -52,7 +40,19 @@ data_path = os.getenv('DATA_PATH', '')
 if data_path != '' and not os.path.isfile(f'{data_path}predictions.csv'):
     pd.DataFrame(columns=['SMILES', 'model', 'prediction', 'timestamp']).to_csv(f'{data_path}predictions.csv', index=False)
 
-# path for mounted volumen will be '/data'
+# path for mounted volume will be '/data'
+
+# flask swagger configs
+SWAGGER_URL = root_route_path + '/swagger'
+API_URL = root_route_path + '/client/assets/apidoc/swagger.yaml'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "ADME API"
+    }
+)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 @app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():
@@ -465,11 +465,6 @@ def ketcher_uploads():
         'error': 'This feature is not supported at the moment'
     }
     return response, 501
-
-@app.route(f'{root_route_path}/swagger')
-def send_apidoc():
-    print(file=sys.stdout)
-    return app.send_static_file('assets/apidoc/swagger.yaml')
 
 @app.route(f'{root_route_path}/client/<path:path>')
 def send_js(path):
