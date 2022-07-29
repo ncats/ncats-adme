@@ -12,18 +12,25 @@ info:
 host: opendata.ncats.nih.gov
 basePath: /adme/
 tags:
-  - name: predict
-    description: fetches predictions for a query molecule for a specific ADME endpoint
+  - name: predictions
+    description: Predictions for different ADME endpoints
+  - name: structure
+    description: Molecule depiction methods based on RDKit drawing tools
     externalDocs:
-      description: More about ADME endpoints
-      url: https://opendata.ncats.nih.gov/adme/
+      description: RDKit
+      url: https://www.rdkit.org/
+  - name: ketcher
+    description: Molecular operations relayed via Ketcher tool
+    externalDocs:
+      description: Ketcher
+      url: https://lifescience.opensource.epam.com/ketcher/
 schemes:
   - https
 paths:
   /api/v1/predict:
     get:
       tags:
-        - predict
+        - predictions
       summary: returns a class label (e.g., high solubility or low solubility) and a probability score
       produces:
         - application/json
@@ -33,13 +40,195 @@ paths:
           description: query molecule provided in SMILES specification
           required: true
           type: string
+          example: Cc1ccccc1
         - name: model
           in: query
-          description: name of the ADME model (e.g., solubility)
+          description: name of the ADME model (solubility, rlm, pampa, etc.)
           required: true
-          type: string
+          type: array
+          items:
+            type: string
+            enum:
+              - solubility
+              - rlm
+              - pampa
+              - pampa50
+              - hlc
+              - cyp450
+            default: solubility
+          collectionFormat: multi
       responses:
         '200':
           description: OK
         '500':
           description: Internal Server Error
+  /api/v1/structure_image/{smiles}:
+    get:
+      tags:
+        - structure
+      summary: returns the 2D drawing of molecule as SVG OR a dummy image if molecule cannot be processed
+      produces:
+        - image/svg+xml
+        - image/png
+      parameters:
+        - name: smiles
+          in: path
+          description: query molecule provided in SMILES specification
+          required: true
+          type: string
+          example: Cc1ccccc1
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /api/v1/structure_image_glowing:
+    get:
+      tags:
+        - structure
+      summary: returns the 2D drawing of molecule with a highlighted substructure
+      produces:
+        - image/svg+xml
+        - image/png
+      parameters:
+        - name: smiles
+          in: query
+          description: reference molecule provided in SMILES specification
+          required: true
+          type: string
+          example: Cc1ccccc1
+        - name: subs
+          in: query
+          description: query substructure (also SMILES) that needs to be highlighted
+          required: true
+          type: string
+          example: c1ccccc1
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /ketcher/indigo/layout:
+    post:
+      tags:
+        - ketcher
+      summary: returns a MOL block representation of input molecule provided in SMILES specification
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: input molecule provided in SMILES specification
+          required: true
+          schema:
+            $ref: '#/definitions/SMILES'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /ketcher/indigo/clean:
+    post:
+      tags:
+        - ketcher
+      summary: returns a clean MOL block representation of molecule
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: input molecule that needs to be cleaned
+          required: true
+          schema:
+            $ref: '#/definitions/MOL'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /ketcher/indigo/aromatize:
+    post:
+      tags:
+        - ketcher
+      summary: returns aromatic representation of molecule
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: input molecule that needs to be aromatized
+          required: true
+          schema:
+            $ref: '#/definitions/MOL'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+  /ketcher/indigo/dearomatize:
+    post:
+      tags:
+        - ketcher
+      summary: returns kekulized representation of molecule
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: input molecule that needs to be kekulized
+          required: true
+          schema:
+            $ref: '#/definitions/MOL'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+definitions:
+  MOL:
+    type: object
+    required:
+      - struct
+    properties:
+      struct:
+        type: string
+        example: |2
+
+            Ketcher  7292215 12D 1   1.00000     0.00000     0
+
+            7  7  0     0  0            999 V2000
+             17.3000   -4.3000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+             18.1660   -4.8000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+             18.1660   -5.8000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+             17.3000   -6.3000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+             16.4340   -5.8000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+             16.4340   -4.8000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+             17.3000   -3.3000    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+            1  2  1  0     0  0
+            2  3  2  0     0  0
+            3  4  1  0     0  0
+            4  5  2  0     0  0
+            5  6  1  0     0  0
+            6  1  2  0     0  0
+            1  7  1  0     0  0
+          M  END
+    xml:
+      name: MOL
+  SMILES:
+      type: object
+      required:
+        - struct
+      properties:
+        struct:
+          type: string
+          example: Cc1ccccc1
+      xml:
+        name: SMILES

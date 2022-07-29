@@ -210,13 +210,28 @@ def upload_file():
 #         return send_file('./images/no_image_available.png', mimetype='image/png')
 
 @app.route(f'{root_route_path}/api/v1/structure_image/<path:smiles>', methods=['GET'])
-def get_glowing_image(smiles):
-        if '_' in smiles:
-            mol_smi = smiles.split('_')[0]
-            mol_subs = smiles.split('_')[1]
+def get_image(smiles):
+        try:
+            mol = Chem.MolFromSmiles(smiles)
+            d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
+            d2d.DrawMolecule(mol)
+            d2d.FinishDrawing()
+            return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
+        except:
+            return send_file('./images/no_image_available.png', mimetype='image/png')
+
+
+@app.route(f'{root_route_path}/api/v1/structure_image_glowing', methods=['GET'])
+def get_glowing_image():
+        smiles = request.args.getlist('smiles')
+        smiles = [string for string in smiles if string != '']
+        subs = request.args.getlist('subs')
+        subs = [string for string in subs if string != '']
+        print(f'Substructure: {subs}')
+        if smiles and subs:
             try:
-                mol = Chem.MolFromSmiles(mol_smi)
-                patt = Chem.MolFromSmiles(mol_subs)
+                mol = Chem.MolFromSmiles(smiles[0])
+                patt = Chem.MolFromSmiles(subs[0])
                 matching = mol.GetSubstructMatch(patt)
                 d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
                 d2d.DrawMolecule(mol, highlightAtoms=matching)
@@ -225,14 +240,11 @@ def get_glowing_image(smiles):
             except:
                 return send_file('./images/no_image_available.png', mimetype='image/png')
         else:
-            try:
-                mol = Chem.MolFromSmiles(smiles)
-                d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
-                d2d.DrawMolecule(mol)
-                d2d.FinishDrawing()
-                return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
-            except:
-                return send_file('./images/no_image_available.png', mimetype='image/png')
+            response = {
+                'error': 'Please provide at least one molecule and one substructure each in SMILES specification'
+            }
+
+            return response, 400
 
 
 def predict_df(df, smi_column_name, models):
