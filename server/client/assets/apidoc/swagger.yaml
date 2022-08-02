@@ -5,22 +5,22 @@ info:
   title: AMDE@NCATS API
   termsOfService: https://opendata.ncats.nih.gov/adme/data
   contact:
-    name: Vishal Siramshetty
-    x-role: responsible developer
-    email: siramshettyv2@nih.gov
-    x-id: https://github.com/iwwwish
+    name: ADME Team
+    x-role: team member
+    email: adme-ncats@mail.nih.gov
+    x-id: https://github.com/ncats/ncats-adme
 host: opendata.ncats.nih.gov
 basePath: /adme/
 tags:
   - name: predictions
     description: Predictions for different ADME endpoints
   - name: structure
-    description: Molecule depiction methods based on RDKit drawing tools
+    description: 2D molecular depiction methods based on RDKit
     externalDocs:
       description: RDKit
       url: https://www.rdkit.org/
   - name: ketcher
-    description: Molecular operations relayed via Ketcher tool
+    description: Molecular operations supported via Ketcher
     externalDocs:
       description: Ketcher
       url: https://lifescience.opensource.epam.com/ketcher/
