@@ -40,7 +40,6 @@ paths:
           description: query molecule provided in SMILES specification
           required: true
           type: string
-          example: Cc1ccccc1
         - name: model
           in: query
           description: name of the ADME model (solubility, rlm, pampa, etc.)
@@ -76,7 +75,6 @@ paths:
           description: query molecule provided in SMILES specification
           required: true
           type: string
-          example: Cc1ccccc1
       responses:
         '200':
           description: OK
@@ -96,13 +94,11 @@ paths:
           description: reference molecule provided in SMILES specification
           required: true
           type: string
-          example: Cc1ccccc1
         - name: subs
           in: query
           description: query substructure (also SMILES) that needs to be highlighted
           required: true
           type: string
-          example: c1ccccc1
       responses:
         '200':
           description: OK
