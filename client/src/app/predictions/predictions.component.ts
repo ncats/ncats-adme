@@ -104,6 +104,7 @@ export class PredictionsComponent implements OnInit {
     this.loadingService.setLoadingState(true);
     this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
     this.models_checked = this.selection.selected;
+    smiles = smiles.toString().replace(/\+/gi, '%2B')
     const options = {
       params: {
         smiles,
