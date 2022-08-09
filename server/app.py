@@ -26,6 +26,7 @@ from predictors.cyp450.cyp450_predictor import CYP450Predictor
 from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
 from predictors.utilities.utilities import get_similar_mols
 from flask_swagger_ui import get_swaggerui_blueprint
+import urllib
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -64,6 +65,8 @@ def predict():
     # checking for input - smiles
     smiles_list = request.args.getlist('smiles')
     smiles_list = [string for string in smiles_list if string != '']
+    smiles_list = [urllib.parse.unquote(string, encoding='utf-8', errors='replace') for string in smiles_list] # additional decoding step to transform any %2B to + symbols
+
     if not smiles_list or smiles_list == None:
         mol_error = True
 
