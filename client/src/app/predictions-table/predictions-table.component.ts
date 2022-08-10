@@ -33,6 +33,7 @@ export class PredictionsTableComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
   }
 
   @Input('predictions-data')

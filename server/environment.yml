@@ -31,3 +31,4 @@ dependencies:
     - tensorflow==2.2.0
     - typed-argument-parser==1.5.4
     - gunicorn==20.0.4
+    - flask_swagger_ui==4.11.1

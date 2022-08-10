@@ -25,6 +25,8 @@ from predictors.liver_cytosol.lc_predictor import LCPredictor
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
 from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
 from predictors.utilities.utilities import get_similar_mols
+from flask_swagger_ui import get_swaggerui_blueprint
+import urllib
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -39,7 +41,19 @@ data_path = os.getenv('DATA_PATH', '')
 if data_path != '' and not os.path.isfile(f'{data_path}predictions.csv'):
     pd.DataFrame(columns=['SMILES', 'model', 'prediction', 'timestamp']).to_csv(f'{data_path}predictions.csv', index=False)
 
-# path for mounted volumen will be '/data'
+# path for mounted volume will be '/data'
+
+# flask swagger configs
+SWAGGER_URL = root_route_path + '/swagger'
+API_URL = root_route_path + '/client/assets/apidoc/swagger.yaml'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "ADME API"
+    }
+)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 @app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():
@@ -51,6 +65,8 @@ def predict():
     # checking for input - smiles
     smiles_list = request.args.getlist('smiles')
     smiles_list = [string for string in smiles_list if string != '']
+    smiles_list = [urllib.parse.unquote(string, encoding='utf-8', errors='replace') for string in smiles_list] # additional decoding step to transform any %2B to + symbols
+
     if not smiles_list or smiles_list == None:
         mol_error = True
 
@@ -197,13 +213,28 @@ def upload_file():
 #         return send_file('./images/no_image_available.png', mimetype='image/png')
 
 @app.route(f'{root_route_path}/api/v1/structure_image/<path:smiles>', methods=['GET'])
-def get_glowing_image(smiles):
-        if '_' in smiles:
-            mol_smi = smiles.split('_')[0]
-            mol_subs = smiles.split('_')[1]
+def get_image(smiles):
+        try:
+            mol = Chem.MolFromSmiles(smiles)
+            d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
+            d2d.DrawMolecule(mol)
+            d2d.FinishDrawing()
+            return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
+        except:
+            return send_file('./images/no_image_available.png', mimetype='image/png')
+
+
+@app.route(f'{root_route_path}/api/v1/structure_image_glowing', methods=['GET'])
+def get_glowing_image():
+        smiles = request.args.getlist('smiles')
+        smiles = [string for string in smiles if string != '']
+        subs = request.args.getlist('subs')
+        subs = [string for string in subs if string != '']
+        print(f'Substructure: {subs}')
+        if smiles and subs:
             try:
-                mol = Chem.MolFromSmiles(mol_smi)
-                patt = Chem.MolFromSmiles(mol_subs)
+                mol = Chem.MolFromSmiles(smiles[0])
+                patt = Chem.MolFromSmiles(subs[0])
                 matching = mol.GetSubstructMatch(patt)
                 d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
                 d2d.DrawMolecule(mol, highlightAtoms=matching)
@@ -212,14 +243,11 @@ def get_glowing_image(smiles):
             except:
                 return send_file('./images/no_image_available.png', mimetype='image/png')
         else:
-            try:
-                mol = Chem.MolFromSmiles(smiles)
-                d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
-                d2d.DrawMolecule(mol)
-                d2d.FinishDrawing()
-                return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
-            except:
-                return send_file('./images/no_image_available.png', mimetype='image/png')
+            response = {
+                'error': 'Please provide at least one molecule and one substructure each in SMILES specification'
+            }
+
+            return response, 400
 
 
 def predict_df(df, smi_column_name, models):
