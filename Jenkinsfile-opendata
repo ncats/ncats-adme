@@ -73,8 +73,10 @@ pipeline {
                    configFile(fileId: 'config.json', targetLocation: 'config.json') 
                 ]) {
                     script {
-                        def docker = new org.labshare.Docker()
-                        docker.deployDockerAPI()
+                        docker.withRegistry('https://registry.ncats.nih.gov:5000', '564b9230-c7e3-482d-b004-8e79e5e9720a') {    
+                            def docker = new org.labshare.Docker()
+                            docker.deployDockerAPI()
+                        }
                     }
                 }
             }
