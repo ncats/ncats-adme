@@ -48,8 +48,9 @@ paths:
           items:
             type: string
             enum:
-              - solubility
+              - hlm
               - rlm
+              - solubility
               - pampa
               - pampa50
               - hlc
