@@ -5,6 +5,7 @@ import { PredictionsComponent } from './predictions/predictions.component';
 import { MethodComponent } from './method/method.component';
 import { ContactComponent } from './contact/contact.component';
 import { DataComponent } from './data/data.component';
+import { SwaggerComponent } from './swagger-ui/swagger-ui.component';
 
 const routes: Routes = [
   {
@@ -33,6 +34,13 @@ const routes: Routes = [
     component: DataComponent,
     data: {
       pageTitle: 'data'
+    }
+  },
+  {
+    path: 'swagger-ui',
+    component: SwaggerComponent,
+    data: {
+      pageTitle: 'swagger-ui'
     }
   },
   {

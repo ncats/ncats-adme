@@ -71,7 +71,7 @@
         </div>
         <div *ngIf="fileData">
           <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
-            <mat-tab *ngFor="let model of selection.selected" [label]="tabLabels[model]">
+            <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
               <div>
                 <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>

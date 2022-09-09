@@ -6,6 +6,7 @@
     <a class="nav-item" [matMenuTriggerFor]="navMenu" >Models</a>
     <mat-menu #navMenu="matMenu">
       <button mat-menu-item routerLink="/models/rlm">RLM Stability</button>
+      <button mat-menu-item routerLink="/models/hlm">HLM Stability</button>
       <button mat-menu-item routerLink="/models/pampa_ph5">PAMPA pH 5.0</button>
       <button mat-menu-item routerLink="/models/pampa_ph74">PAMPA pH 7.4</button>
       <button mat-menu-item routerLink="/models/solubility">Solubility</button>
@@ -13,6 +14,7 @@
       <button mat-menu-item routerLink="/models/cyp450">CYP450</button>
     </mat-menu>
     <a class="nav-item" routerLink="/data/">Data</a>
+    <a class="nav-item" routerLink="/swagger-ui">API</a>
     <a class="nav-item" routerLink="/contact">Contact</a>
   </div>
   <span class="fill-middle"></span>
