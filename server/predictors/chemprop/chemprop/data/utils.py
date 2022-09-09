@@ -232,6 +232,41 @@ def get_data_from_smiles(smiles: List[str],
 
     return data
 
+def get_data_from_smiles_with_additional_features(smiles: List[str],
+                         skip_invalid_smiles: bool = True,
+                         logger: Logger = None,
+                         features: List = None,
+                         features_generator: List[str] = None) -> MoleculeDataset:
+    """
+    Converts SMILES to a MoleculeDataset.
+
+    :param smiles: A list of SMILES strings.
+    :param skip_invalid_smiles: Whether to skip and filter out invalid smiles.
+    :param logger: Logger.
+    :param features_generator: List of features generators.
+    :return: A MoleculeDataset with all of the provided SMILES.
+    """
+    debug = logger.debug if logger is not None else print
+
+    data = MoleculeDataset([
+        MoleculeDatapoint(
+            smiles=smile,
+            features=feature,
+            row=OrderedDict({'smiles': smile}),
+            features_generator=features_generator
+        ) for smile, feature in zip(smiles, features)
+    ])
+
+    # Filter out invalid SMILES
+    if skip_invalid_smiles:
+        original_data_len = len(data)
+        data = filter_invalid_smiles(data)
+
+        if len(data) < original_data_len:
+            debug(f'Warning: {original_data_len - len(data)} SMILES are invalid.')
+
+    return data
+
 
 def split_data(data: MoleculeDataset,
                split_type: str = 'random',
@@ -263,7 +298,7 @@ def split_data(data: MoleculeDataset,
             args.folds_file, args.val_fold_index, args.test_fold_index
     else:
         folds_file = val_fold_index = test_fold_index = None
-    
+
     if split_type == 'crossval':
         index_set = args.crossval_index_sets[args.seed]
         data_split = []
@@ -275,7 +310,7 @@ def split_data(data: MoleculeDataset,
             data_split.append([data[i] for i in split_indices])
         train, val, test = tuple(data_split)
         return MoleculeDataset(train), MoleculeDataset(val), MoleculeDataset(test)
-    
+
     elif split_type == 'index_predetermined':
         split_indices = args.crossval_index_sets[args.seed]
 
@@ -325,7 +360,7 @@ def split_data(data: MoleculeDataset,
             val = train_val[train_size:]
 
         return MoleculeDataset(train), MoleculeDataset(val), MoleculeDataset(test)
-    
+
     elif split_type == 'scaffold_balanced':
         return scaffold_split(data, sizes=sizes, balanced=True, seed=seed, logger=logger)
 

@@ -2,7 +2,7 @@ from numpy import array
 import numpy as np
 import pandas as pd
 from rdkit.Chem.rdchem import Mol
-from chemprop.data.utils import get_data, get_data_from_smiles
+from chemprop.data.utils import get_data, get_data_from_smiles, get_data_from_smiles_with_additional_features
 from chemprop.data import MoleculeDataLoader, MoleculeDataset
 from chemprop.train import predict
 from .base import PredictorBase
@@ -13,13 +13,15 @@ import datetime
 
 class GcnnBase(PredictorBase):
 
-    def __init__(self, kekule_smiles: array = None, column_dict_key = 'GCNN', columns_dict_order: int = 1, smiles: array = None):
+    def __init__(self, kekule_smiles: array = None, additional_features: array = None, column_dict_key = 'GCNN', columns_dict_order: int = 1, smiles: array = None):
         PredictorBase.__init__(self)
 
         if kekule_smiles is None or len(kekule_smiles) == 0:
             raise ValueError('Please provide a list of kekule smiles')
 
         self.kekule_smiles = kekule_smiles
+
+        self.additional_features = additional_features
 
         self.column_dict_key = column_dict_key
 
@@ -45,7 +47,13 @@ class GcnnBase(PredictorBase):
         """
 
         smiles = self.kekule_smiles.tolist()
-        full_data = get_data_from_smiles(smiles=smiles, skip_invalid_smiles=False)
+        additional_features = self.additional_features
+
+        if additional_features is not None:
+            full_data = get_data_from_smiles_with_additional_features(smiles=smiles, features=additional_features)
+        else:
+            full_data = get_data_from_smiles(smiles=smiles, skip_invalid_smiles=False)
+
         full_to_valid_indices = {}
         valid_index = 0
         for full_index in range(len(full_data)):
@@ -58,7 +66,7 @@ class GcnnBase(PredictorBase):
         # create data loader
         data_loader = MoleculeDataLoader(
             dataset=data,
-            batch_size=50,
+            batch_size=1,
             num_workers=0
         )
 
@@ -70,8 +78,10 @@ class GcnnBase(PredictorBase):
 
         predictions = np.ma.empty(len(full_data))
         predictions.mask = True
+
         labels = np.ma.empty(len(full_data), dtype=np.int32)
         labels.mask = True
+
         for key in full_to_valid_indices.keys():
             full_index = int(key)
             predictions[full_index] = model_preds[full_to_valid_indices[key]][0]
