@@ -43,7 +43,7 @@ pipeline {
                 }
             }
             steps {
-                sshagent (credentials: ['871f96b5-9d34-449d-b6c3-3a04bbd4c0e4']) {
+                sshagent (credentials: ['labsharesvc']) {
                     sh 'git submodule update --init --recursive'
                     withEnv([
                         "IMAGE_NAME=adme",
