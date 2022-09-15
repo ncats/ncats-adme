@@ -317,7 +317,6 @@ def predict_df(df, smi_column_name, models):
         response[model]['columns'] = list(response_df.columns.values)
 
         columns_dict =  predictor.columns_dict()
-
         dict_length = len(columns_dict.keys())
         columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
 
