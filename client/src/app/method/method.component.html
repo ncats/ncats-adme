@@ -1,0 +1,703 @@
+<div class="container">
+    <div class="inner-container" *ngIf="model == 'rlm'">
+        <h2>
+            RLM Stability
+        </h2>
+        <div class="definitions-container">
+            <div class="definition">
+                <div class="name">Name:</div>
+                <div class="value">Rat Liver Microsomal Stability</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Type:</div>
+                <div class="value">Classification</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Size:</div>
+                <div class="value">22,016 compounds</div>
+            </div>
+            <div class="definition">
+                <div class="name">Validation:</div>
+                <div class="value">5-Fold CV and Time-Split CV</div>
+            </div>
+            <div class="definition">
+                <div class="name">Descriptors:</div>
+                <div class="value">Molecular Graphs</div>
+            </div>
+            <div class="definition">
+                <div class="name">Model Details:</div>
+                <div class="value" style="text-align: justify;">
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.</div>
+            </div>
+            <div class="definition">
+                <div class="name">Interpretation of Models:</div>
+                <div class="value" style="text-align: justify;">
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
+            </div>
+            <div class="definition">
+                <div class="name">Data Availability:</div>
+                <div class="value">
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508591" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
+                        1508591</a>.
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>
+            RLM Assay Protocol
+        </h3>
+        <p style="text-align: justify;">
+            Experiments were performed using a Freedom Evo 200 automated platform with a 96-channel (MCA96) head
+            with EVOware software (version 3.2) (Tecan Inc., Männedorf, Switzerland). The system also includes an
+            Inheco heating block and cooling block (Inheco, Munich, Germany). Six standard controls were tested in
+            each run: buspirone, propranolol, diclofenac, loperamide, carbamazepine and antipyrine. The assay
+            incubation system consisted of 0.5 mg/mL of rat microsomal protein (Strain: Sprague-Dawley), 1.0 μM drug
+            concentration, and NADPH regeneration system (containing 0.650 mM NADP+, 1.65 mM glucose 6-phosphate,
+            1.65 mM MgCl2, and 0.2 unit/mL G6PDH) in 100 mM phosphate buffer at pH 7.4. The incubation was carried
+            out at 37 °C for 15 min. The reaction was quenched by adding 555 μL of acetonitrile containing 0.28 μM
+            albendazole, an internal standard. After a 20-minute centrifugation at 3000 rpm at 4°C, 30 μL of the
+            supernatant was transferred to an analysis plate and was diluted five-fold using 1:2 v/v
+            acetonitrile/water. Sample quantification and analysis was performed using a previously described method
+            (Shah et al., 2016) with minor modifications. The t<sub>1/2</sub> values were capped at 30 minutes since for a
+            15-minute assay, the data cannot be extrapolated beyond 30 minutes (Di et al., 2004).
+        </p>
+        <h3>
+            References:
+        </h3>
+        <ol>
+          <li>
+            <p>Siramshetty, V.B., Shah, P., Kerns, E. et al., <a href="https://doi.org/10.1038/s41598-020-77327-0" target="_blank">Retrospective assessment of rat liver microsomal stability at NCATS: data and QSAR models.</a> <i> Sci Rep.</i> 10, 20713 (2020).</p>
+          </li>
+          <li>
+            <p>Shah, P. et al. <a href="https://doi.org/10.1124/dmd.116.072017" target="_blank">An Automated High-Throughput Metabolic Stability Assay Using an Integrated High Resolution Accurate Mass Method and Automated Data Analysis Software.</a> <i> Drug Metab Dispos.</i> 44, 1653-1661 (2016).</p>
+          </li>
+          <li>
+            <p>Di, L. et al. <a href="https://doi.org/10.1002/jps.20076" target="_blank"> Experimental design on single-time-point high-throughput microsomal stability assay.</a> <i> J Pharm Sci.</i> 93, 1537-1544 (2004).</p>
+          </li>
+        </ol>
+    </div>
+    <div class="inner-container" *ngIf="model == 'pampa_ph74'">
+        <h2>
+            PAMPA at pH 7.4
+        </h2>
+        <div class="definitions-container">
+            <div class="definition">
+                <div class="name">Name:</div>
+                <div class="value">Parallel artificial membrane permeability assay (PAMPA)</div>
+            </div>
+            <div class="definition">
+                <div class="name">Assay pH:</div>
+                <div class="value">7.4</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Type:</div>
+                <div class="value">Classification</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Size:</div>
+                <div class="value">16,624 compounds</div>
+            </div>
+            <div class="definition">
+                <div class="name">Validation:</div>
+                <div class="value">5-Fold CV</div>
+            </div>
+            <div class="definition">
+                <div class="name">Descriptors:</div>
+                <div class="value">Molecular Graphs</div>
+            </div>
+            <div class="definition">
+                <div class="name">Model Details:</div>
+                <div class="value" style="text-align: justify;">
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Interpretation of Models:</div>
+                <div class="value" style="text-align: justify;">
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low or moderate permeability' (i.e., log P<sub><i>eff</i></sub> &#60; 2.0) and if the predicted class is '0', the compound is predicted to have 'high permeability' (i.e., log P<sub><i>eff</i></sub> > 2.5). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Data Availability:</div>
+                <div class="value">
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508612" target="_blank" admeTrackLinkEvent evLabel="pampa 74 pubchem">AID
+                        1508612</a>.
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>PAMPA Assay Protocol:</h3>
+        <p style="text-align: justify;">
+            The stirring double-sink PAMPA method patented by Pion Inc. (Billerica, MA) was employed to determine the permeability of compounds via PAMPA passive diffusion. The PAMPA lipid membrane, which consisted of an artificial membrane of a proprietary lipid mixture and dodecane (Pion Inc.), was optimized to predict gastrointestinal tract (GIT) passive diffusion permeability. This membrane was immobilized on a plastic matrix of a 96 well “acceptor” filter plate placed atop a 96 well “donor” plate. This artificial membrane mimics the GIT membrane in the human body. Both “donor” and “acceptor” wells were buffered to pH 7.4. The test articles, stocked in 10 mM DMSO solutions, were diluted to 0.05 mM in aqueous buffer (pH 7.4) and the concentration of DMSO was 0.5% in the final solution. During the 30-minute permeation period at room temperature the test samples in the donor compartment were stirred using the Gutbox technology (Pion Inc.) to reduce the unstirred water layer. The test article concentrations in the “donor” and “acceptor” compartments were measured using a UV plate reader (Nano Quant, Infinite® 200 PRO, Tecan Inc., Männedorf, Switzerland). Permeability calculations were performed using Pion Inc. software and were expressed in the units of 10<sup>-6</sup>cm/s.
+        </p>
+        <h3>
+            References:
+        </h3>
+        <ol>
+         <li>
+            <p>Siramshetty, V.B., Williams, J., Nguyen D.T. et al., <a href="https://doi.org/10.1177/24725552211017520" target="_blank">Validating ADME QSAR Models Using Marketed Drugs.</a> <i> SLAS Discov Adv Sci Drug Discov.</i> (June 2021).</p>
+         </li>
+        </ol>
+    </div>
+    <div class="inner-container" *ngIf="model == 'pampa_ph5'">
+        <h2>
+            PAMPA at pH 5.0
+        </h2>
+        <div class="definitions-container">
+            <div class="definition">
+                <div class="name">Name:</div>
+                <div class="value">Parallel artificial membrane permeability assay (PAMPA)</div>
+            </div>
+            <div class="definition">
+                <div class="name">Assay pH:</div>
+                <div class="value">5.0</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Type:</div>
+                <div class="value">Classification</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Size:</div>
+                <div class="value">5,227 compounds</div>
+            </div>
+            <div class="definition">
+                <div class="name">Validation:</div>
+                <div class="value">5-Fold CV</div>
+            </div>
+            <div class="definition">
+                <div class="name">Descriptors:</div>
+                <div class="value">Molecular Graphs</div>
+            </div>
+            <div class="definition">
+                <div class="name">Model Details:</div>
+                <div class="value" style="text-align: justify;">
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Interpretation of Models:</div>
+                <div class="value" style="text-align: justify;">
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low permeability' (i.e., log P<sub><i>eff</i></sub> &#60; 1.0) and if the predicted class is '0', the compound is predicted to have 'moderate to high permeability' (i.e., log P<sub><i>eff</i></sub> > 1.0). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Data Availability:</div>
+                <div class="value">
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1645871" target="_blank" admeTrackLinkEvent evLabel="pampa 50 pubchem">AID
+                        1645871</a>.
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>PAMPA Assay Protocol:</h3>
+        <p style="text-align: justify;">
+            Stirring double-sink PAMPA method (patented by Pion Inc.) was employed to determine the permeability of compounds in a high-throughput format. The lipid (proprietary Pion Inc. lipid, optimized to predict GI tract passive permeability) was immobilized on a plastic matrix of a 96-well “acceptor” filter plate placed atop a 96-well “donor” plate.  pH 5 buffer was used in the donor wells and pH 7.4 buffer was used in the acceptor wells. The test articles (in duplicates), stocked in 10 mM DMSO solutions, were diluted to 0.05 mM in aqueous buffer (pH 5), and the concentration of DMSO was 0.5% in the final solution. During the 30-minute incubation at room temperature, test samples in donor compartment were stirred using Gutbox technology (Pion Inc.) to reduce the aqueous boundary layer.  The test article concentrations in the donor and acceptor compartments were measured using a UV plate reader (Nano Quant, Infinite 200 PRO, Tecan Inc., Männedorf, Switzerland).  Calculations were performed using Pion Inc. software and effective permeability (Peff) was expressed in units of 10-6cm/s. If the permeability could not be determined via UV, the samples were plated for analysis via UPLC-MS by plating 8 µL of the incubation solutions in 192 µL of Acetonitrile/Internal Standard solution in a 96-well plate (350 µL, Waters, Milford, MA).
+        </p>
+        <h3>
+            References:
+        </h3>
+        <ol>
+          <li>
+            <p>Williams, J., Siramshetty, V.B., Nguyen D.T. et al., <a href="https://doi.org/10.1016/j.bmc.2021.116588" target="_blank">Using in vitro ADME data for lead compound selection: An emphasis on PAMPA pH 5 permeability and oral bioavailability.</a> <i> Bioorg. Med. Chem.</i> 56, 116588 (2022).</p>
+         </li>
+        </ol>
+    </div>
+    <div class="inner-container" *ngIf="model == 'solubility'">
+        <h2>
+            Aqueous Kinetic Solubility
+        </h2>
+        <div class="definitions-container">
+            <div class="definition">
+                <div class="name">Name:</div>
+                <div class="value">Pion’s patented µSOL assay (Solubility)</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Type:</div>
+                <div class="value">Classification</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Size:</div>
+                <div class="value">22,209 compounds</div>
+            </div>
+            <div class="definition">
+                <div class="name">Validation:</div>
+                <div class="value">5-Fold CV</div>
+            </div>
+            <div class="definition">
+                <div class="name">Descriptors:</div>
+                <div class="value">Molecular graphs</div>
+            </div>
+            <div class="definition">
+                <div class="name">Model Details:</div>
+                <div class="value" style="text-align: justify;">
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Interpretation of Models:</div>
+                <div class="value" style="text-align: justify;">
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low solubility' (i.e., &#60;10 µg/ml) and if the predicted class is '0', the compound is predicted to have 'high solubility' (i.e., &#62;10 µg/ml). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Data Availability:</div>
+                <div class="value">
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1645848" target="_blank" admeTrackLinkEvent evLabel="sol pubchem">AID
+                        1645848</a>.
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>Solubility Assay Protocol:</h3>
+        <p style="text-align: justify;">
+            Pion’s patented µSOL assay was used for kinetic solubility determination. In this assay, the classical saturation shake-flask solubility method was adapted as previously described by Avdeef et al., 2001. Test compounds were prepared in 10 mM DMSO stock and diluted to a final drug concentration of 150 µM in the aqueous solution (pH 7.4, 100 mM phosphate buffer). Samples were incubated at room temperature for 6 h and vacuum-filtered using Tecan Te-Vac to remove any precipitates. The concentration of the compound in the filtrate was measured via UV absorbance (λ: 250–498 nm). The filtrate drug concentration was determined by comparing the fully solubilized reference plate which contains 17 µM of compound dissolved in spectroscopically pure n-propanol. All compounds were tested in duplicates. The kinetic solubility (µg/mL) of compounds was calculated using the µSOL Evolution software. The three experimental controls used were albendazole (low solubility), phenazopyridine (moderate solubility) and furosemide (high solubility).
+        </p>
+        <h3>
+            References:
+        </h3>
+        <ol>
+          <li>
+             <p>Siramshetty, V.B., Williams, J., Nguyen D.T. et al., <a href="https://doi.org/10.1177/24725552211017520" target="_blank">Validating ADME QSAR Models Using Marketed Drugs.</a> <i> SLAS Discov Adv Sci Drug Discov.</i> (June 2021).</p>
+          </li>
+          <li>
+            Avdeef, A. <a href="https://www.wiley.com/en-us/Absorption+and+Drug+Development%3A+Solubility%2C+Permeability%2C+and+Charge+State%2C+2nd+Edition-p-9781118286036" target="_blank">Absorption And Drug Development.</a> John Wiley & Sons Inc, Hoboken, New Jersey (2001)
+          </li>
+        </ol>
+    </div>
+    <div class="inner-container" *ngIf="model == 'hlc'">
+      <h2>
+          HLC Stability
+      </h2>
+      <div class="definitions-container">
+          <div class="definition">
+              <div class="name">Name:</div>
+              <div class="value">Human Liver Cytosolic Stability</div>
+          </div>
+          <div class="definition">
+              <div class="name">Dataset Type:</div>
+              <div class="value">Classification</div>
+          </div>
+          <div class="definition">
+              <div class="name">Dataset Size:</div>
+              <div class="value">1,214 compounds</div>
+          </div>
+          <div class="definition">
+              <div class="name">Validation:</div>
+              <div class="value">5-Fold CV</div>
+          </div>
+          <div class="definition">
+              <div class="name">Descriptors:</div>
+              <div class="value">Morgan Fingerprints</div>
+          </div>
+          <div class="definition">
+              <div class="name">Model Details:</div>
+              <div class="value" style="text-align: justify;">
+                  Due to high imbalance between the classes (stable and untable) in the training data, a consensus of three individual Random Forest models that are based on distinct subsets of the majority class (i.e., multiple-undersampling technique) was developed. Each individual Random Forest model comprises of 100 trees and uses Morgan fingerprints as features. The remaining parameters were set to default. The models were built using <a href="https://scikit-learn.org/stable/" target="_blank">scikit-learn</a> library.</div>
+          </div>
+          <div class="definition">
+              <div class="name">Interpretation of Models:</div>
+              <div class="value" style="text-align: justify;">
+                  The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
+          </div>
+          <div class="definition">
+              <div class="name">Data Availability:</div>
+              <div class="value">
+                  The external dataset used to validate these models is made publicly available at PubChem Bioassay database: <a
+                      href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508603" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
+                      1508603</a>.
+              </div>
+          </div>
+      </div>
+      <br>
+      <h3>
+          HLC Assay Protocol
+      </h3>
+      <p style="text-align: justify;">
+          Mixed gender human liver cytosol fractions (H0610.C) were purchased from Sekisui XenoTech, LLC (Kansas City, USA). Substrate depletion method was chosen to determine in vitro t<sub>1/2</sub>. The assay (384-well format) consisted of two parts; a robotic system for incubation and sample clean up and an integrated LC/MS method to calculate the percent remaining of parent compound. Briefly, each reaction mixture (110 μL) consisted of a test compound (1 μM) and human cytosol fractions (2 mg/mL) in phosphate buffer (100 mM) at pH 7.4. Samples were incubated in 384-well plates at 37 °C for 0, 5, 10, 15, 30 and 60 min. Sample analysis and t<sub>1/2</sub> calculations were performed using a previously described method (Shah et al., 2016). Using this high-throughput method, t<sub>1/2</sub> data was generated for 1450 compounds. A majority of these compounds were part of three in-house projects. A set of control compounds for low and high cytosolic stability were routinely run in each plate. The minimum significant ratio (MSR) for famciclovir as well as carbazeran were found to be below 3 which indicates the robustness of the assay.
+      </p>
+      <h3>
+          References:
+      </h3>
+      <ol>
+        <li>
+           <p>Shah, P., Siramshetty, V.B., Zakharov, A.V. et al., <a href="https://doi.org/10.1186/s13321-020-00426-7" target="_blank">Predicting liver cytosol stability of small molecules.</a> <i> J Cheminform.</i> 12, 21 (2020).</p>
+        </li>
+        <li>
+          <p>Shah, P. et al. <a href="https://doi.org/10.1124/dmd.116.072017" target="_blank">An Automated High-Throughput Metabolic Stability Assay Using an Integrated High Resolution Accurate Mass Method and Automated Data Analysis Software.</a> <i> Drug Metab Dispos.</i> 44, 1653-1661 (2016).</p>
+        </li>
+      </ol>
+    </div>
+    <div class="inner-container" *ngIf="model == 'cyp450'">
+        <h2>
+            Cytochrome P450 Isoforms
+        </h2>
+        <h3>
+            High-throughput metabolic stability assays:
+        </h3>
+        <p style="text-align: justify;">
+            The substrate depletion assay was employed to determine metabolic stability, using an established mid-density (384-well format) protocol<sup>1</sup>. The workflow included a robotic system for incubation and sample clean-up, coupled with an automated ultra-high performance liquid chromatography-high resolution mass spectrometry (UHPLC-HRMS) method for sample analysis. Briefly, each 110 µL reaction mixture consisted of 1 µM test article, supersomes, and an NADPH regenerating system in 100mM phosphate buffer at pH 7.4. The specific protein and enzyme concentrations, as well as the control compounds utilized are listed in Table 1. Incubations were conducted at 37°C, with mixing, and reaction aliquots were quenched at 0, 5, 10, 15, 30, and 60 min by addition of cold acetonitrile (ACN) with internal standard (IS), i.e. albendazole. Centrifugation at 3000 g, 4 °C for 20 min, was used to clear samples of precipitated protein and debris. Sample analysis in an UHPLC-HRMS instrument, data extraction, and half-life (t<sub>1/2</sub>) determinations were performed as previously described<sup>1</sup>.
+        </p>
+        <div class="table-container">
+            <div class="table-description">
+                Table 1: Summary of enzyme concentrations, cofactor activities and controls used the P450-Glo assays
+            </div>
+            <div class="table-responsive-container">
+                <table class="mat-table">
+                    <thead>
+                        <tr class="mat-header-row">
+                            <th class="mat-header-cell ">
+                                Matrix
+                            </th>
+                            <th class="mat-header-cell ">
+                                Final Protein Concentration [mg/mL]
+                            </th>
+                            <th class="mat-header-cell ">
+                                Total CYP content [nM]
+                            </th>
+                            <th class="mat-header-cell ">
+                                Cytochrome c Reductase activity [nol/(min x mg protein)]
+                            </th>
+                            <th class="mat-header-cell ">
+                                Cytochrome b<sub>5</sub> content [pmol/mg protein]
+                            </th>
+                            <th class="mat-header-cell ">
+                                High clearance controls
+                            </th>
+                            <th class="mat-header-cell ">
+                                Moderate clearance controls
+                            </th>
+                            <th class="mat-header-cell ">
+                                Low clearance controls
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mat-row">
+                            <td class="mat-cell strong">
+                                CYP3A4
+                            </td>
+                            <td class="mat-cell center">
+                                ~0.2
+                            </td>
+                            <td class="mat-cell center">
+                                30
+                            </td>
+                            <td class="mat-cell center">
+                                2900
+                            </td>
+                            <td class="mat-cell center">
+                                1090
+                            </td>
+                            <td class="mat-cell center">
+                                Buspirone, Loperamide
+                            </td>
+                            <td class="mat-cell center">
+                                Ketoconazole
+                            </td>
+                            <td class="mat-cell center">
+                                Antipyrine, Carbamazepine
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell strong">
+                                CYP2C9
+                            </td>
+                            <td class="mat-cell center">
+                                ~0.12
+                            </td>
+                            <td class="mat-cell center">
+                                45
+                            </td>
+                            <td class="mat-cell center">
+                                985
+                            </td>
+                            <td class="mat-cell center">
+                                710
+                            </td>
+                            <td class="mat-cell center">
+                                Glyburide, Glimepiride
+                            </td>
+                            <td class="mat-cell center">
+                                Tamoxifen
+                            </td>
+                            <td class="mat-cell center">
+                                Antipyrine, Meloxicam
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell strong">
+                                CYP2D6
+                            </td>
+                            <td class="mat-cell center">
+                                ~0.38
+                            </td>
+                            <td class="mat-cell center">
+                                60
+                            </td>
+                            <td class="mat-cell center">
+                                3000
+                            </td>
+                            <td class="mat-cell center">
+                                -
+                            </td>
+                            <td class="mat-cell center">
+                                Bufuralol, Desipramine, Amitriptyline
+                            </td>
+                            <td class="mat-cell center">
+                                Mexiletine
+                            </td>
+                            <td class="mat-cell center">
+                                Codeine
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <h3>
+            P450-Glo qHTS:
+        </h3>
+        <p style="text-align: justify;">
+            The P450-Glo inhibition assay is a luminescent technique used to detect CYP activity, through the liberation of luciferin from CYP probe substrates. P450-Glo assays were performed using a previously described method with minor modifications<sup>2</sup>. Briefly, 2 µL of CYP-substrate mix was dispensed into medium-binding white/solid 1,536-well plates using a Flying Reagent Dispenser (FRD, Aurora Discovery, Carlsbad, CA) with the exception of adding Bovine Serum Albumin (BSA) to the mixture for CYP2C9 and CYP2C19. The initial optimization assays for CYP2C9 and CYP2C19 yielded lower signal to background ratios and higher well to well variation. To increase signal and prevent adhesion of protein to tubes of the plate dispenser, 0.4% BSA was added to these two enzyme assays. 23 nL of each positive control (columns 1-4) and test compound (columns 5-48) dissolved in DMSO was transferred to the assay plates using a Wako Pintool station (Wako Automation, San Diego, CA). Positive controls used in these experiments are listed in Table 2. After the control/test compounds were transferred, the assay plates were incubated at room temperature (RT) for 10 min before the addition of 2 µL NADPH regeneration solution using an FRD. The reaction incubation continued at either RT or 37 °C for 60 min, and then quenched by FRD addition of 4 µL of the detection reagent. After a 20 min incubation at room temperature, the luminescence intensity was measured and quantified using a ViewLux plate reader (PerkinElmer, Shelton, CT). Data was expressed as relative luminescence units.
+        </p>
+        <div class="table-container">
+            <div class="table-description">
+                Table 2: Summary of incubation conditions and positive controls used in the P450-Glo assays
+            </div>
+            <div class="table-responsive-container">
+                <table class="mat-table">
+                    <thead>
+                        <tr class="mat-header-row">
+                            <th class="mat-header-cell ">
+                                Enzyme
+                            </th>
+                            <th class="mat-header-cell ">
+                                Inhibitor
+                            </th>
+                            <th class="mat-header-cell ">
+                                Dilution Format
+                            </th>
+                            <th class="mat-header-cell ">
+                                Inhibitor Concentration
+                            </th>
+                            <th class="mat-header-cell ">
+                                Incubation conditions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mat-row">
+                            <td class="mat-cell strong">
+                                CYP3A4
+                            </td>
+                            <td class="mat-cell center">
+                                Ketoconazole
+                            </td>
+                            <td class="mat-cell center" rowspan="3">
+                                <div>16 concentrations/</div>
+                                <div>2-fold dilution in</div>
+                                <div>duplicates</div>
+                            </td>
+                            <td class="mat-cell center">
+                                57 µM-1.8 nM
+                            </td>
+                            <td class="mat-cell center">
+                                1 h/RT
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell strong">
+                                CYP2C9
+                            </td>
+                            <td class="mat-cell center">
+                                Sulfaphenazole
+                            </td>
+                            <td class="mat-cell center">
+                                57 µM-1.8 nM
+                            </td>
+                            <td class="mat-cell center">
+                                1 h/ 37˚C/ 0.4% BSA
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell strong">
+                                CYP2D6
+                            </td>
+                            <td class="mat-cell center">
+                                Quinidine
+                            </td>
+                            <td class="mat-cell center">
+                                1.4 µM-0.04 nM
+                            </td>
+                            <td class="mat-cell center">
+                                1 h/RT
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="table-container">
+            <div class="table-description">
+                Parsing of Substrates and Inhibitors:
+            </div>
+            <div class="table-responsive-container">
+                <table class="mat-table more-padding">
+                    <thead>
+                        <tr class="mat-header-row">
+                            <th class="mat-header-cell ">
+                                Category
+                            </th>
+                            <th class="mat-header-cell ">
+                                <div>Clearance</div>
+                                <div>/</div>
+                                <div>P450-Glo</div>
+                            </th>
+                            <th class="mat-header-cell ">
+                                Classification
+                            </th>
+                            <th class="mat-header-cell ">
+                                Parsing Rationale
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                1
+                            </td>
+                            <td class="mat-cell center">
+                                + / +
+                            </td>
+                            <td class="mat-cell center">
+                                Substrate
+                            </td>
+                            <td class="mat-cell">
+                                Exhibiting activity in both assays, the compound is a clear ligand for the enzyme(s). It is unclear whether the parent, product, or both are responsible for the inhibition.
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                2
+                            </td>
+                            <td class="mat-cell center">
+                                - / +
+                            </td>
+                            <td class="mat-cell center">
+                                Inhibitor
+                            </td>
+                            <td class="mat-cell">
+                                The compound is able to inhibit the enzyme metabolism of a probe substrate, but is not itself cleared, indicating that the parent serves as the inhibitor.
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                3
+                            </td>
+                            <td class="mat-cell center">
+                                - / -
+                            </td>
+                            <td class="mat-cell center">
+                                Non-ligand
+                            </td>
+                            <td class="mat-cell">
+                                The lack of activity in either assay signifies that the compound does not associate with the enzyme(s) with sufficient affinity to enable catalysis or inhibition thereof.
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                4
+                            </td>
+                            <td class="mat-cell center">
+                                + / -
+                            </td>
+                            <td class="mat-cell center">
+                                Substrate
+                            </td>
+                            <td class="mat-cell">
+                                Although a clear substrate, the binding kinetics of the parent compound and its metabolites do not preclude the concomitant metabolism of the P450-Glo probe.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <h3>
+            Data Availability:
+        </h3>
+
+        <p style="text-align: justify;">
+                The data used for developing these models is made publicly available at PubChem Bioassay database.
+        </p>
+
+        <div class="table-container">
+            <div class="table-responsive-container">
+                <table class="mat-table more-padding">
+                    <thead>
+                        <tr class="mat-header-row">
+                            <th class="mat-header-cell ">
+                                Enzyme
+                            </th>
+                            <th class="mat-header-cell ">
+                                PubChem Bioassay
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                CYP3A4
+                            </td>
+                            <td class="mat-cell center">
+                                <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1645841" target="_blank" admeTrackLinkEvent evLabel="cyp3a4 pubchem">AID
+                        1645841</a>
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                CYP2C9
+                            </td>
+                            <td class="mat-cell center">
+                                <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1645842" target="_blank" admeTrackLinkEvent evLabel="cyp2c9 pubchem">AID
+                        1645842</a>
+                            </td>
+                        </tr>
+                        <tr class="mat-row">
+                            <td class="mat-cell center">
+                                CYP2D6
+                            </td>
+                            <td class="mat-cell center">
+                                <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1645840" target="_blank" admeTrackLinkEvent evLabel="cyp2d6 pubchem">AID
+                        1645840</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <h3>
+            References:
+        </h3>
+        <ol>
+          <li>
+             <p>Gonzalez, E., Jain, S., Shah P. et al., <a href="https://doi.org/10.1124/dmd.120.000320" target="_blank">Development of Robust QSAR Models for CYP2C9, CYP2D6, and CYP3A4 Catalysis and Inhibition.</a> <i> Drug Metab Dispos.</i> (June 2021).</p>
+          </li>
+          <li>
+            <p>Shah, P. et al. <a href="https://doi.org/10.1124/dmd.116.072017" target="_blank">An Automated High-Throughput Metabolic Stability Assay Using an Integrated High Resolution Accurate Mass Method and Automated Data Analysis Software.</a> <i> Drug Metab Dispos.</i> 44, 1653-1661 (2016).</p>
+          </li>
+          <li>
+            <p>Veith, H. et al. <a href="https://dx.doi.org/10.1038%2Fnbt.1581" target="_blank">Comprehensive characterization of cytochrome P450 isozyme selectivity across chemical libraries.</a> <i> Nat Biotechnol.</i> 2009 Nov;27(11):1050-5.</p>
+          </li>
+        </ol>
+    </div>
+</div>

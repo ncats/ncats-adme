@@ -1,0 +1,76 @@
+<div class="text-file-body">
+    <div class="description">
+        Select a text file containing a list of smiles, but try to keep the size of the data to under 10,000 rows. Anything above 10,000 rows may take several minutes. If you have an Excel file, follow <a href="https://support.office.com/en-us/article/import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba" target="_blank">these instructions</a> to export it as Text or CSV. 
+    </div>
+    <div>
+        <button mat-raised-button color="primary" admeFileSelect (selectedFile)="fileSelected($event)">Browse</button>
+        <span>
+            &nbsp;
+            {{selectedFileName ? 'Selected file: ' + selectedFileName : 'No file selected'}}
+        </span>
+    </div>
+    <form #textFileForm="ngForm" class="text-file-form">
+        <div class="form-body">
+            <div class="file-type">
+                <mat-form-field>
+                    <mat-label>File type</mat-label>
+                    <mat-select [(ngModel)]="fileType" name="fileType" required (selectionChange)="updateType()">
+                        <mat-option value="csv">
+                            CSV
+                        </mat-option>
+                        <mat-option value="text">
+                            Text
+                        </mat-option>
+                        <mat-option value="smi">
+                            SMI
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="column-separator">
+                <mat-form-field>
+                    <mat-label>Column separator</mat-label>
+                    <mat-select [(ngModel)]="options.columnSeparator" name="columnSeparator" required
+                        (selectionChange)="updateOptions()" matTooltip="Set of characters used to separate columns">
+                        <mat-option [value]="','">
+                            Comma (,)
+                        </mat-option>
+                        <mat-option [value]="'\t'">
+                            Tab (\t)
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="header-row">
+                <mat-form-field>
+                    <mat-label>Has header row</mat-label>
+                    <mat-select [(ngModel)]="options.hasHeaderRow" name="hasHeaderRow" required
+                        (selectionChange)="updateOptions()" matTooltip="True if dataset has a header row and false if it doesn't">
+                        <mat-option [value]="true">
+                            Yes
+                        </mat-option>
+                        <mat-option [value]="false">
+                            No
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+            <div class="smiles-column-number">
+                <mat-form-field>
+                    <input type="number" matInput placeholder="SMILES column number"
+                        [(ngModel)]="options.indexIdentifierColumn" name="indexIdentifierColumn" required
+                        matTooltip="The column number that contains the SMILES starting from 0."
+                        (change)="updateOptions()">
+                    <mat-hint>Zero indicates that the SMILES are in the first column</mat-hint>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="form-actions">
+            <span class="space-between"></span>
+            <button mat-raised-button color="primary"
+                [disabled]="textFileForm.invalid || !selectedFileName || !selectedFileContent" (click)=processFile()>
+                Process file
+            </button>
+        </div>
+    </form>
+</div>

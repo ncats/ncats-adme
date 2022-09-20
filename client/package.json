@@ -1,0 +1,51 @@
+{
+  "name": "client",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start:dev": "ng serve --configuration=dev",
+    "build": "ng build",
+    "build:embedded:adme": "ng build --deploy-url=/adme/client/ --base-href=/adme/ && rimraf ../server/client && cpx \"dist/client/**/*\" ../server/client -u",
+    "build:embedded": "ng build --prod --deploy-url=/client/ --base-href=/ && rimraf ../server/client && cpx \"dist/client/**/*\" ../server/client -u",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "12.2.0",
+    "@angular/cdk": "12.2.0",
+    "@angular/common": "12.2.0",
+    "@angular/compiler": "12.2.0",
+    "@angular/core": "12.2.0",
+    "@angular/forms": "12.2.0",
+    "@angular/material": "12.2.0",
+    "@angular/platform-browser": "12.2.0",
+    "@angular/platform-browser-dynamic": "12.2.0",
+    "@angular/router": "12.2.0",
+    "moment": "^2.29.1",
+    "rxjs": "6.5.4",
+    "tslib": "^2.0.0",
+    "zone.js": "0.11.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "12.2.0",
+    "@angular/cli": "12.2.0",
+    "@angular/compiler-cli": "12.2.0",
+    "@types/jasmine": "~3.6.0",
+    "@types/jasminewd2": "2.0.3",
+    "@types/node": "12.11.1",
+    "codelyzer": "^6.0.0",
+    "cpx": "1.5.0",
+    "jasmine-spec-reporter": "~5.0.0",
+    "karma": "6.3.4",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~3.0.2",
+    "karma-jasmine": "~4.0.0",
+    "protractor": "~7.0.0",
+    "rimraf": "3.0.2",
+    "ts-node": "8.3.0",
+    "tslint": "~6.1.0",
+    "typescript": "4.3.5"
+  }
+}
