@@ -1,0 +1,19 @@
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+.DS_Store
+.profraw
+notebooks
+notebooks/
+env
+env/
+temp
+temp/
+
+server/models
+server/models/

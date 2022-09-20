@@ -1,0 +1,36 @@
+.text-file-body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.text-file-form {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+.description {
+    margin-bottom: 10px;
+}
+
+.form-body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    & > div:not(:last-child) {
+        padding-right: 10px;
+    }
+}
+
+.mat-form-field:not(:first-child) {
+    margin-left: 15px;
+}
+
+.form-actions {
+    display: flex;
+    padding-top: 15px;
+}

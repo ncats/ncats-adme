@@ -1,0 +1,118 @@
+<div class="content-container">
+
+  <div class="model-input">
+    <form [formGroup]="form1">
+      <span>Choose the models to predict:</span>
+      <div *ngFor="let model of modelList" style="display: inline;">
+        <input type="checkbox" (change)="onChange(model.val, $event.target.checked)" />
+        {{ model.name }}
+      </div>
+    </form>
+    <!--
+    <br>
+    <form [formGroup]="form2">
+    <span matTooltip="Interpretation feature identifies substructures that explain GCNN model predictions." matTooltipPosition="right">GCNN Interpreation (this may take several minutes):</span>
+    <input id="yes" type="radio" value="yes" formControlName="gcnnOption" /> <label for="yes">Yes</label>
+    <input id="no" type="radio" value="no" formControlName="gcnnOption" /> <label for="yes">No</label>
+    </form>
+    -->
+  </div>
+
+
+  <div class="molecule-input">
+    <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:input-type')">
+      <mat-tab label="Sketcher">
+        <div class="tab-body">
+          <adme-sketcher (moleculeInput)="processSketcherInput($event)" [apiBaseUrl]="apiKetcherUrl"></adme-sketcher>
+        </div>
+        <div class="error-message-container" *ngIf="errorMessage">
+          <div class="error-message">
+            <div>
+              {{errorMessage}}
+            </div>
+            <ul *ngIf="errorMessages && errorMessages.length">
+              <li *ngFor="let message of errorMessages">{{message}}</li>
+            </ul>
+          </div>
+          <div class="error-message-actions">
+            <button mat-button color="primary" (click)="clearErrorMessage()">
+              <mat-icon aria-hidden="false" aria-label="Close error message" svgIcon="cancel"></mat-icon>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="sketcherData">
+          <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
+            <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
+              <div>
+                <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </mat-tab>
+      <mat-tab label="Text File">
+        <div class="tab-body">
+          <adme-text-file (fileProcess)="processFile($event)">
+          </adme-text-file>
+        </div>
+        <div class="error-message-container" *ngIf="errorMessage">
+          <div class="error-message">
+            <div>
+              {{errorMessage}}
+            </div>
+            <ul *ngIf="errorMessages && errorMessages.length">
+              <li *ngFor="let message of errorMessages">{{message}}</li>
+            </ul>
+          </div>
+          <div class="error-message-actions">
+            <button mat-button color="primary" (click)="clearErrorMessage()">
+              <mat-icon aria-hidden="false" aria-label="Close error message" svgIcon="cancel"></mat-icon>
+            </button>
+          </div>
+        </div>
+        <div *ngIf="fileData">
+          <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
+            <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
+              <div>
+                <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
+              </div>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+  <!-- <div class="models-output" *ngIf="paged && paged.length">
+    <h2>Model predictions</h2>
+    <div class="top-actions-container">
+      <button mat-raised-button color="primary" (click)="downloadCSV()">Download</button>
+      <div class="fill-middle"></div>
+      <mat-paginator [length]="displayData && displayData.length || 0" [pageSize]="pageSize" [pageIndex]="page"
+        showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+      </mat-paginator>
+    </div>
+    <div class="table-container">
+      <mat-table #table [dataSource]="paged" matSort (matSortChange)="sortData($event)">
+        <ng-container [matColumnDef]="displayedColumn" *ngFor="let displayedColumn of displayedColumns; index as index">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>
+            <span [matTooltip]="displayedColumnsDict[displayedColumn].description">
+              {{displayedColumnsDict[displayedColumn].isSmilesColumn ? 'mol' : displayedColumn}}
+            </span>
+          </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <span *ngIf="!displayedColumnsDict[displayedColumn].isSmilesColumn">{{row[displayedColumn] == '0 (0.0)' ? '0 (0.01)' : row[displayedColumn]}}</span>
+            <a *ngIf="displayedColumnsDict[displayedColumn].isSmilesColumn"
+              (click)="openStructureImageDialog(row[displayedColumn])" [matTooltip]="row[displayedColumn]">
+              <img class="table-structure" admeStructureImage [entityId]="row[displayedColumn]" />
+            </a>
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;" fxLayoutAlign="center start"></mat-row>
+      </mat-table>
+    </div>
+    <mat-paginator [length]="displayData && displayData.length || 0" [pageSize]="pageSize" [pageIndex]="page"
+      showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">
+    </mat-paginator>
+  </div> -->
+</div>

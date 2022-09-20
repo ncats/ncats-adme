@@ -1,0 +1,63 @@
+# ncats-adme
+
+This repository contains the code for the application ADME @ NCATS which hosts QSAR models for different ADME endpoints. To use the application locally, you can either use [Git](https://git-scm.com/) to clone the respository, or you can simply download a ZIP file (by clicking the green "Code" button on the top right corner) and then unzip it. The next steps are described below.
+
+If you use Git to clone this repository, please use the --recursive flag:
+
+`git clone --recursive https://github.com/ncats/ncats-adme.git`
+
+If you download the application, you also need to download and unzip [chemprop](https://github.com/chemprop/chemprop/tree/cd55a9f12478aef69917bbd044603d6512173306), but make sure to unzip the contents of chemprop inside the server folder so the the ncats-adme folder/file structure looks something like this:
+
+- ncats-adme
+  - client
+  - server
+    - chemprop
+      - chemprop
+      - docs
+      - scripts
+      - ...
+
+Model will be loaded from NCATS servers so you will need access to the internet when you first run the application.
+
+If you want to download the models, the file locations are as follows:
+
+- [https://tripod.nih.gov/pub/adme/models/rlm/dnn_morgan_all_data.pkl](https://tripod.nih.gov/pub/adme/models/rlm/dnn_morgan_all_data.pkl)
+- [https://tripod.nih.gov/pub/adme/models/rlm/gcnn_model.pt](https://tripod.nih.gov/pub/adme/models/rlm/gcnn_model.pt)
+- [https://tripod.nih.gov/pub/adme/models/rlm/lstm_all_data.h5](https://tripod.nih.gov/pub/adme/models/rlm/lstm_all_data.h5)
+- [https://tripod.nih.gov/pub/adme/models/rlm/rf_morgan_all_data.pkl](https://tripod.nih.gov/pub/adme/models/rlm/rf_morgan_all_data.pkl)
+- [https://tripod.nih.gov/pub/adme/models/rlm/tokenizer.pickle](https://tripod.nih.gov/pub/adme/models/rlm/tokenizer.pickle)
+
+## Installing required software
+
+1. Install [anaconda or miniconda](https://docs.conda.io/projects/continuumio-conda/en/latest/user-guide/install/index.html#)
+
+Python is also required but it is included with either installation of conda or miniconda.
+
+## Setting up the environment
+
+You only have complete these steps one time.
+
+1. Open your terminal
+  - If you're on Windows, open Anaconda Prompt (window -> Anaconda3 -> Anaconda Prompt)
+  - If you're on Mac or Linux, open your Terminal
+2. Change the working directory ([windows](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands) or [Mac and Linux](https://www.geeksforgeeks.org/cd-command-in-linux-with-examples/)) to where you have ADME_RLM and then go (CD one more time) into the server directory
+3. Create environment
+  - For Windows and Linux machines
+    1. Type `conda env create --prefix ./env -f environment.yml` and hit Enter
+    2. Wait several minutes for the envitonment to be created
+    3. For Windows machines only, type `pip install typed-argument-parser` and hit Enter
+  - For Mac machines
+    1. Type `conda env create --prefix ./env -f environment_mac.yml` and hit Enter
+    2. Wait several minutes for the envitonment to be created
+    
+## Running the application
+
+1. If you're doing this immediately after completing the steps above, skip to step 4
+2. Open your terminal
+  - If you're on Windows, open Anaconda Prompt (window -> Anaconda3 -> Anaconda Prompt)
+  - If you're on Mac or Linux, open your terminal
+3. Change the working directory ([windows](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands) or [Mac and Linux](https://www.geeksforgeeks.org/cd-command-in-linux-with-examples/)) to where you have ADME_RLM and then go into the server directory
+4. Type `conda activate ./env` and hit Enter
+5. Type `python app.py` and hit Enter
+6. Open Chrome or Firefox and browse to `http://127.0.0.1:5000/`
+7. To close the application, hit `Ctrl + c` or `Cmd + c` in the Terminal and then type `conda deactivate` and hit Enter to close the conda environment

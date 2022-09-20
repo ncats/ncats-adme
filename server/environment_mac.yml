@@ -1,0 +1,33 @@
+name: ncats-adme
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+  - pytorch
+  - rdkit
+  - efelix
+dependencies:
+  - flask=1.1.2
+  - flask-cors=3.0
+  - efelix::fpsim2=0.2.6
+  - hyperopt=0.2.4
+  - ipython=7.16.1
+  - joblib=0.15
+  - keras=2.3.1
+  - matplotlib=3.3.0
+  - mordred=1.2.0
+  - networkx=2.4
+  - numpy=1.18
+  - pip=20.0
+  - python>=3.7
+  - pytorch=1.6.0
+  - rdkit=2020.03
+  - scikit-learn=0.22
+  - tensorboardX=2.1
+  - torchvision=0.7.0
+  - tqdm=4.48.0
+  - typing-extensions=3.7.4.2
+  - pip:
+    - keras-self-attention==0.41.0
+    - tensorflow==2.2.0
+    - typed-argument-parser==1.5.4

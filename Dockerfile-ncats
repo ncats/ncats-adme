@@ -1,0 +1,30 @@
+FROM node:12 AS build
+
+WORKDIR /opt/adme
+
+COPY client ./
+
+RUN npm install && npm install -g @angular/cli
+
+# parameter for adme.ncats subdomain
+RUN ng build --configuration production --deploy-url=/models/client/ --base-href=/models
+
+FROM continuumio/miniconda:4.7.12
+
+WORKDIR /opt/adme
+
+COPY server ./
+
+RUN conda env create -f environment.yml
+
+ENV PATH /opt/conda/envs/ncats-adme/bin:$PATH
+
+RUN chmod +x startup.sh
+
+# clean existing client folder
+RUN rm -rf client
+COPY --from=build /opt/adme/dist/client client
+
+CMD /bin/bash startup.sh
+
+EXPOSE 5000

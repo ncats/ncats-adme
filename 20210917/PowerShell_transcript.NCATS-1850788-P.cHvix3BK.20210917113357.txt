@@ -1,0 +1,47 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20210917113400
+Username: NIH\neyraj2
+RunAs User: NIH\neyraj2
+Configuration Name: 
+Machine: NCATS-1850788-P (Microsoft Windows NT 10.0.19042.0)
+Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe
+Process ID: 20020
+PSVersion: 5.1.19041.1023
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.1023
+BuildVersion: 10.0.19041.1023
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+**********************
+Command start time: 20210917113926
+**********************
+PS C:\Users\neyraj2\Spotlight\NCATS-ADME> npm run build:embedded:adme
+npm ERR! enoent ENOENT: no such file or directory, open 'C:\Users\neyraj2\package.json'
+npm ERR! enoent This is related to npm not being able to find a file.
+npm ERR! enoent
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     C:\Users\neyraj2\AppData\Local\npm-cache\_logs\2021-09-17T15_39_29_937Z-debug.log
+**********************
+Command start time: 20210917114034
+**********************
+PS C:\Users\neyraj2\Spotlight\NCATS-ADME> cd .\client\
+**********************
+Command start time: 20210917114040
+**********************
+PS C:\Users\neyraj2\Spotlight\NCATS-ADME\client> npm run build:embedded:adme
+
+**********************
+Command start time: 20210917140546
+**********************
+PS C:\Users\neyraj2\Spotlight\NCATS-ADME\client> npm run build:embedded
+
+**********************
+Command start time: 20210917155929
+**********************
+PS C:\Users\neyraj2\Spotlight\NCATS-ADME\client> npm run build:embedded
+

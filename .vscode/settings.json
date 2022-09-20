@@ -1,0 +1,5 @@
+{
+    "jira-plugin.workingProject": "",
+    "appService.showBuildDuringDeployPrompt": false,
+    "appService.defaultWebAppToDeploy": "None"
+}
