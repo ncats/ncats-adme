@@ -354,6 +354,8 @@ def predict_df(df, smi_column_name, models):
 
         response[model]['mainColumnsDict'] = columns_dict
         response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+        if model.lower() in ['rlm', 'pampa', 'solubility']:
+            response[model]['model_version'] = predictor.get_model_version()
 
     return response
 

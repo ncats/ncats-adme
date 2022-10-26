@@ -21,7 +21,7 @@ from rdkit.Chem.rdchem import Mol
 from numpy import array
 from typing import Tuple
 from ..utilities.utilities import get_processed_smi
-from . import rlm_gcnn_scaler, rlm_gcnn_model
+from . import rlm_gcnn_scaler, rlm_gcnn_model, rlm_gcnn_model_version
 from ..base.gcnn import GcnnBase
 import time
 
@@ -52,6 +52,7 @@ class RLMPredictior(GcnnBase):
         }
 
         self.model_name = 'rlm'
+        self.model_version = rlm_gcnn_model_version
 
     def get_predictions(self) -> DataFrame:
         """
@@ -77,3 +78,6 @@ class RLMPredictior(GcnnBase):
             #     self.predictions_df['mol'] = pd.Series(intrprt_df['final_smiles'].tolist())
 
         return self.predictions_df
+
+    def get_model_version(self) -> str:
+        return self.model_version

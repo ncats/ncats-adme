@@ -1,25 +1,28 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 declare const SwaggerUIBundle: any;
 
 @Component({
-  selector: 'swagger-ui',
+  selector: 'api',
   templateUrl: './swagger-ui.component.html',
-  styleUrls: ['./swagger-ui.component.scss']
+  styleUrls: ['./swagger-ui.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SwaggerComponent implements OnInit {
 
   ngOnInit(): void {
     const ui = SwaggerUIBundle({
+      url: '/client/assets/apidoc/swagger.yaml',
       dom_id: '#swagger-ui',
       layout: 'BaseLayout',
+      docExpansion: 'list',
+      defaultModelsExpandDepth: '-1',
       presets: [
         SwaggerUIBundle.presets.apis,
         SwaggerUIBundle.SwaggerUIStandalonePreset
       ],
-      url: '/client/assets/apidoc/swagger.yaml',
-      docExpansion: 'none',
-      operationsSorter: 'alpha'
+      plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+      ]
     });
   }
 }

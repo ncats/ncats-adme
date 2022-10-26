@@ -243,6 +243,7 @@ def get_data_from_smiles_with_additional_features(smiles: List[str],
     :param smiles: A list of SMILES strings.
     :param skip_invalid_smiles: Whether to skip and filter out invalid smiles.
     :param logger: Logger.
+    :param features: List of additional features
     :param features_generator: List of features generators.
     :return: A MoleculeDataset with all of the provided SMILES.
     """

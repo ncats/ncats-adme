@@ -33,6 +33,7 @@ class GcnnBase(PredictorBase):
 
         self.smiles = smiles
         self.model_name = None
+        self.model_version = None
 
     def gcnn_predict(self, model, scaler) -> Tuple[array, array]:
         """
@@ -47,10 +48,13 @@ class GcnnBase(PredictorBase):
         """
 
         smiles = self.kekule_smiles.tolist()
-        additional_features = self.additional_features
+        feat = self.additional_features
 
-        if additional_features is not None:
-            full_data = get_data_from_smiles_with_additional_features(smiles=smiles, features=additional_features)
+        if feat is not None:
+            # feat2 = feat1.copy()
+            # additional_features = list(zip(feat, feat2)) # additional features >1
+            # print(f'Additional Features: {additional_features}')
+            full_data = get_data_from_smiles_with_additional_features(smiles=smiles, features=feat)
         else:
             full_data = get_data_from_smiles(smiles=smiles, skip_invalid_smiles=False)
 

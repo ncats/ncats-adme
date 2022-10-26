@@ -22,7 +22,7 @@ from numpy import array
 from typing import Tuple
 from ..features.morgan_fp import MorganFPGenerator
 from ..utilities.utilities import get_processed_smi
-from . import solubility_gcnn_scaler, solubility_gcnn_model
+from . import solubility_gcnn_scaler, solubility_gcnn_model, solubility_gcnn_model_version
 from ..base.gcnn import GcnnBase
 import time
 
@@ -53,6 +53,7 @@ class SolubilityPredictior(GcnnBase):
         }
 
         self.model_name = 'solubility'
+        self.model_version = 'solubility_' + solubility_gcnn_model_version
 
     def get_predictions(self) -> DataFrame:
         """
@@ -78,3 +79,6 @@ class SolubilityPredictior(GcnnBase):
             #     self.predictions_df['mol'] = pd.Series(intrprt_df['final_smiles'].tolist())
 
         return self.predictions_df
+
+    def get_model_version(self) -> str:
+        return self.model_version
