@@ -28,6 +28,7 @@ from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
 from predictors.utilities.utilities import get_similar_mols
 from flask_swagger_ui import get_swaggerui_blueprint
 import urllib
+from healthcheck import HealthCheck, EnvironmentDump
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -317,7 +318,6 @@ def predict_df(df, smi_column_name, models):
         response[model]['columns'] = list(response_df.columns.values)
 
         columns_dict =  predictor.columns_dict()
-
         dict_length = len(columns_dict.keys())
         columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
 
@@ -355,6 +355,8 @@ def predict_df(df, smi_column_name, models):
 
         response[model]['mainColumnsDict'] = columns_dict
         response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+        if model.lower() in ['rlm', 'pampa', 'solubility']:
+            response[model]['model_version'] = predictor.get_model_version()
 
     return response
 
@@ -494,6 +496,28 @@ def send_js(path):
 def return_index(path):
     print(path, file=sys.stdout)
     return app.send_static_file('index.html')
+
+
+# app and API health check
+health = HealthCheck()
+envdump = EnvironmentDump()
+
+def api_available():
+    # nothing needed here. if the API is up this will return True
+    return True, "API is available"
+
+health.add_check(api_available)
+
+# def application_data():
+#     return { "maintainer": "Vishal Siramshetty",
+#     "git_repo": "https://github.com/ncats/ncats-adme",
+#     "config": app.config}
+
+#envdump.add_section("application", application_data)
+
+# Add a flask route to expose information
+app.add_url_rule("/healthcheck", "healthcheck", view_func=lambda: health.run())
+#app.add_url_rule("/environment", "environment", view_func=lambda: envdump.run())
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

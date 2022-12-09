@@ -1,4 +1,69 @@
 <div class="container">
+  <div class="inner-container" *ngIf="model == 'hlm'">
+      <h2>
+          HLM Stability
+      </h2>
+      <div class="definitions-container">
+          <div class="definition">
+              <div class="name">Name:</div>
+              <div class="value">Human Liver Microsomal Stability</div>
+          </div>
+          <div class="definition">
+              <div class="name">Dataset Type:</div>
+              <div class="value">Classification</div>
+          </div>
+          <div class="definition">
+              <div class="name">Dataset Size:</div>
+              <div class="value">4300 compounds</div>
+          </div>
+          <div class="definition">
+              <div class="name">Validation:</div>
+              <div class="value">5-Fold CV and Time-Split CV</div>
+          </div>
+          <div class="definition">
+              <div class="name">Descriptors:</div>
+              <div class="value">Molecular Graphs</div>
+          </div>
+          <div class="definition">
+              <div class="name">Model Details:</div>
+              <div class="value" style="text-align: justify;">
+                  The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.</div>
+          </div>
+          <div class="definition">
+              <div class="name">Interpretation of Models:</div>
+              <div class="value" style="text-align: justify;">
+                  The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
+          </div>
+          <!--
+          <div class="definition">
+              <div class="name">Data Availability:</div>
+              <div class="value">
+                  A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                      href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508591" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
+                      1508591</a>.
+              </div>
+          </div>
+          -->
+      </div>
+      <br>
+      <h3>
+          HLM Assay Protocol
+      </h3>
+      <p style="text-align: justify;">
+          The substrate depletion method, also called the in vitro t<sub>1/2</sub> method was used to analyze test compounds. Incubation and liquid handling were carried out using a previously described method (Shah et al., 2016). Briefly, each reaction mixture (110 μL) consisted of a test article (1 μM), human liver microsomes (HLM) (0.5 mg/mL), and NADPH regenerating system in phosphate buffer at pH 7.4. Samples were incubated in 384-well plates at 37°C for 0, 5, 10, 15, 30 and 60 min. At each time point, 10 μL of the incubation mixture was aspirated into another 384-well plate which contained cold acetonitrile (ACN) with internal standard (albendazole). All plates were centrifuged at 3000 rpm for 20 min at 4°C, and the supernatants were transferred to a 384-well injection plate. Sample quantification and analysis was performed using previously described methods (Shah et al., 2016 and Shah et al., 2020).
+      </p>
+      <h3>
+          References:
+      </h3>
+      <ol>
+        <li>
+          <p>Shah, P. et al. <a href="https://doi.org/10.1124/dmd.116.072017" target="_blank">An Automated High-Throughput Metabolic Stability Assay Using an Integrated High Resolution Accurate Mass Method and Automated Data Analysis Software.</a> <i> Drug Metab Dispos.</i> 44, 1653-1661 (2016).</p>
+        </li>
+        <li>
+           <p>Shah, P., Siramshetty, V.B., Zakharov, A.V. et al., <a href="https://doi.org/10.1186/s13321-020-00426-7" target="_blank">Predicting liver cytosol stability of small molecules.</a> <i> J Cheminform.</i> 12, 21 (2020).</p>
+        </li>
+      </ol>
+  </div>
     <div class="inner-container" *ngIf="model == 'rlm'">
         <h2>
             RLM Stability
@@ -74,71 +139,6 @@
           </li>
           <li>
             <p>Di, L. et al. <a href="https://doi.org/10.1002/jps.20076" target="_blank"> Experimental design on single-time-point high-throughput microsomal stability assay.</a> <i> J Pharm Sci.</i> 93, 1537-1544 (2004).</p>
-          </li>
-        </ol>
-    </div>
-    <div class="inner-container" *ngIf="model == 'hlm'">
-        <h2>
-            HLM Stability
-        </h2>
-        <div class="definitions-container">
-            <div class="definition">
-                <div class="name">Name:</div>
-                <div class="value">Human Liver Microsomal Stability</div>
-            </div>
-            <div class="definition">
-                <div class="name">Dataset Type:</div>
-                <div class="value">Classification</div>
-            </div>
-            <div class="definition">
-                <div class="name">Dataset Size:</div>
-                <div class="value">4300 compounds</div>
-            </div>
-            <div class="definition">
-                <div class="name">Validation:</div>
-                <div class="value">5-Fold CV and Time-Split CV</div>
-            </div>
-            <div class="definition">
-                <div class="name">Descriptors:</div>
-                <div class="value">Molecular Graphs</div>
-            </div>
-            <div class="definition">
-                <div class="name">Model Details:</div>
-                <div class="value" style="text-align: justify;">
-                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.</div>
-            </div>
-            <div class="definition">
-                <div class="name">Interpretation of Models:</div>
-                <div class="value" style="text-align: justify;">
-                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
-            </div>
-            <!--
-            <div class="definition">
-                <div class="name">Data Availability:</div>
-                <div class="value">
-                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
-                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508591" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
-                        1508591</a>.
-                </div>
-            </div>
-            -->
-        </div>
-        <br>
-        <h3>
-            HLM Assay Protocol
-        </h3>
-        <p style="text-align: justify;">
-            The substrate depletion method, also called the in vitro t<sub>1/2</sub> method was used to analyze test compounds. Incubation and liquid handling were carried out using a previously described method (Shah et al., 2016). Briefly, each reaction mixture (110 μL) consisted of a test article (1 μM), human liver microsomes (HLM) (0.5 mg/mL), and NADPH regenerating system (1 μM) in phosphate buffer at pH 7.4. Samples were incubated in 384-well plates at 37°C for 0, 5, 10, 15, 30 and 60 min. At each time point, 10 μL of the incubation mixture was aspirated into another 384-well plate which contained cold acetonitrile (ACN) with internal standard (albendazole). All plates were centrifuged at 3000 rpm for 20 min at 4°C, and the supernatants were transferred to a 384-well injection plate. Sample quantification and analysis was performed using previously described methods (Shah et al., 2016 and Shah et al., 2020).
-        </p>
-        <h3>
-            References:
-        </h3>
-        <ol>
-          <li>
-            <p>Shah, P. et al. <a href="https://doi.org/10.1124/dmd.116.072017" target="_blank">An Automated High-Throughput Metabolic Stability Assay Using an Integrated High Resolution Accurate Mass Method and Automated Data Analysis Software.</a> <i> Drug Metab Dispos.</i> 44, 1653-1661 (2016).</p>
-          </li>
-          <li>
-             <p>Shah, P., Siramshetty, V.B., Zakharov, A.V. et al., <a href="https://doi.org/10.1186/s13321-020-00426-7" target="_blank">Predicting liver cytosol stability of small molecules.</a> <i> J Cheminform.</i> 12, 21 (2020).</p>
           </li>
         </ol>
     </div>

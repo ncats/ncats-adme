@@ -37,10 +37,10 @@ const routes: Routes = [
     }
   },
   {
-    path: 'swagger-ui',
+    path: 'api',
     component: SwaggerComponent,
     data: {
-      pageTitle: 'swagger-ui'
+      pageTitle: 'api'
     }
   },
   {

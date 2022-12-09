@@ -28,9 +28,13 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
+              "node_modules/swagger-ui-dist/swagger-ui.css",
+              "node_modules/swagger-ui-themes/themes/3.x/theme-material.css",
               "src/styles.scss"
             ],
             "scripts": [
+              "node_modules/swagger-ui-dist/swagger-ui-bundle.js",
+              "node_modules/swagger-ui-dist/swagger-ui-standalone-preset.js"
             ]
           },
           "configurations": {

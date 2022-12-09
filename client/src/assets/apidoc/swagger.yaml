@@ -1,8 +1,8 @@
 swagger: '2.0'
 info:
-  description: 'This is the API documentation for ADME@NCATS prediction portal. You can find out more about ADME@NCATS at [https://opendata.ncats.nih.gov/adme](https://opendata.ncats.nih.gov/adme). The code for web application that is served by this API can be found on [GitHub](https://github.com/ncats/ncats-adme).'
+  description: 'API Documentation for ADME@NCATS Prediction Portal'
   version: 1.0.1
-  title: AMDE@NCATS API
+  title: ADME@NCATS API v1.0.1
   termsOfService: https://opendata.ncats.nih.gov/adme/data
   contact:
     name: ADME Team
@@ -16,22 +16,14 @@ tags:
     description: Predictions for different ADME endpoints
   - name: structure
     description: 2D molecular depiction methods based on RDKit
-    externalDocs:
-      description: RDKit
-      url: https://www.rdkit.org/
   - name: ketcher
     description: Molecular operations supported via Ketcher
-    externalDocs:
-      description: Ketcher
-      url: https://lifescience.opensource.epam.com/ketcher/
-schemes:
-  - https
 paths:
   /api/v1/predict:
     get:
       tags:
         - predictions
-      summary: returns a class label (e.g., high solubility or low solubility) and a probability score
+      summary: returns predictions (labels and probability scores)
       produces:
         - application/json
       parameters:
@@ -42,7 +34,7 @@ paths:
           type: string
         - name: model
           in: query
-          description: name of the ADME model (solubility, rlm, pampa, etc.)
+          description: name of the ADME model (hlm, solubility, cyp450, etc.)
           required: true
           type: array
           items:
@@ -66,7 +58,7 @@ paths:
     get:
       tags:
         - structure
-      summary: returns the 2D drawing of molecule as SVG OR a dummy image if molecule cannot be processed
+      summary: returns the 2D depiction of molecule as SVG text
       produces:
         - image/svg+xml
         - image/png
@@ -79,13 +71,15 @@ paths:
       responses:
         '200':
           description: OK
+          schema:
+            type: file
         '400':
           description: Bad Request
   /api/v1/structure_image_glowing:
     get:
       tags:
         - structure
-      summary: returns the 2D drawing of molecule with a highlighted substructure
+      summary: returns the 2D depiction of molecule with a highlighted substructure
       produces:
         - image/svg+xml
         - image/png
@@ -109,7 +103,7 @@ paths:
     post:
       tags:
         - ketcher
-      summary: returns a MOL block representation of input molecule provided in SMILES specification
+      summary: returns a MOL block representation of molecule
       consumes:
         - application/json
       produces:

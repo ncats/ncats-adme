@@ -43,7 +43,7 @@
           <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
             <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
               <div>
-                <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
+                <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" [predictions-data-all]="sketcherData" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>
             </mat-tab>
           </mat-tab-group>
@@ -73,7 +73,7 @@
           <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
             <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
               <div>
-                <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
+                <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" [predictions-data-all]="fileData" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>
             </mat-tab>
           </mat-tab-group>

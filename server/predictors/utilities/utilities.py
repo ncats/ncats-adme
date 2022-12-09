@@ -15,6 +15,7 @@ from chemprop.args import InterpretArgs
 from chemprop.interpret import interpret
 import tempfile
 import time
+from datetime import datetime
 
 def get_processed_smi(rdkit_mols: array) -> array:
     """
@@ -79,6 +80,30 @@ def load_gcnn_model(model_file_path, model_file_url):
     gcnn_model = load_checkpoint(model_file_path)
 
     return gcnn_scaler, gcnn_model
+
+def load_gcnn_model_with_versioninfo(model_file_path, model_file_url):
+    if path.exists(model_file_path):
+        gcnn_scaler, _ = load_scalers(model_file_path)
+    else:
+        gcnn_scaler_request = requests.get(model_file_url)
+        with tqdm.wrapattr(
+            open(os.devnull, "wb"),
+            "write",
+            miniters=1,
+            desc=model_file_url.split('/')[-1],
+            total=int(gcnn_scaler_request.headers.get('content-length', 0))
+        ) as fout:
+            for chunk in gcnn_scaler_request.iter_content(chunk_size=4096):
+                fout.write(chunk)
+        with open(model_file_path, 'wb') as gcnn_scaler_file:
+            gcnn_scaler_file.write(gcnn_scaler_request.content)
+        gcnn_scaler, _ = load_scalers(model_file_path)
+
+    gcnn_model = load_checkpoint(model_file_path)
+
+    model_timestamp = datetime.fromtimestamp(os.path.getctime(model_file_path)).strftime('%Y-%m-%d') # get model file creation timestamp
+
+    return gcnn_scaler, gcnn_model, model_timestamp
 
 def get_similar_mols(kekule_smiles: list, model: str):
     start = time.time()

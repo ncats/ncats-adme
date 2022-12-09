@@ -10,6 +10,7 @@ import tempfile
 import shutil
 from tqdm import tqdm
 import os
+from datetime import datetime
 from os import path
 
 base_url = 'https://tripod.nih.gov/pub/adme/models/rlm/'
@@ -163,13 +164,16 @@ def load_gcnn_model():
 
     rlm_gcnn_model = load_checkpoint(rlm_gcnn_scaler_path)
 
-    return rlm_gcnn_scaler, rlm_gcnn_model
+    model_timestamp = datetime.fromtimestamp(os.path.getctime(rlm_gcnn_scaler_path)).strftime('%Y-%m-%d') # get model file creation timestamp
+    rlm_gcnn_model_version = 'rlm_' + model_timestamp # generate a model timestamp
+
+    return rlm_gcnn_scaler, rlm_gcnn_model, rlm_gcnn_model_version
 
 
 # rlm_rf_model = load_rlm_rf_model()
 # rlm_dnn_model = load_rlm_dnn_model()
 # rlm_dnn_tokenizer = load_rlm_dnn_tokenizer()
 # rlm_lstm_model = load_rlm_lstm_model()
-rlm_gcnn_scaler, rlm_gcnn_model = load_gcnn_model()
+rlm_gcnn_scaler, rlm_gcnn_model, rlm_gcnn_model_version = load_gcnn_model()
 
 print(f'Finished loading RLM model files', file=sys.stdout)

@@ -9,6 +9,7 @@ import { GoogleAnalyticsService } from '../google-analytics/google-analytics.ser
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ConfigService } from '../config/config.service';
 import {SelectionModel} from '@angular/cdk/collections';
+import { DatePipe } from '@angular/common';
 
 export interface PredModel {
   id: number;
@@ -178,7 +179,10 @@ export class PredictionsComponent implements OnInit {
     event.data.forEach(data => lines.push(event.allColumns.map(key => data[key]).join(this.columnSeparator)));
     const csv = dataKeys + this.lineBreak + lines.join(this.lineBreak);
     this.file = new Blob([csv], { type: 'text/csv'});
-    this.link.download = 'ADMEModelsPredictions.csv';
+    const datepipe: DatePipe = new DatePipe('en-US')
+    const dateNow = Date.now()
+    let formattedDate = datepipe.transform(dateNow, 'YYYY-MM-dd-HHmmss')
+    this.link.download = 'ADME_Predictions_' + formattedDate + '.csv';
     this.downloadFile();
   }
 

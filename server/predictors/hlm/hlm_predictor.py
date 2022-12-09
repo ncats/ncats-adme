@@ -50,6 +50,8 @@ class HLMPredictior(GcnnBase):
         rlm_predictions, rlm_labels = self.gcnn_predict(rlm_gcnn_model, rlm_gcnn_scaler)
         if rlm_predictions is not None:
             self.additional_features = rlm_predictions.tolist()
+        else:
+            print(f'No RLM Predictions')
 
         self._columns_dict['Prediction'] = {
             'order': 2,
