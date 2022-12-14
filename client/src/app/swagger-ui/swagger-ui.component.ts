@@ -11,7 +11,7 @@ export class SwaggerComponent implements OnInit {
 
   ngOnInit(): void {
     const ui = SwaggerUIBundle({
-      url: '/client/assets/apidoc/swagger.yaml',
+      url: 'https://raw.githubusercontent.com/ncats/ncats-adme/development/client/src/assets/apidoc/swagger.yaml',
       dom_id: '#swagger-ui',
       layout: 'BaseLayout',
       docExpansion: 'list',

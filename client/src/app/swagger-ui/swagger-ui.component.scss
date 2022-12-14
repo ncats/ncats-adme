@@ -11,3 +11,7 @@
 .swagger-ui .opblock.opblock-get {
   background: rgba(132, 128, 128, 0.1) !important;
 }
+
+.swagger-ui .info hgroup.main a {
+  display: none
+}
