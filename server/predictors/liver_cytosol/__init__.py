@@ -33,7 +33,7 @@ def download_file(base_url, model_number, models_dict):
 def load_models():
     # processes = []
     #with ThreadPoolExecutor() as executor:
-    base_url = 'https://tripod.nih.gov/pub/adme/models/liver_cytosol/'
+    base_url = 'https://opendata.ncats.nih.gov/public/adme/models/current/static/liver_cytosol/'
     print(f'Loading human liver cytosol stability random forest models', file=sys.stdout)
 
     lc_models_dict = {}

@@ -25,14 +25,14 @@ export class DataComponent implements OnInit {
     private domSanitizer: DomSanitizer,
     @Inject(DEPLOY_URL) public deployUrl: string
   ) {
-    this.rlm_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://tripod.nih.gov/pub/adme/public_data/AID_1508591_datatable_all.csv`);
-    this.pampa74_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://tripod.nih.gov/pub/adme/public_data//AID_1508612_datatable_all.csv`);
-    this.pampa50_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://tripod.nih.gov/pub/adme/public_data//AID_1645871_datatable_all.csv`);
-    this.sol_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://tripod.nih.gov/pub/adme/public_data//AID_1645848_datatable_all.csv`);
-    this.hlc_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://tripod.nih.gov/pub/adme/public_data//AID_1508603_datatable_all.csv`);
-    this.cyp2d6_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://tripod.nih.gov/pub/adme/public_data//AID_1645840_datatable_all.csv`);
-    this.cyp3a4_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://tripod.nih.gov/pub/adme/public_data//AID_1645841_datatable_all.csv`);
-    this.cyp2c9_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://tripod.nih.gov/pub/adme/public_data//AID_1645842_datatable_all.csv`);
+    this.rlm_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://opendata.ncats.nih.gov/public/adme/data/public_datasets/AID_1508591_datatable_all.csv`);
+    this.pampa74_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://opendata.ncats.nih.gov/public/adme/data/public_datasets/AID_1508612_datatable_all.csv`);
+    this.pampa50_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://opendata.ncats.nih.gov/public/adme/data/public_datasets/AID_1645871_datatable_all.csv`);
+    this.sol_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://opendata.ncats.nih.gov/public/adme/data/public_datasets/AID_1645848_datatable_all.csv`);
+    this.hlc_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://opendata.ncats.nih.gov/public/adme/data/public_datasets/AID_1508603_datatable_all.csv`);
+    this.cyp2d6_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://opendata.ncats.nih.gov/public/adme/data/public_datasets/AID_1645840_datatable_all.csv`);
+    this.cyp3a4_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://opendata.ncats.nih.gov/public/adme/data/public_datasets/AID_1645841_datatable_all.csv`);
+    this.cyp2c9_DownloadHref = domSanitizer.bypassSecurityTrustResourceUrl(`https://opendata.ncats.nih.gov/public/adme/data/public_datasets/AID_1645842_datatable_all.csv`);
     this.downloadIcon = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/icons/download.svg`);
   }
 

@@ -13,7 +13,7 @@ import os
 from datetime import datetime
 from os import path
 
-base_url = 'https://tripod.nih.gov/pub/adme/models/rlm/'
+base_url = 'https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/rlm/'
 rlm_base_models_path = './models/rlm'
 
 # def load_rlm_rf_model():

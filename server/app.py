@@ -500,7 +500,6 @@ def return_index(path):
 
 # app and API health check
 health = HealthCheck()
-envdump = EnvironmentDump()
 
 def api_available():
     # nothing needed here. if the API is up this will return True
@@ -508,16 +507,8 @@ def api_available():
 
 health.add_check(api_available)
 
-# def application_data():
-#     return { "maintainer": "Vishal Siramshetty",
-#     "git_repo": "https://github.com/ncats/ncats-adme",
-#     "config": app.config}
-
-#envdump.add_section("application", application_data)
-
 # Add a flask route to expose information
 app.add_url_rule("/healthcheck", "healthcheck", view_func=lambda: health.run())
-#app.add_url_rule("/environment", "environment", view_func=lambda: envdump.run())
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

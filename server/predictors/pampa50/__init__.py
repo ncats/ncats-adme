@@ -13,7 +13,7 @@ import os
 from os import path
 from ..utilities.utilities import load_gcnn_model
 
-pampa_model_file_url = 'https://tripod.nih.gov/pub/adme/models/pampa50/gcnn_model.pt'
+pampa_model_file_url = 'https://opendata.ncats.nih.gov/public/adme/models/current/static/pampa50/gcnn_model.pt'
 pampa_model_file_path = './models/pampa50/gcnn_model.pt'
 
 print(f'Loading PAMPA graph convolutional neural network model', file=sys.stdout)
