@@ -83,9 +83,11 @@ def load_gcnn_model(model_file_path, model_file_url):
 
 def load_gcnn_model_with_versioninfo(model_file_path, model_file_url):
     if path.exists(model_file_path):
+        print('Model File Exists Locally')
         gcnn_scaler, _ = load_scalers(model_file_path)
     else:
-        gcnn_scaler_request = requests.get(model_file_url)
+        print('Model File Does not Exist. Downloading!')
+        gcnn_scaler_request = requests.get(model_file_url, allow_redirects=True)
         with tqdm.wrapattr(
             open(os.devnull, "wb"),
             "write",

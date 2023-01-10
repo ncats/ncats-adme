@@ -13,7 +13,7 @@ import os
 from os import path
 from ..utilities.utilities import load_gcnn_model_with_versioninfo
 
-solubility_model_file_url = 'https://tripod.nih.gov/pub/adme/models/solubility/gcnn_model.pt'
+solubility_model_file_url = 'https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/solubility/gcnn_model.pt'
 solubility_model_file_path = './models/solubility/gcnn_model.pt'
 
 print(f'Loading Solubility graph convolutional neural network model', file=sys.stdout)

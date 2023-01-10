@@ -13,7 +13,7 @@ import os
 from os import path
 from ..utilities.utilities import load_gcnn_model
 
-hlm_model_file_url = 'https://tripod.nih.gov/pub/adme/models/hlm/gcnn_model.pt'
+hlm_model_file_url = 'https://opendata.ncats.nih.gov/public/adme/models/current/static/hlm/gcnn_model.pt'
 hlm_model_file_path = './models/hlm/gcnn_model.pt'
 
 print(f'Loading HLM graph convolutional neural network model', file=sys.stdout)
