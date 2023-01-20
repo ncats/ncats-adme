@@ -270,20 +270,15 @@ def predict_df(df, smi_column_name, models):
 
     base_models_error_message = 'We were not able to make predictions using the following model(s): '
 
-    if 'hlm' in models:
-        models.remove('hlm')
-    elif 'HLM' in models:
-        models.remove('HLM')
-
     print(f'Models to be predicted: {models}')
 
     for model in models:
         response[model] = {}
         error_messages = []
 
-        # if model.lower() == 'hlm':
-        #     predictor = HLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        if model.lower() == 'rlm':
+        if model.lower() == 'hlm':
+            predictor = HLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+        elif model.lower() == 'rlm':
             predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa':
             predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
