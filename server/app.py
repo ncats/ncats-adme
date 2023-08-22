@@ -18,9 +18,10 @@ from rdkit.Chem.Draw import IPythonConsole
 import rdkit
 from flask import abort, send_file
 from predictors.rlm.rlm_predictor import RLMPredictior
-# from predictors.hlm.hlm_predictor import HLMPredictior
+#from predictors.hlm.hlm_predictor import HLMPredictior
 from predictors.pampa.pampa_predictor import PAMPAPredictior
 from predictors.pampa50.pampa_predictor import PAMPA50Predictior
+from predictors.pampabbb.pampa_predictor import PAMPABBBPredictior
 from predictors.solubility.solubility_predictor import SolubilityPredictior
 from predictors.liver_cytosol.lc_predictor import LCPredictor
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
@@ -225,7 +226,6 @@ def get_image(smiles):
         except:
             return send_file('./images/no_image_available.png', mimetype='image/png')
 
-
 @app.route(f'{root_route_path}/api/v1/structure_image_glowing', methods=['GET'])
 def get_glowing_image():
         smiles = request.args.getlist('smiles')
@@ -251,7 +251,6 @@ def get_glowing_image():
 
             return response, 400
 
-
 def predict_df(df, smi_column_name, models):
 
     #interpret = False
@@ -270,20 +269,20 @@ def predict_df(df, smi_column_name, models):
 
     base_models_error_message = 'We were not able to make predictions using the following model(s): '
 
-    print(f'Models to be predicted: {models}')
-
     for model in models:
         response[model] = {}
         error_messages = []
 
-        if model.lower() == 'hlm':
-            predictor = HLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'rlm':
+        # if model.lower() == 'hlm':
+        #     predictor = HLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+        if model.lower() == 'rlm':
             predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa':
             predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa50':
             predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+        elif model.lower() == 'pampabbb':
+            predictor = PAMPABBBPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'solubility':
             predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'hlc':

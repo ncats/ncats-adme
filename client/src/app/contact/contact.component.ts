@@ -13,6 +13,10 @@ export class ContactComponent implements OnInit {
   pranavImgSrc: SafeResourceUrl;
   ewyImgSrc: SafeResourceUrl;
   xinImgSrc: SafeResourceUrl;
+  trungImgSrc: SafeResourceUrl;
+  noelImgSrc: SafeResourceUrl;
+  jorgeImgSrc: SafeResourceUrl;
+  jordanImgSrc: SafeResourceUrl;
   rdkitImgSrc: SafeResourceUrl;
   pythonImgSrc: SafeResourceUrl;
   angularImgSrc: SafeResourceUrl;
@@ -27,6 +31,10 @@ export class ContactComponent implements OnInit {
     this.pranavImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/shahpa2.png`);
     this.ewyImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/mathee.jpg`);
     this.xinImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/xux7.jpg`);
+    this.trungImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/nguyenda.png`);
+    this.noelImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/southalln.jpg`);
+    this.jorgeImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/neyraj2.jpg`);
+    this.jordanImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/profile_images/williamsjos.jpg`);
 
     this.rdkitImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/images/rdkit.png`);
     this.pythonImgSrc = domSanitizer.bypassSecurityTrustResourceUrl(`${this.deployUrl}assets/images/python.png`);
