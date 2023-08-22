@@ -16,6 +16,10 @@ from chemprop.interpret import interpret
 import tempfile
 import time
 from datetime import datetime
+from rdkit.Chem import Descriptors
+from rdkit.ML.Descriptors import MoleculeDescriptors
+import pandas as pd
+import numpy as np
 
 def get_processed_smi(rdkit_mols: array) -> array:
     """
@@ -142,3 +146,56 @@ def get_interpretation(kekule_smiles, model):
     end = time.time()
     print(f'{end - start} seconds to interpret {kekule_smiles_df.shape[0]} molecules')
     return intrprt_df
+
+# source: Pat Walters (https://github.com/PatWalters/useful_rdkit_utils)
+FUNCS = {name: func for name, func in Descriptors.descList}
+
+def apply_func(name, mol):
+    """Apply an RDKit descriptor calculation to a moleucle
+    :param name: descriptor name
+    :param mol: RDKit molecule
+    :return:
+    """
+    try:
+        return FUNCS[name](mol)
+    except:
+        logging.exception("function application failed (%s->%s)", name, Chem.MolToSmiles(m))
+        return None
+
+class RDKitDescriptors:
+    """ Calculate RDKit descriptors"""
+
+    def __init__(self):
+        self.desc_names = [desc_name for desc_name, _ in sorted(Descriptors.descList)]
+
+    def calc_mol(self, mol):
+        """Calculate descriptors for an RDKit molecule
+        :param mol: RDKit molecule
+        :return: a numpy array with descriptors
+        """
+        res = [apply_func(name, mol) for name in self.desc_names]
+        return np.array(res, dtype=float)
+
+    def calc_smiles(self, smiles):
+        """Calculate descriptors for a SMILES string
+        :param smiles: SMILES string
+        :return: a numpy array with properties
+        """
+        mol = Chem.MolFromSmiles(smiles)
+        if mol:
+            return self.calc_mol(mol)
+        else:
+            return None
+
+def calc_rdkit_desc_req(kekule_smiles, desc_required):
+    
+    rdkit_desc = RDKitDescriptors()
+    df_test = pd.DataFrame(kekule_smiles, columns=['SMILES'])
+    df_test['desc'] = df_test.SMILES.apply(rdkit_desc.calc_smiles)
+    df_test[rdkit_desc.desc_names] = pd.DataFrame(df_test.desc.tolist(), index= df_test.index)
+    rdkit_desc_list = rdkit_desc.desc_names
+    desc_to_omit = list(set(rdkit_desc_list) - set(desc_required))
+    df_test.drop('desc', axis=1, inplace=True)
+    df_test.drop(desc_to_omit, axis=1, inplace=True)
+
+    return df_test
