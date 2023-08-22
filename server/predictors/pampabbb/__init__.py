@@ -17,8 +17,8 @@ from pickle import load
 
 pampa_model_file_url = 'https://opendata.ncats.nih.gov/public/adme/models/current/static/pampabbb/gcnn_model.pt'
 pampa_model_file_path = './models/pampabbb/gcnn_model.pt'
-pampa_rdkit_desc_path = './models/pampabbb/rdkit_desc.csv'
-pampa_rdkit_desc_scaler_path = './models/pampabbb/scaler.pkl'
+pampa_rdkit_desc_path = 'rdkit_desc.csv'
+pampa_rdkit_desc_scaler_path = 'scaler.pkl'
 
 print(f'Loading PAMPA BBB graph convolutional neural network model', file=sys.stdout)
 os.makedirs('./models/pampabbb', exist_ok=True)
