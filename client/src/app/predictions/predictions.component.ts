@@ -39,14 +39,15 @@ export class PredictionsComponent implements OnInit {
   private sketcherIndexIdentifierColumn = 0;
   private fileIndexIdentifierColumn: number;
   indexIdentifierColumn: number;
-  models = ['HLM', 'RLM', 'Solubility', 'PAMPA', 'PAMPA50', 'HLC', 'CYP450'];
+  models = ['RLM', 'Solubility', 'PAMPA', 'PAMPA50', 'PAMPABBB', 'HLC', 'CYP450'];
   models_checked = [];
   tabLabels = {
-    HLM: 'Human Liver Microsomal Stability',
+    // HLM: 'Human Liver Microsomal Stability',
     RLM: 'Rat Liver Microsomal Stability',
     Solubility: 'Solubility',
     PAMPA: 'PAMPA Permeability (pH 7.4)',
     PAMPA50: 'PAMPA Permeability (pH 5.0)',
+    PAMPABBB: 'PAMPA BBB Permeability',
     HLC: 'Human Liver Cytosolic Stability',
     CYP450: 'CYP450'
   };
@@ -54,16 +55,17 @@ export class PredictionsComponent implements OnInit {
   form1: FormGroup;
   // form2: FormGroup;
   modelList: PredModel[] = [
-    { id: 0, name: 'HLM Stability', val: 'HLM', checked: true },
-    { id: 1, name: 'RLM Stability', val: 'RLM', checked: true },
-    { id: 2, name: 'Solubility', val: 'Solubility', checked: true },
-    { id: 3, name: 'PAMPA pH 7.4', val: 'PAMPA', checked: true },
-    { id: 4, name: 'PAMPA pH 5', val: 'PAMPA50', checked: true },
+    // { id: 0, name: 'HLM Stability', val: 'HLM', checked: true },
+    { id: 0, name: 'RLM Stability', val: 'RLM', checked: true },
+    { id: 1, name: 'Solubility', val: 'Solubility', checked: true },
+    { id: 2, name: 'PAMPA pH 7.4', val: 'PAMPA', checked: true },
+    { id: 3, name: 'PAMPA pH 5', val: 'PAMPA50', checked: true },
+    { id: 4, name: 'PAMPA BBB', val: 'PAMPABBB', checked: true },
     { id: 5, name: 'HLC Stability', val: 'HLC', checked: true },
     { id: 6, name: 'CYP450', val: 'CYP450', checked: false }
   ];
 
-  selection = new SelectionModel<string>(true, ['HLM', 'RLM', 'Solubility', 'PAMPA', 'PAMPA50', 'HLC']);
+  selection = new SelectionModel<string>(true, ['RLM', 'Solubility', 'PAMPA', 'PAMPA50', 'PAMPABBB', 'HLC']);
 
   constructor(
     private http: HttpClient,
