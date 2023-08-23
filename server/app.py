@@ -24,7 +24,7 @@ from predictors.pampa50.pampa_predictor import PAMPA50Predictior
 from predictors.pampabbb.pampa_predictor import PAMPABBBPredictior
 from predictors.solubility.solubility_predictor import SolubilityPredictior
 from predictors.liver_cytosol.lc_predictor import LCPredictor
-#from predictors.cyp450.cyp450_predictor import CYP450Predictor
+from predictors.cyp450.cyp450_predictor import CYP450Predictor
 from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
 from predictors.utilities.utilities import get_similar_mols
 from flask_swagger_ui import get_swaggerui_blueprint
