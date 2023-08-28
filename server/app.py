@@ -269,6 +269,8 @@ def predict_df(df, smi_column_name, models):
 
     base_models_error_message = 'We were not able to make predictions using the following model(s): '
 
+    print(f'Models to be predicted: {models}')
+
     for model in models:
         response[model] = {}
         error_messages = []
