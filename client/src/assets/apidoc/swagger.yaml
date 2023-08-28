@@ -34,17 +34,17 @@ paths:
           type: string
         - name: model
           in: query
-          description: name of the ADME model (hlm, solubility, cyp450, etc.)
+          description: name of the ADME model (rlm, solubility, cyp450, etc.)
           required: true
           type: array
           items:
             type: string
             enum:
-              - hlm
               - rlm
               - solubility
               - pampa
               - pampa50
+              - pampabbb
               - hlc
               - cyp450
             default: solubility

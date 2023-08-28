@@ -5,10 +5,11 @@
     <a class="nav-item" routerLink="/predictions">Predict</a>
     <a class="nav-item" [matMenuTriggerFor]="navMenu" >Models</a>
     <mat-menu #navMenu="matMenu">
-      <button mat-menu-item routerLink="/models/hlm">HLM Stability</button>
+      <!--<button mat-menu-item routerLink="/models/hlm">HLM Stability</button>-->
       <button mat-menu-item routerLink="/models/rlm">RLM Stability</button>
       <button mat-menu-item routerLink="/models/pampa_ph5">PAMPA pH 5.0</button>
       <button mat-menu-item routerLink="/models/pampa_ph74">PAMPA pH 7.4</button>
+      <button mat-menu-item routerLink="/models/pampa_bbb">PAMPA BBB</button>
       <button mat-menu-item routerLink="/models/solubility">Solubility</button>
       <button mat-menu-item routerLink="/models/hlc">HLC Stability</button>
       <button mat-menu-item routerLink="/models/cyp450">CYP450</button>
@@ -22,11 +23,11 @@
 </mat-toolbar>
 <router-outlet></router-outlet>
 <div class="container footer">
-  <p style="text-align: center;">Last Updated: {{release_date}} <span class="v-bar-1">|</span> Current Release: <a href="{{release_url}}" target="_blank"><u>{{tag_name}}</u></a></p>
-  <p><a href="https://www.nih.gov/" target="_blank">NIH</a> <span class="v-bar-2">|</span>
-      <a href="https://ncats.nih.gov/" target="_blank">NCATS</a> <span class="v-bar-2">|</span>
-      <a href="https://ncats.nih.gov/privacy" target="_blank">PRIVACY ACT</a> <span class="v-bar-2">|</span>
-      <a href="https://ncats.nih.gov/accessibility" target="_blank">ACCESSIBILITY</a> <span class="v-bar-2">|</span>
-      <a href="https://ncats.nih.gov/disclaimer" target="_blank">DISCLAIMER</a>
+  <p style="text-align: center;"><b>NCATS OpenData is Licensed Under a <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank"><u>CC BY 4.0</u></a> License</b><span class="v-bar-1">|</span> <b>Last Updated</b>: {{release_date}} <span class="v-bar-1">|</span> <b>Current Release</b>: <a href="{{release_url}}" target="_blank"><u>{{tag_name}}</u></a></p>
+  <p><a href="https://www.nih.gov/" target="_blank"><b>NIH</b></a> <span class="v-bar-2">|</span>
+      <a href="https://ncats.nih.gov/" target="_blank"><b>NCATS</b></a> <span class="v-bar-2">|</span>
+      <a href="https://ncats.nih.gov/privacy" target="_blank"><b>PRIVACY ACT</b></a> <span class="v-bar-2">|</span>
+      <a href="https://ncats.nih.gov/accessibility" target="_blank"><b>ACCESSIBILITY</b></a> <span class="v-bar-2">|</span>
+      <a href="https://ncats.nih.gov/disclaimer" target="_blank"><b>DISCLAIMER</b></a>
   </p>
 </div>
