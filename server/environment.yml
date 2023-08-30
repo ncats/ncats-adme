@@ -8,7 +8,7 @@ channels:
   - efelix
 dependencies:
   - cpuonly=1.0
-  - flask=1.1.2
+  - flask=2.2.2
   - flask-cors=3.0
   - efelix::fpsim2=0.2.6
   - hyperopt=0.2.4
