@@ -1,4 +1,73 @@
 <div class="container">
+
+  <!--
+  <div class="inner-container" *ngIf="model == 'hlm'">
+      <h2>
+          HLM Stability
+      </h2>
+      <div class="definitions-container">
+          <div class="definition">
+              <div class="name">Name:</div>
+              <div class="value">Human Liver Microsomal Stability</div>
+          </div>
+          <div class="definition">
+              <div class="name">Dataset Type:</div>
+              <div class="value">Classification</div>
+          </div>
+          <div class="definition">
+              <div class="name">Dataset Size:</div>
+              <div class="value">4300 compounds</div>
+          </div>
+          <div class="definition">
+              <div class="name">Validation:</div>
+              <div class="value">5-Fold CV and Time-Split CV</div>
+          </div>
+          <div class="definition">
+              <div class="name">Descriptors:</div>
+              <div class="value">Molecular Graphs</div>
+          </div>
+          <div class="definition">
+              <div class="name">Model Details:</div>
+              <div class="value" style="text-align: justify;">
+                  The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters.
+              </div>
+          </div>
+          <div class="definition">
+              <div class="name">Interpretation of Models:</div>
+              <div class="value" style="text-align: justify;">
+                  The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
+          </div>
+
+          <div class="definition">
+              <div class="name">Data Availability:</div>
+              <div class="value">
+                  A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                      href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508591" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
+                      1508591</a>.
+              </div>
+          </div>
+
+      </div>
+      <br>
+      <h3>
+          HLM Assay Protocol
+      </h3>
+      <p style="text-align: justify;">
+          The substrate depletion method, also called the in vitro t<sub>1/2</sub> method was used to analyze test compounds. Incubation and liquid handling were carried out using a previously described method (Shah et al., 2016). Briefly, each reaction mixture (110 μL) consisted of a test article (1 μM), human liver microsomes (HLM) (0.5 mg/mL), and NADPH regenerating system in phosphate buffer at pH 7.4. Samples were incubated in 384-well plates at 37°C for 0, 5, 10, 15, 30 and 60 min. At each time point, 10 μL of the incubation mixture was aspirated into another 384-well plate which contained cold acetonitrile (ACN) with internal standard (albendazole). All plates were centrifuged at 3000 rpm for 20 min at 4°C, and the supernatants were transferred to a 384-well injection plate. Sample quantification and analysis was performed using previously described methods (Shah et al., 2016 and Shah et al., 2020).
+      </p>
+      <h3>
+          References:
+      </h3>
+      <ol>
+        <li>
+          <p>Shah, P. et al. <a href="https://doi.org/10.1124/dmd.116.072017" target="_blank">An Automated High-Throughput Metabolic Stability Assay Using an Integrated High Resolution Accurate Mass Method and Automated Data Analysis Software.</a> <i> Drug Metab Dispos.</i> 44, 1653-1661 (2016).</p>
+        </li>
+        <li>
+           <p>Shah, P., Siramshetty, V.B., Zakharov, A.V. et al., <a href="https://doi.org/10.1186/s13321-020-00426-7" target="_blank">Predicting liver cytosol stability of small molecules.</a> <i> J Cheminform.</i> 12, 21 (2020).</p>
+        </li>
+      </ol>
+  </div>
+-->
     <div class="inner-container" *ngIf="model == 'rlm'">
         <h2>
             RLM Stability
@@ -27,10 +96,10 @@
             <div class="definition">
                 <div class="name">Model Details:</div>
                 <div class="value" style="text-align: justify;">
-                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.</div>
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters.</div>
             </div>
             <div class="definition">
-                <div class="name">Interpretation of Models:</div>
+                <div class="name">Inference:</div>
                 <div class="value" style="text-align: justify;">
                     The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
             </div>
@@ -109,11 +178,11 @@
             <div class="definition">
                 <div class="name">Model Details:</div>
                 <div class="value" style="text-align: justify;">
-                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters.
                 </div>
             </div>
             <div class="definition">
-                <div class="name">Interpretation of Models:</div>
+                <div class="name">Inference:</div>
                 <div class="value" style="text-align: justify;">
                     The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low or moderate permeability' (i.e., log P<sub><i>eff</i></sub> &#60; 2.0) and if the predicted class is '0', the compound is predicted to have 'high permeability' (i.e., log P<sub><i>eff</i></sub> > 2.5). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
                 </div>
@@ -168,16 +237,16 @@
             </div>
             <div class="definition">
                 <div class="name">Descriptors:</div>
-                <div class="value">Molecular Graphs</div>
+                <div class="value">Molecular Graphs + RDKit descriptors</div>
             </div>
             <div class="definition">
                 <div class="name">Model Details:</div>
                 <div class="value" style="text-align: justify;">
-                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters.
                 </div>
             </div>
             <div class="definition">
-                <div class="name">Interpretation of Models:</div>
+                <div class="name">Inference:</div>
                 <div class="value" style="text-align: justify;">
                     The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low permeability' (i.e., log P<sub><i>eff</i></sub> &#60; 1.0) and if the predicted class is '0', the compound is predicted to have 'moderate to high permeability' (i.e., log P<sub><i>eff</i></sub> > 1.0). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
                 </div>
@@ -205,6 +274,60 @@
          </li>
         </ol>
     </div>
+
+    <div class="inner-container" *ngIf="model == 'pampa_bbb'">
+        <h2>
+            PAMPA BBB
+        </h2>
+        <div class="definitions-container">
+            <div class="definition">
+                <div class="name">Name:</div>
+                <div class="value">Parallel artificial membrane permeability assay for blood-brain barrier (PAMPA-BBB)</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Type:</div>
+                <div class="value">Classification</div>
+            </div>
+            <div class="definition">
+                <div class="name">Dataset Size:</div>
+                <div class="value">1,958 compounds</div>
+            </div>
+            <div class="definition">
+                <div class="name">Validation:</div>
+                <div class="value">5-Fold CV</div>
+            </div>
+            <div class="definition">
+                <div class="name">Descriptors:</div>
+                <div class="value">Molecular Graphs and RDKit Descriptors</div>
+            </div>
+            <div class="definition">
+                <div class="name">Model Details:</div>
+                <div class="value" style="text-align: justify;">
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs and utilizes additional features (RDKit descriptors). The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Inference:</div>
+                <div class="value" style="text-align: justify;">
+                    The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low permeability' (i.e., log P<sub><i>eff</i></sub> &#60; 1.0) and if the predicted class is '0', the compound is predicted to have 'moderate to high permeability' (i.e., log P<sub><i>eff</i></sub> > 1.0). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+                </div>
+            </div>
+            <div class="definition">
+                <div class="name">Data Availability:</div>
+                <div class="value">
+                    A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
+                        href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1845228" target="_blank" admeTrackLinkEvent evLabel="pampa bbb pubchem">AID
+                        1845228</a>.
+                </div>
+            </div>
+        </div>
+        <br>
+        <h3>PAMPA Assay Protocol:</h3>
+        <p style="text-align: justify;">
+            The stirring Double-Sink™ PAMPA-BBB method patented by Pion Inc. (Billerica, MA) was employed to determine the permeability of compounds via PAMPA passive diffusion24. The PAMPA lipid membrane, which consisted of an artificial membrane of porcine brain lipid extract dissolved in alkane (Pion Inc.), was optimized to predict BBB passive permeability. This membrane was immobilized on a plastic matrix of a 96 well “donor” filter plate placed below a 96 well “acceptor” plate. The test articles, stocked in 10 mM DMSO solutions, were diluted to 0.05 mM in aqueous phosphate buffer and the concentration of DMSO was 0.5% in the final solution. During the 60-minute permeation study period at room temperature the test samples in the donor compartment were stirred using the Gutbox technology (Pion Inc.) to reduce the aqueous boundary layer to 60 µm. The test article concentrations in the “donor” and “acceptor” compartments were measured using a UV plate reader (Nano Quant, Infinite® 200 PRO, Tecan Inc., Männedorf, Switzerland). Permeability (Pe) calculations were performed using Pion Inc. software and were expressed in units of 10<sup>−6</sup>cm/s.
+        </p>
+    </div>
+
     <div class="inner-container" *ngIf="model == 'solubility'">
         <h2>
             Aqueous Kinetic Solubility
@@ -233,11 +356,11 @@
             <div class="definition">
                 <div class="name">Model Details:</div>
                 <div class="value" style="text-align: justify;">
-                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters. A variant that considers additional features such as RDKit descriptors will be added in future.
+                    The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters.
                 </div>
             </div>
             <div class="definition">
-                <div class="name">Interpretation of Models:</div>
+                <div class="name">Inference:</div>
                 <div class="value" style="text-align: justify;">
                     The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted to have 'low solubility' (i.e., &#60;10 µg/ml) and if the predicted class is '0', the compound is predicted to have 'high solubility' (i.e., &#62;10 µg/ml). The models also provide a probability score (between 0 and 1), shown in parentheses next to the predicted class.
                 </div>
@@ -299,7 +422,7 @@
                   Due to high imbalance between the classes (stable and untable) in the training data, a consensus of three individual Random Forest models that are based on distinct subsets of the majority class (i.e., multiple-undersampling technique) was developed. Each individual Random Forest model comprises of 100 trees and uses Morgan fingerprints as features. The remaining parameters were set to default. The models were built using <a href="https://scikit-learn.org/stable/" target="_blank">scikit-learn</a> library.</div>
           </div>
           <div class="definition">
-              <div class="name">Interpretation of Models:</div>
+              <div class="name">Inference:</div>
               <div class="value" style="text-align: justify;">
                   The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> &lt;= 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> &gt; 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.</div>
           </div>
@@ -307,7 +430,7 @@
               <div class="name">Data Availability:</div>
               <div class="value">
                   The external dataset used to validate these models is made publicly available at PubChem Bioassay database: <a
-                      href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508603" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
+                      href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508603" target="_blank" admeTrackLinkEvent evLabel="hlc pubchem">AID
                       1508603</a>.
               </div>
           </div>

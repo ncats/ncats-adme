@@ -52,15 +52,15 @@
 
 .footer {
   position: relative;
-  bottom: 0;
+  bottom: 0 !important;
   height: 80px;
   width: 100%;
-  color:#fff;
+  color: #fff;
   padding-bottom: 0px;
   padding-top: 10px;
   font-size: 13px;
   background-color: #673ab7;
-  margin-bottom: -25px;
+  margin-bottom: -25px !important;
 }
 
 .v-bar-1 {

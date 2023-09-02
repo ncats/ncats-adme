@@ -121,7 +121,6 @@ class CYP450Predictor:
             processes = mp.cpu_count() - 1
         else:
             processes = 1
-
         with mp.Pool(processes=processes) as pool:
 
             for model_name in cyp450_models_dict.keys():
@@ -160,7 +159,9 @@ class CYP450Predictor:
                     self.has_errors = True
                     self.model_errors.append(self._columns_dict[model_name]['description'])
 
-                self.predictions_df[f'{model_name}'] = pd.Series(
+                model_name_uc = model_name.split('_')[0].upper() + '_' + model_name.split('_')[1]
+
+                self.predictions_df[f'{model_name_uc}'] = pd.Series(
                     pd.Series(np.where(mean_probs>=0.5, 1, 0)).round(2).astype(str)
                     +' ('
                     + pd.Series(np.where(mean_probs>=0.5, mean_probs, (1-mean_probs))).round(2).astype(str)
@@ -173,10 +174,11 @@ class CYP450Predictor:
                     utc_timestamp = utc_time.timestamp()
                     self.raw_predictions_df = self.raw_predictions_df.append(
                         pd.DataFrame(
-                            { 'SMILES': self.smiles, 'model': model_name, 'prediction': mean_probs, 'timestamp': utc_timestamp }
+                            { 'SMILES': self.smiles, 'model': model_name_uc, 'prediction': mean_probs, 'timestamp': utc_timestamp }
                         ),
                         ignore_index = True
                     )
+
                 #conns_dict[model_name].close()
 
             pool.close()

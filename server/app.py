@@ -18,13 +18,18 @@ from rdkit.Chem.Draw import IPythonConsole
 import rdkit
 from flask import abort, send_file
 from predictors.rlm.rlm_predictor import RLMPredictior
+#from predictors.hlm.hlm_predictor import HLMPredictior
 from predictors.pampa.pampa_predictor import PAMPAPredictior
 from predictors.pampa50.pampa_predictor import PAMPA50Predictior
+from predictors.pampabbb.pampa_predictor import PAMPABBBPredictior
 from predictors.solubility.solubility_predictor import SolubilityPredictior
 from predictors.liver_cytosol.lc_predictor import LCPredictor
 from predictors.cyp450.cyp450_predictor import CYP450Predictor
 from predictors.utilities.utilities import addMolsKekuleSmilesToFrame
 from predictors.utilities.utilities import get_similar_mols
+from flask_swagger_ui import get_swaggerui_blueprint
+import urllib
+from healthcheck import HealthCheck, EnvironmentDump
 
 app = flask.Flask(__name__, static_folder ='./client')
 CORS(app)
@@ -39,7 +44,19 @@ data_path = os.getenv('DATA_PATH', '')
 if data_path != '' and not os.path.isfile(f'{data_path}predictions.csv'):
     pd.DataFrame(columns=['SMILES', 'model', 'prediction', 'timestamp']).to_csv(f'{data_path}predictions.csv', index=False)
 
-# path for mounted volumen will be '/data'
+# path for mounted volume will be '/data'
+
+# flask swagger configs
+SWAGGER_URL = root_route_path + '/swagger'
+API_URL = root_route_path + '/client/assets/apidoc/swagger.yaml'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "ADME API"
+    }
+)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
 @app.route(f'{root_route_path}/api/v1/predict', methods=['GET'])
 def predict():
@@ -51,11 +68,13 @@ def predict():
     # checking for input - smiles
     smiles_list = request.args.getlist('smiles')
     smiles_list = [string for string in smiles_list if string != '']
+    smiles_list = [urllib.parse.unquote(string, encoding='utf-8', errors='replace') for string in smiles_list] # additional decoding step to transform any %2B to + symbols
+
     if not smiles_list or smiles_list == None:
         mol_error = True
 
     # checking for input - models
-    models = request.args.getlist('models')
+    models = request.args.getlist('model')
     if len(models) == 0 or models == None:
         model_error = True
 
@@ -113,7 +132,7 @@ def upload_file():
 
     response = {}
 
-    # check if the post request has the file part
+    # check if the post request has the file part, else throw error message
     if 'file' not in request.files:
         response['hasErrors'] = True
         response['errorMessages'] = 'A file needs to be attached to the request.'
@@ -121,17 +140,19 @@ def upload_file():
 
     file = request.files['file']
 
+    # check if the file has a name, else throw error message
     if file.filename == '':
         response['hasErrors'] = True
         response['errorMessages'] = 'A file with a file name needs to be attached to the request.'
         return jsonify(response)
 
+    # check if the file extension is in the allowed list of file extensions (CSV, TXT or SMI)
     if file and allowed_file(file.filename):
 
         filename = secure_filename(file.filename)
         data = dict(request.form)
         indexIdentifierColumn = int(data['indexIdentifierColumn'])
-        models = data['models'].split(';')
+        models = data['model'].split(';')
         models = [string for string in models if string != '']
         #gcnnOpt = data['gcnnOpt']
 
@@ -140,14 +161,14 @@ def upload_file():
             response['errorMessages'] = 'Please choose at least one model.'
             return jsonify(response)
 
-        if data['hasHeaderRow'] == 'true':
+        if data['hasHeaderRow'] == 'true': # file has a header row
             df = pd.read_csv(file, header=0, sep=data['columnSeparator'])
-        else:
+        else: # file does not have a header row
             df = pd.read_csv(file, header=None, sep=data['columnSeparator'])
             column_name_mapper = {}
             for column_name in df.columns.values:
                 if int(column_name) == indexIdentifierColumn:
-                    column_name_mapper[column_name] = 'mol'
+                    column_name_mapper[column_name] = 'mol' # check if this is not the case...
                 else:
                     column_name_mapper[column_name] = f'col_{column_name}'
             df.rename(columns=column_name_mapper, inplace=True)
@@ -155,7 +176,12 @@ def upload_file():
         smi_column_name = df.columns.values[indexIdentifierColumn]
 
         try:
-            response = predict_df(df, smi_column_name, models)
+            if len(df.index) > 1000:
+                response['hasErrors'] = True
+                response['errorMessages'] = 'The input file contains more than 1000 rows which exceeds the limit. Please try again with a maximum of 1000 rows.'
+                return jsonify(response)
+            else:
+                response = predict_df(df, smi_column_name, models)
         except Exception as e:
             app.logger.error('Error making a prediction.')
             app.logger.error(f'error type: {type(e)}')
@@ -190,13 +216,27 @@ def upload_file():
 #         return send_file('./images/no_image_available.png', mimetype='image/png')
 
 @app.route(f'{root_route_path}/api/v1/structure_image/<path:smiles>', methods=['GET'])
-def get_glowing_image(smiles):
-        if '_' in smiles:
-            mol_smi = smiles.split('_')[0]
-            mol_subs = smiles.split('_')[1]
+def get_image(smiles):
+        try:
+            mol = Chem.MolFromSmiles(smiles)
+            d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
+            d2d.DrawMolecule(mol)
+            d2d.FinishDrawing()
+            return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
+        except:
+            return send_file('./images/no_image_available.png', mimetype='image/png')
+
+@app.route(f'{root_route_path}/api/v1/structure_image_glowing', methods=['GET'])
+def get_glowing_image():
+        smiles = request.args.getlist('smiles')
+        smiles = [string for string in smiles if string != '']
+        subs = request.args.getlist('subs')
+        subs = [string for string in subs if string != '']
+        print(f'Substructure: {subs}')
+        if smiles and subs:
             try:
-                mol = Chem.MolFromSmiles(mol_smi)
-                patt = Chem.MolFromSmiles(mol_subs)
+                mol = Chem.MolFromSmiles(smiles[0])
+                patt = Chem.MolFromSmiles(subs[0])
                 matching = mol.GetSubstructMatch(patt)
                 d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
                 d2d.DrawMolecule(mol, highlightAtoms=matching)
@@ -205,15 +245,11 @@ def get_glowing_image(smiles):
             except:
                 return send_file('./images/no_image_available.png', mimetype='image/png')
         else:
-            try:
-                mol = Chem.MolFromSmiles(smiles)
-                d2d = rdMolDraw2D.MolDraw2DSVG(350,300)
-                d2d.DrawMolecule(mol)
-                d2d.FinishDrawing()
-                return Response(d2d.GetDrawingText(), mimetype='image/svg+xml')
-            except:
-                return send_file('./images/no_image_available.png', mimetype='image/png')
+            response = {
+                'error': 'Please provide at least one molecule and one substructure each in SMILES specification'
+            }
 
+            return response, 400
 
 def predict_df(df, smi_column_name, models):
 
@@ -233,16 +269,22 @@ def predict_df(df, smi_column_name, models):
 
     base_models_error_message = 'We were not able to make predictions using the following model(s): '
 
+    print(f'Models to be predicted: {models}')
+
     for model in models:
         response[model] = {}
         error_messages = []
 
+        # if model.lower() == 'hlm':
+        #     predictor = HLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         if model.lower() == 'rlm':
             predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa':
             predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'pampa50':
             predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+        elif model.lower() == 'pampabbb':
+            predictor = PAMPABBBPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'solubility':
             predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
         elif model.lower() == 'hlc':
@@ -253,12 +295,19 @@ def predict_df(df, smi_column_name, models):
             break
 
         pred_df = predictor.get_predictions()
+
         if data_path != '':
             predictor.record_predictions(f'{data_path}/predictions.csv')
         pred_df = working_df.join(pred_df)
         pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
 
-        response_df = pd.merge(df, pred_df, how='left', left_on=smi_column_name, right_on=smi_column_name)
+        # columns not present in original df
+        diff_cols = pred_df.columns.difference(df.columns)
+        df_res = pred_df[diff_cols]
+
+        #response_df = pd.merge(df, pred_df, how='inner', left_on=smi_column_name, right_on=smi_column_name)
+        # making sure the response df is of the exact same length (rows) as original df
+        response_df = pd.merge(df, df_res, left_index=True, right_index=True, how='inner')
 
         errors_dict = predictor.get_errors()
         response[model]['hasErrors'] = predictor.has_errors
@@ -272,42 +321,45 @@ def predict_df(df, smi_column_name, models):
         response[model]['columns'] = list(response_df.columns.values)
 
         columns_dict =  predictor.columns_dict()
-
         dict_length = len(columns_dict.keys())
         columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
 
-        if model.lower() != 'cyp450':
-            # for all models except cyp450, calculate the nearest neigbors and add additional column to response_df
-            try:
-                sim_vals = get_similar_mols(response_df[smi_column_name].values, model.lower())
-                sim_series = pd.Series(sim_vals).round(2).astype(str)
-                response_df['Tanimoto Similarity'] = sim_series.values
-                columns_dict['Tanimoto Similarity'] = { 'order': 3, 'description': 'similarity towards nearest neighbor in training data', 'isSmilesColumn': False }
-            except Exception as e:
-                app.logger.error('Error making getting similarity')
-                app.logger.error(f'error type: {type(e)}')
-                app.logger.error(e)
-        else:
-            # for cyp450 models, a similarity value is calculated using a global dataset that is representative of all six cyp450 endpoints
-            try:
-                sim_vals = get_similar_mols(response_df[smi_column_name].values, model.lower())
-                sim_series = pd.Series(sim_vals).round(2).astype(str)
-                response_df['Tanimoto Similarity'] = sim_series.values
-                columns_dict['Tanimoto Similarity'] = { 'order': 7, 'description': 'similarity towards nearest neighbor in training data that was obtained by combining the compounds from all six individual datasets', 'isSmilesColumn': False }
-            except Exception as e:
-                app.logger.error('Error making getting similarity')
-                app.logger.error(f'error type: {type(e)}')
-                app.logger.error(e)
+        if response_df.shape[0] <= 100: # go for similarity assessment only if the response df contains 100 compounds or less
+
+            if model.lower() != 'cyp450':
+                # for all models except cyp450, calculate the nearest neigbors and add additional column to response_df
+                try:
+                    sim_vals = get_similar_mols(response_df[smi_column_name].values, model.lower())
+                    sim_series = pd.Series(sim_vals).round(2).astype(str)
+                    response_df['Tanimoto Similarity'] = sim_series.values
+                    columns_dict['Tanimoto Similarity'] = { 'order': 3, 'description': 'similarity towards nearest neighbor in training data', 'isSmilesColumn': False }
+                except Exception as e:
+                    app.logger.error('Error calculating similarity')
+                    app.logger.error(f'error type: {type(e)}')
+                    app.logger.error(e)
+            else:
+                # for cyp450 models, a similarity value is calculated using a global dataset that is representative of all six cyp450 endpoints
+                try:
+                    sim_vals = get_similar_mols(response_df[smi_column_name].values, model.lower())
+                    sim_series = pd.Series(sim_vals).round(2).astype(str)
+                    response_df['Tanimoto Similarity'] = sim_series.values
+                    columns_dict['Tanimoto Similarity'] = { 'order': 7, 'description': 'similarity towards nearest neighbor in training data that was obtained by combining the compounds from all six individual datasets', 'isSmilesColumn': False }
+                except Exception as e:
+                    app.logger.error('Error calculating similarity')
+                    app.logger.error(f'error type: {type(e)}')
+                    app.logger.error(e)
 
         # replace SMILES with interpret SMILES when interpretation available
-        if len(model_errors) == 0:
-            if 'mol' in response_df.columns:
-                response_df[smi_column_name] = response_df['mol']
-                response_df = response_df.drop('mol', 1)
-                print(response_df.head())
+        #if len(model_errors) == 0:
+        #    if 'mol' in response_df.columns:
+        #        response_df[smi_column_name] = response_df['mol']
+        #        response_df = response_df.drop('mol', 1)
+                #print(response_df.head())
 
         response[model]['mainColumnsDict'] = columns_dict
         response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+        if model.lower() in ['rlm', 'pampa', 'solubility']:
+            response[model]['model_version'] = predictor.get_model_version()
 
     return response
 
@@ -448,5 +500,18 @@ def return_index(path):
     print(path, file=sys.stdout)
     return app.send_static_file('index.html')
 
+
+# app and API health check
+health = HealthCheck()
+
+def api_available():
+    # nothing needed here. if the API is up this will return True
+    return True, "API is available"
+
+health.add_check(api_available)
+
+# Add a flask route to expose information
+app.add_url_rule("/healthcheck", "healthcheck", view_func=lambda: health.run())
+
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')

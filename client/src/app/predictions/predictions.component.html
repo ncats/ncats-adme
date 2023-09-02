@@ -4,8 +4,7 @@
     <form [formGroup]="form1">
       <span>Choose the models to predict:</span>
       <div *ngFor="let model of modelList" style="display: inline;">
-        <input type="checkbox" (change)="onChange(model.val, $event.target.checked)" />
-        {{ model.name }}
+        <mat-checkbox [color]="'primary'" [checked]="selection.isSelected(model.val)" (change)="selection.toggle(model.val)">{{ model.name }}</mat-checkbox>
       </div>
     </form>
     <!--
@@ -44,7 +43,7 @@
           <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
             <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
               <div>
-                <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
+                <adme-predictions-table dataHandling="concat" [predictions-data]="sketcherData[model]" [predictions-data-all]="sketcherData" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>
             </mat-tab>
           </mat-tab-group>
@@ -74,7 +73,7 @@
           <mat-tab-group (selectedTabChange)="selectedTabChange($event, 'predictions:model')">
             <mat-tab *ngFor="let model of models_checked" [label]="tabLabels[model]">
               <div>
-                <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
+                <adme-predictions-table dataHandling="replace" [predictions-data]="fileData[model]" [predictions-data-all]="fileData" (download)="downloadCSV($event)" [model]="model"></adme-predictions-table>
               </div>
             </mat-tab>
           </mat-tab-group>

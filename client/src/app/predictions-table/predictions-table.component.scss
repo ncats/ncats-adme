@@ -52,6 +52,10 @@
     min-width: 460px;
 }
 
+.mat-raised-button {
+  margin-right: 15px;
+}
+
 @media(max-width: 580px) {
     .top-actions-container {
         flex-direction: column;

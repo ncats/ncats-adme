@@ -1,0 +1,17 @@
+.api-content {
+  max-width: 900px;
+  width: 790px;
+  min-height: 100vh;
+}
+
+.swagger-ui .opblock.opblock-post {
+  background: rgba(132, 128, 128, 0.1) !important;
+}
+
+.swagger-ui .opblock.opblock-get {
+  background: rgba(132, 128, 128, 0.1) !important;
+}
+
+.swagger-ui .info hgroup.main a {
+  display: none
+}

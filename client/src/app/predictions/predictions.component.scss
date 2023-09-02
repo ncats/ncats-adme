@@ -47,8 +47,8 @@
     align-items: flex-start;
 }
 
-.model-input input{
-  margin: 0 5px 0 20px;
+.model-input span, mat-checkbox{
+  margin: 0 10px 0 5px;
 }
 
 .model-input {

@@ -20,7 +20,7 @@ import multiprocessing
 
 def download_file(base_url, model_name, model_number, models_dict):
     cyp450_rf_pkl_url = f'{base_url}/{model_name}/model_{model_number}'
-    cyp450_model_path = f'./models/CYP450/{model_name}/model_{model_number}'
+    cyp450_model_path = f'./models/cyp450/{model_name}/model_{model_number}'
     cyp450_rf_pkl_file_request = requests.get(cyp450_rf_pkl_url)
     with tqdm.wrapattr(
         open(os.devnull, "wb"),
@@ -40,11 +40,11 @@ def download_file(base_url, model_name, model_number, models_dict):
     #     print(model_name)
     #     print(model_number)
     #     cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(cyp450_rf_pkl_file_reader)
-        
+
 def load_models():
     # processes = []
     #with ThreadPoolExecutor() as executor:
-    base_url = 'https://tripod.nih.gov/pub/adme/models/CYPP450/'
+    base_url = 'https://opendata.ncats.nih.gov/public/adme/models/current/static/cyp450/'
     print(f'Loading CYP450 random forest models', file=sys.stdout)
 
     # manager = multiprocessing.Manager()
@@ -59,29 +59,29 @@ def load_models():
     # })
 
     cyp450_models_dict = {
-        'CYP2C9_inhib': {},
-        'CYP2C9_subs': {},
-        'CYP2D6_inhib': {},
-        'CYP2D6_subs': {},
-        'CYP3A4_inhib': {},
-        'CYP3A4_subs': {}
+        'cyp2c9_inhib': {},
+        'cyp2c9_subs': {},
+        'cyp2d6_inhib': {},
+        'cyp2d6_subs': {},
+        'cyp3a4_inhib': {},
+        'cyp3a4_subs': {}
     }
 
     for model_name in tqdm(cyp450_models_dict.keys()):
     # for model_name in cyp450_models_dict.keys():
         for model_number in tqdm(range(0, 64)):
         # for model_number in range(0, 64):
-            cyp450_model_path = f'./models/CYP450/{model_name}/model_{model_number}'
+            cyp450_model_path = f'./models/cyp450/{model_name}/model_{model_number}'
             if path.exists(cyp450_model_path) and os.path.getsize(cyp450_model_path) > 0:
                 with open(cyp450_model_path, 'rb') as pkl_file:
                     cyp450_models_dict[model_name][f'model_{model_number}'] = pickle.load(pkl_file)
             else:
-                os.makedirs(f'./models/CYP450/{model_name}', exist_ok=True)
+                os.makedirs(f'./models/cyp450/{model_name}', exist_ok=True)
                 # processes.append(executor.submit(download_file, base_url, model_name, model_number, cyp450_models_dict))
                 cyp450_models_dict[model_name][f'model_{model_number}'] = download_file(base_url, model_name, model_number, cyp450_models_dict)
 
     print(f'Finished loading CYP450 model files', file=sys.stdout)
     return cyp450_models_dict
-    
+
 
 cyp450_models_dict = load_models()

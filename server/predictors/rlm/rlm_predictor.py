@@ -4,8 +4,8 @@ from pandas import DataFrame
 import numpy as np
 import pandas as pd
 import pickle
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
+# from keras.preprocessing.text import Tokenizer
+# from keras.preprocessing.sequence import pad_sequences
 from rdkit import Chem
 import warnings
 warnings.filterwarnings('ignore')
@@ -20,9 +20,8 @@ import string
 from rdkit.Chem.rdchem import Mol
 from numpy import array
 from typing import Tuple
-from ..features.morgan_fp import MorganFPGenerator
 from ..utilities.utilities import get_processed_smi
-from . import rlm_gcnn_scaler, rlm_gcnn_model
+from . import rlm_gcnn_scaler, rlm_gcnn_model, rlm_gcnn_model_version
 from ..base.gcnn import GcnnBase
 import time
 
@@ -53,6 +52,7 @@ class RLMPredictior(GcnnBase):
         }
 
         self.model_name = 'rlm'
+        self.model_version = rlm_gcnn_model_version
 
     def get_predictions(self) -> DataFrame:
         """
@@ -78,3 +78,6 @@ class RLMPredictior(GcnnBase):
             #     self.predictions_df['mol'] = pd.Series(intrprt_df['final_smiles'].tolist())
 
         return self.predictions_df
+
+    def get_model_version(self) -> str:
+        return self.model_version

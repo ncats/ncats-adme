@@ -8,11 +8,14 @@ import { DownloadEvent, PredictionsData } from '../predictions-table/predictions
 import { GoogleAnalyticsService } from '../google-analytics/google-analytics.service';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { ConfigService } from '../config/config.service';
+import {SelectionModel} from '@angular/cdk/collections';
+import { DatePipe } from '@angular/common';
 
 export interface PredModel {
   id: number;
   name: string;
   val: string;
+  checked: boolean;
 }
 
 @Component({
@@ -27,7 +30,6 @@ export class PredictionsComponent implements OnInit {
   fileData: { [modelName: string]: PredictionsData };
   apiBaseUrl: string;
   apiKetcherUrl: string;
-
   errorMessage: string;
   errorMessages: Array<string> = [];
   file: Blob;
@@ -37,13 +39,15 @@ export class PredictionsComponent implements OnInit {
   private sketcherIndexIdentifierColumn = 0;
   private fileIndexIdentifierColumn: number;
   indexIdentifierColumn: number;
-  models = ['RLM', 'PAMPA50', 'PAMPA', 'Solubility', 'HLC', 'CYP450'];
+  models = ['RLM', 'Solubility', 'PAMPA', 'PAMPA50', 'PAMPABBB', 'HLC', 'CYP450'];
   models_checked = [];
   tabLabels = {
+    // HLM: 'Human Liver Microsomal Stability',
     RLM: 'Rat Liver Microsomal Stability',
-    PAMPA50: 'PAMPA Permeability (pH 5.0)',
-    PAMPA: 'PAMPA Permeability (pH 7.4)',
     Solubility: 'Solubility',
+    PAMPA: 'PAMPA Permeability (pH 7.4)',
+    PAMPA50: 'PAMPA Permeability (pH 5.0)',
+    PAMPABBB: 'PAMPA BBB Permeability',
     HLC: 'Human Liver Cytosolic Stability',
     CYP450: 'CYP450'
   };
@@ -51,13 +55,17 @@ export class PredictionsComponent implements OnInit {
   form1: FormGroup;
   // form2: FormGroup;
   modelList: PredModel[] = [
-    { id: 0, name: 'RLM Stability', val: 'RLM' },
-    { id: 1, name: 'PAMPA pH 5', val: 'PAMPA50' },
-    { id: 2, name: 'PAMPA pH 7.4', val: 'PAMPA' },
-    { id: 3, name: 'Solubility', val: 'Solubility' },
-    { id: 4, name: 'HLC Stability', val: 'HLC' },
-    { id: 5, name: 'CYP450', val: 'CYP450' }
+    // { id: 0, name: 'HLM Stability', val: 'HLM', checked: true },
+    { id: 0, name: 'RLM Stability', val: 'RLM', checked: true },
+    { id: 1, name: 'Solubility', val: 'Solubility', checked: true },
+    { id: 2, name: 'PAMPA pH 7.4', val: 'PAMPA', checked: true },
+    { id: 3, name: 'PAMPA pH 5', val: 'PAMPA50', checked: true },
+    { id: 4, name: 'PAMPA BBB', val: 'PAMPABBB', checked: true },
+    { id: 5, name: 'HLC Stability', val: 'HLC', checked: true },
+    { id: 6, name: 'CYP450', val: 'CYP450', checked: false }
   ];
+
+  selection = new SelectionModel<string>(true, ['RLM', 'Solubility', 'PAMPA', 'PAMPA50', 'PAMPABBB', 'HLC']);
 
   constructor(
     private http: HttpClient,
@@ -72,15 +80,15 @@ export class PredictionsComponent implements OnInit {
     this.apiKetcherUrl = `${this.apiBaseUrl}ketcher`;
   }
 
-  onChange(name: string, isChecked: boolean) {
-    const models = (this.form1.controls.name as FormArray);
-    if (isChecked) {
-      models.push(new FormControl(name));
-    } else {
-      const index = models.controls.findIndex(x => x.value === name);
-      models.removeAt(index);
-    }
-  }
+  // onChange(name: string, isChecked: boolean) {
+  //   const models = (this.form1.controls.name as FormArray);
+  //   if (isChecked) {
+  //     models.push(new FormControl(name));
+  //   } else {
+  //     const index = models.controls.findIndex(x => x.value === name);
+  //     models.removeAt(index);
+  //   }
+  // }
 
   ngOnInit(): void {
     this.link = document.createElement('a');
@@ -100,11 +108,12 @@ export class PredictionsComponent implements OnInit {
     this.clearSketcherData();
     this.loadingService.setLoadingState(true);
     this.indexIdentifierColumn = this.sketcherIndexIdentifierColumn;
-    this.models_checked = this.form1.value.name;
+    this.models_checked = this.selection.selected;
+    smiles = smiles.toString().replace(/\+/gi, '%2B')
     const options = {
       params: {
         smiles,
-        models: this.form1.value.name,
+        model: this.models_checked
         //gcnnOpt: this.form2.value.gcnnOption
       }
     };
@@ -126,7 +135,7 @@ export class PredictionsComponent implements OnInit {
     this.clearErrorMessage();
     this.clearFileData();
     this.loadingService.setLoadingState(true);
-    this.models_checked = this.form1.value.name;
+    this.models_checked = this.selection.selected;
     const formData = new FormData();
     formData.append('lineBreak', fileForm.lineBreak);
     this.lineBreak = fileForm.lineBreak;
@@ -134,7 +143,7 @@ export class PredictionsComponent implements OnInit {
     this.columnSeparator = fileForm.columnSeparator;
     formData.append('hasHeaderRow', fileForm.hasHeaderRow.toString());
     formData.append('indexIdentifierColumn', fileForm.indexIdentifierColumn.toString());
-    formData.append('models', this.form1.value.name.join(';'));
+    formData.append('model', this.models_checked.join(';'));
     //formData.append('gcnnOpt', this.form2.value.gcnnOption);
     this.fileIndexIdentifierColumn = fileForm.indexIdentifierColumn;
     this.indexIdentifierColumn = this.fileIndexIdentifierColumn;
@@ -172,7 +181,10 @@ export class PredictionsComponent implements OnInit {
     event.data.forEach(data => lines.push(event.allColumns.map(key => data[key]).join(this.columnSeparator)));
     const csv = dataKeys + this.lineBreak + lines.join(this.lineBreak);
     this.file = new Blob([csv], { type: 'text/csv'});
-    this.link.download = 'ADMEModelsPredictions.csv';
+    const datepipe: DatePipe = new DatePipe('en-US')
+    const dateNow = Date.now()
+    let formattedDate = datepipe.transform(dateNow, 'YYYY-MM-dd-HHmmss')
+    this.link.download = 'ADME_Predictions_' + formattedDate + '.csv';
     this.downloadFile();
   }
 

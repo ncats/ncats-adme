@@ -1,4 +1,4 @@
-FROM node:12 AS build
+FROM node:16 AS build
 
 WORKDIR /opt/adme
 
@@ -10,6 +10,9 @@ RUN npm install && npm install -g @angular/cli
 RUN ng build --configuration production --deploy-url=/models/client/ --base-href=/models
 
 FROM continuumio/miniconda:4.7.12
+
+# Install NCATS required packages
+RUN apt-get install -y net-tools
 
 WORKDIR /opt/adme
 

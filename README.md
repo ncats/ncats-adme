@@ -19,12 +19,13 @@ If you download the application, you also need to download and unzip [chemprop](
 
 Models will be loaded from NCATS servers so you will need access to the internet when you first run the application. Alternatively, if you want to download the models, the files are available as follows:
 
-- [Rat Liver Microsomal Stability](https://tripod.nih.gov/pub/adme/models/rlm)
-- [PAMPA 7.4 Permeability](https://tripod.nih.gov/pub/adme/models/pampa)
-- [PAMPA 5.0 Permeability](https://tripod.nih.gov/pub/adme/models/pampa50)
-- [Solubility](https://tripod.nih.gov/pub/adme/models/solubility)
-- [Human Liver Cytosol Stability](https://tripod.nih.gov/pub/adme/models/liver_cytosol)
-- [CYP450 isozymes - CYP2C9, CYP2D6, CYP3A4](https://tripod.nih.gov/pub/adme/models/CYPP450)
+- [Human Liver Microsomal Stability](https://opendata.ncats.nih.gov/public/adme/models/current/static/hlm/)
+- [Rat Liver Microsomal Stability](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/rlm/)
+- [PAMPA 7.4 Permeability](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/pampa/)
+- [PAMPA 5.0 Permeability](https://opendata.ncats.nih.gov/public/adme/models/current/static/pampa50/)
+- [Solubility](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/solubility/)
+- [Human Liver Cytosol Stability](https://opendata.ncats.nih.gov/public/adme/models/current/static/liver_cytosol/)
+- [CYP450 isozymes - CYP2C9, CYP2D6, CYP3A4](https://opendata.ncats.nih.gov/public/adme/models/current/static/cyp450/)
 
 ## Installing required software
 
@@ -48,7 +49,7 @@ You only have complete these steps one time.
   - For Mac machines
     1. Type `conda env create --prefix ./env -f environment_mac.yml` and hit Enter
     2. Wait several minutes for the envitonment to be created
-    
+
 ## Running the application
 
 1. If you're doing this immediately after completing the steps above, skip to step 4

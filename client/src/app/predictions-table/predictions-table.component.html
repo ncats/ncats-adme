@@ -17,6 +17,7 @@
     <h2>Model predictions</h2>
     <div class="top-actions-container">
         <button mat-raised-button color="primary" (click)="downloadCSV()">Download</button>
+        <button mat-raised-button color="primary" (click)="downloadAllCSV()">Download All</button>
         <div class="fill-middle"></div>
         <mat-paginator [length]="displayData && displayData.length || 0" [pageSize]="pageSize" [pageIndex]="page"
             showFirstLastButtons="true" (page)="pageChange($event)" [pageSizeOptions]="[5, 10, 25, 100]">

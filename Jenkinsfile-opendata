@@ -43,7 +43,7 @@ pipeline {
                 }
             }
             steps {
-                sshagent (credentials: ['871f96b5-9d34-449d-b6c3-3a04bbd4c0e4']) {
+                sshagent (credentials: ['labsharesvc']) {
                     sh 'git submodule update --init --recursive'
                     withEnv([
                         "IMAGE_NAME=adme",
@@ -73,8 +73,10 @@ pipeline {
                    configFile(fileId: 'config.json', targetLocation: 'config.json') 
                 ]) {
                     script {
-                        def docker = new org.labshare.Docker()
-                        docker.deployDockerAPI()
+                        docker.withRegistry('https://registry.ncats.nih.gov:5000', '564b9230-c7e3-482d-b004-8e79e5e9720a') {    
+                            def docker = new org.labshare.Docker()
+                            docker.deployDockerAPI()
+                        }
                     }
                 }
             }
