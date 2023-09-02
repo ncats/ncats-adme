@@ -282,11 +282,7 @@
         <div class="definitions-container">
             <div class="definition">
                 <div class="name">Name:</div>
-                <div class="value">Parallel artificial membrane permeability assay (PAMPA) - Blood-Brain Barrier</div>
-            </div>
-            <div class="definition">
-                <div class="name">Assay pH:</div>
-                <div class="value">5.0</div>
+                <div class="value">Parallel artificial membrane permeability assay for blood-brain barrier (PAMPA-BBB)</div>
             </div>
             <div class="definition">
                 <div class="name">Dataset Type:</div>
@@ -302,7 +298,7 @@
             </div>
             <div class="definition">
                 <div class="name">Descriptors:</div>
-                <div class="value">Molecular Graphs</div>
+                <div class="value">Molecular Graphs and RDKit Descriptors</div>
             </div>
             <div class="definition">
                 <div class="name">Model Details:</div>
@@ -328,16 +324,8 @@
         <br>
         <h3>PAMPA Assay Protocol:</h3>
         <p style="text-align: justify;">
-            Stirring double-sink PAMPA method (patented by Pion Inc.) was employed to determine the permeability of compounds in a high-throughput format. The lipid (proprietary Pion Inc. lipid, optimized to predict GI tract passive permeability) was immobilized on a plastic matrix of a 96-well “acceptor” filter plate placed atop a 96-well “donor” plate.  pH 5 buffer was used in the donor wells and pH 7.4 buffer was used in the acceptor wells. The test articles (in duplicates), stocked in 10 mM DMSO solutions, were diluted to 0.05 mM in aqueous buffer (pH 5), and the concentration of DMSO was 0.5% in the final solution. During the 30-minute incubation at room temperature, test samples in donor compartment were stirred using Gutbox technology (Pion Inc.) to reduce the aqueous boundary layer.  The test article concentrations in the donor and acceptor compartments were measured using a UV plate reader (Nano Quant, Infinite 200 PRO, Tecan Inc., Männedorf, Switzerland).  Calculations were performed using Pion Inc. software and effective permeability (Peff) was expressed in units of 10-6cm/s. If the permeability could not be determined via UV, the samples were plated for analysis via UPLC-MS by plating 8 µL of the incubation solutions in 192 µL of Acetonitrile/Internal Standard solution in a 96-well plate (350 µL, Waters, Milford, MA).
+            The stirring Double-Sink™ PAMPA-BBB method patented by Pion Inc. (Billerica, MA) was employed to determine the permeability of compounds via PAMPA passive diffusion24. The PAMPA lipid membrane, which consisted of an artificial membrane of porcine brain lipid extract dissolved in alkane (Pion Inc.), was optimized to predict BBB passive permeability. This membrane was immobilized on a plastic matrix of a 96 well “donor” filter plate placed below a 96 well “acceptor” plate. The test articles, stocked in 10 mM DMSO solutions, were diluted to 0.05 mM in aqueous phosphate buffer and the concentration of DMSO was 0.5% in the final solution. During the 60-minute permeation study period at room temperature the test samples in the donor compartment were stirred using the Gutbox technology (Pion Inc.) to reduce the aqueous boundary layer to 60 µm. The test article concentrations in the “donor” and “acceptor” compartments were measured using a UV plate reader (Nano Quant, Infinite® 200 PRO, Tecan Inc., Männedorf, Switzerland). Permeability (Pe) calculations were performed using Pion Inc. software and were expressed in units of 10<sup>−6</sup>cm/s.
         </p>
-        <h3>
-            References:
-        </h3>
-        <ol>
-          <li>
-            <p>Williams, J., Siramshetty, V.B., Nguyen D.T. et al., <a href="https://doi.org/10.1016/j.bmc.2021.116588" target="_blank">Using in vitro ADME data for lead compound selection: An emphasis on PAMPA pH 5 permeability and oral bioavailability.</a> <i> Bioorg. Med. Chem.</i> 56, 116588 (2022).</p>
-         </li>
-        </ol>
     </div>
 
     <div class="inner-container" *ngIf="model == 'solubility'">
