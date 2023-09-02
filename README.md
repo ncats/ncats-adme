@@ -23,6 +23,7 @@ Models will be loaded from NCATS servers so you will need access to the internet
 - [Rat Liver Microsomal Stability](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/rlm/)
 - [PAMPA 7.4 Permeability](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/pampa/)
 - [PAMPA 5.0 Permeability](https://opendata.ncats.nih.gov/public/adme/models/current/static/pampa50/)
+- [PAMPA-BBB Permeability](https://opendata.ncats.nih.gov/public/adme/models/current/static/pampabbb/)
 - [Solubility](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/solubility/)
 - [Human Liver Cytosol Stability](https://opendata.ncats.nih.gov/public/adme/models/current/static/liver_cytosol/)
 - [CYP450 isozymes - CYP2C9, CYP2D6, CYP3A4](https://opendata.ncats.nih.gov/public/adme/models/current/static/cyp450/)
