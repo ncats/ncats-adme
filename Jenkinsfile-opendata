@@ -88,7 +88,7 @@ pipeline {
                 checkout scm
                 configFileProvider([
                    configFile(fileId: 'dev-docker-compose.yaml', targetLocation: 'docker-compose.yaml'),
-                   configFile(fileId: 'config.json', targetLocation: 'config.json')
+                   configFile(fileId: 'config.json', targetLocation: 'config.json'),
                    configFile(fileId: 'deploy.sh', targetLocation: 'deploy.sh')
                 ]) {
                     sh  """
