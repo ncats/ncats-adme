@@ -80,6 +80,7 @@ pipeline {
                             '''
                         }
                     }
+                }
             }
         }
         stage('deploy docker') {
@@ -106,5 +107,4 @@ pipeline {
             }
         }
     }
-}
 }
