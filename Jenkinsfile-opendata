@@ -7,7 +7,7 @@ pipeline {
         string(name: 'ENVIRONMENT', defaultValue: 'ci', description: 'Role Name (mandatory)')
     }
     agent {
-        label 'ncats && dpi && ci && adme'
+        label 'ncats && dpi && ci && odp-api-python'
     }
     triggers {
         pollSCM('H/5 * * * *')
