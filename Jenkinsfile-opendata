@@ -13,11 +13,12 @@ pipeline {
         pollSCM('H/5 * * * *')
     }  
     environment {
-        PROJECT_NAME = "adme"
+        PROJECT_NAME     = "odp"
         DOCKER_REPO_NAME = "registry.ncats.nih.gov:5000/adme"
         INIT_TOKEN       = credentials('Vault-Access')                                   // OIDC provider this token is Auto Generated //
         SPHINX_TOKEN     = credentials('ncatssvcdvops-sphinx')                           // PatToken Read Only Access for the DevOps Artifacts Repo https://github.com/Sphinx-Automation/devops-pipeline-artifacts.git //
-        ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"                                  // Role Name is Mandatory Variable for Vault //
+        ROLE_NAME        = "$ENVIRONMENT-$PROJECT_NAME"                                // Role Name is Mandatory Variable for Vault //
+        APP_TYPE         = "adme"
     }
     stages {
         stage('Docker/Apps getSecrets By Role') {
