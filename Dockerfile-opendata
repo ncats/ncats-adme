@@ -31,3 +31,4 @@ COPY --from=build /opt/adme/dist/client client
 CMD /bin/bash startup.sh
 
 EXPOSE 5000
+RUN echo "docker file done"

@@ -78,7 +78,10 @@ pipeline {
                             docker images
                             docker login https://registry.ncats.nih.gov:5000 -u "${DOCKERLOGIN}" -p "${DOCKERPASSWORD}"
                             echo 'login done, docker build'
-                            docker build --no-cache -f ./Dockerfile-opendata --build-arg BUILD_VERSION="${BUILD_VERSION}" -t "${DOCKER_REPO_NAME}" .
+                            ls -la
+                            docker build --no-cache -f ./Dockerfile-opendata --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .
+                            echo "docker build --no-cache -f ./Dockerfile --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} ."
+                            echo "docker build --no-cache -f ./Dockerfile-opendata --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} ."
                             echo "BUILD_VERSION=${BUILD_VERSION} DOCKER_REPO_NAME=${DOCKER_REPO_NAME}"
                             echo 'docker build done'
                             docker images
