@@ -74,10 +74,19 @@ pipeline {
                             checkout scm
                             sh '''#!/bin/bash
                             source prepare.sh
+                            echo 'docker login https://registry.ncats.nih.gov:5000 -u "${DOCKERLOGIN}" -p "${DOCKERPASSWORD}"'
+                            docker images
                             docker login https://registry.ncats.nih.gov:5000 -u "${DOCKERLOGIN}" -p "${DOCKERPASSWORD}"
+                            echo 'login done, docker build'
                             docker build --no-cache -f ./Dockerfile-opendata --build-arg BUILD_VERSION=${BUILD_VERSION} -t ${DOCKER_REPO_NAME} .
+                            echo "BUILD_VERSION=${BUILD_VERSION} DOCKER_REPO_NAME=${DOCKER_REPO_NAME}"
+                            echo 'docker build done'
+                            docker images
                             docker tag ${DOCKER_REPO_NAME}:latest ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                            echo 'docker tags done'
+                            docker images
                             docker push ${DOCKER_REPO_NAME}:${BUILD_VERSION}
+                            echo 'docker push done'
                             '''
                         }
                     }
