@@ -98,7 +98,7 @@ pipeline {
                         /bin/bash deploy.sh
                         docker-compose -p $PROJECT_NAME down -v --rmi all | xargs echo
                         docker pull $DOCKER_REPO_NAME:$BUILD_VERSION
-                        docker rmi $DOCKER_REPO_NAME:current | xargs echo
+                        docker rmi $DOCKER_REPO_NAME:latest | xargs echo
                         docker tag $DOCKER_REPO_NAME:$BUILD_VERSION $DOCKER_REPO_NAME:latest
                         docker-compose -p $PROJECT_NAME up -d
                         docker start nginx-gen | xargs echo
