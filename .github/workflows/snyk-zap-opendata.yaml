@@ -4,7 +4,7 @@ name: snyk-zap
 # Define variables
 env:
   DOCKER_REGISTRY: registry.ncats.nih.gov:5000
-  IMAGE_NAME: adme
+  IMAGE_NAME: opendata
 
 # Define when the workflow should be triggered (on push to a specific branch and pull requests to the master branch)
 on:
@@ -70,7 +70,7 @@ jobs:
     
       # Step 4: Build a Docker image
       - name: Build a Docker image
-        run: docker build --no-cache -f ./Dockerfile --build-arg BUILD_VERSION=$BUILD_VERSION -t $DOCKER_REGISTRY/$IMAGE_NAME:$BUILD_VERSION .
+        run: docker build --no-cache -f ./Dockerfile-opendata --build-arg BUILD_VERSION=$BUILD_VERSION -t $DOCKER_REGISTRY/$IMAGE_NAME:$BUILD_VERSION .
 
        # Step 5: Run Snyk to check Docker image for vulnerabilities
       - name: Run Snyk to check Docker image for vulnerabilities
