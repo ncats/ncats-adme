@@ -6,7 +6,7 @@ If you use Git to clone this repository, please use the --recursive flag:
 
 `git clone --recursive https://github.com/ncats/ncats-adme.git`
 
-If you download the application, you also need to download and unzip [chemprop](https://github.com/chemprop/chemprop/tree/cd55a9f12478aef69917bbd044603d6512173306), but make sure to unzip the contents of chemprop inside the server folder so the the ncats-adme folder/file structure looks something like this:
+If you download the application, you also need to download and unzip [chemprop](https://github.com/chemprop/chemprop/tree/cd55a9f12478aef69917bbd044603d6512173306), but make sure to unzip the contents of chemprop inside the `server` folder so the the ncats-adme folder/file structure looks something like this:
 
 - ncats-adme
   - client
@@ -23,6 +23,7 @@ Models will be loaded from NCATS servers so you will need access to the internet
 - [Rat Liver Microsomal Stability](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/rlm/)
 - [PAMPA 7.4 Permeability](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/pampa/)
 - [PAMPA 5.0 Permeability](https://opendata.ncats.nih.gov/public/adme/models/current/static/pampa50/)
+- [PAMPA-BBB Permeability](https://opendata.ncats.nih.gov/public/adme/models/current/static/pampabbb/)
 - [Solubility](https://opendata.ncats.nih.gov/public/adme/models/current/biweekly/solubility/)
 - [Human Liver Cytosol Stability](https://opendata.ncats.nih.gov/public/adme/models/current/static/liver_cytosol/)
 - [CYP450 isozymes - CYP2C9, CYP2D6, CYP3A4](https://opendata.ncats.nih.gov/public/adme/models/current/static/cyp450/)
@@ -40,7 +41,7 @@ You only have complete these steps one time.
 1. Open your terminal
   - If you're on Windows, open Anaconda Prompt (window -> Anaconda3 -> Anaconda Prompt)
   - If you're on Mac or Linux, open your Terminal
-2. Change the working directory ([windows](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands) or [Mac and Linux](https://www.geeksforgeeks.org/cd-command-in-linux-with-examples/)) to where you have ADME_RLM and then go (CD one more time) into the server directory
+2. Change the working directory ([windows](https://www.digitalcitizen.life/command-prompt-how-use-basic-commands) or [Mac and Linux](https://www.geeksforgeeks.org/cd-command-in-linux-with-examples/)) to where you have `ncats-adme` and then go (CD one more time) into the `server` directory
 3. Create environment
   - For Windows and Linux machines
     1. Type `conda env create --prefix ./env -f environment.yml` and hit Enter
