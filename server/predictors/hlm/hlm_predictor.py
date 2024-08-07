@@ -68,7 +68,7 @@ class HLMPredictior(GcnnBase):
             hlm_rdkit_desc_ordered = ['RDKit_' + str(desc) for desc in hlm_rdkit_desc]
             hlm_rdkit_desc_ordered.insert(0, 'RLM_Pred')
             df_desc = df_desc[hlm_rdkit_desc_ordered] # order restored here
-            df_desc.to_csv('/Users/siramshv/Work/ncats/hlm_new/scripts/best_model/rdkit_desc_from_ncatsadme.csv', index=False)
+            #df_desc.to_csv('/Users/siramshv/Work/ncats/hlm_new/scripts/best_model/rdkit_desc_from_ncatsadme.csv', index=False)
             self.features = df_desc.to_numpy()
         else:
             self.model_errors = 'Error calculating descriptors for HLM predictions'
