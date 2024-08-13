@@ -4,7 +4,7 @@ WORKDIR /opt/adme
 
 COPY client ./
 
-RUN npm install && npm install -g @angular/cli
+RUN npm install && npm install -g @angular/cli@12
 
 # build parameter for opendata subdomain
 RUN ng build --configuration production --deploy-url=/adme/client/ --base-href=/adme

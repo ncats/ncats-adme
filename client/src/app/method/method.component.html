@@ -1,6 +1,5 @@
 <div class="container">
 
-  <!--
   <div class="inner-container" *ngIf="model == 'hlm'">
       <h2>
           HLM Stability
@@ -16,20 +15,20 @@
           </div>
           <div class="definition">
               <div class="name">Dataset Size:</div>
-              <div class="value">4300 compounds</div>
+              <div class="value">6648 compounds</div>
           </div>
           <div class="definition">
               <div class="name">Validation:</div>
-              <div class="value">5-Fold CV and Time-Split CV</div>
+              <div class="value">5-Fold CV</div>
           </div>
           <div class="definition">
               <div class="name">Descriptors:</div>
-              <div class="value">Molecular Graphs</div>
+              <div class="value">RDKit descriptors</div>
           </div>
           <div class="definition">
               <div class="name">Model Details:</div>
               <div class="value" style="text-align: justify;">
-                  The model is based on a message-passing variant of graph convolutional neural network (GCNN) that directly operates on molecular graphs. The model was built using MIT's <a href="https://github.com/chemprop/chemprop" target="_blank">Chemprop</a>, described in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.jcim.9b00237" target="_blank">this paper</a>. In this case, we retained the default parameters.
+                The best model is based on the XGBoost algorithm. The XGBoost model comprises of 300 trees and uses a selected list of RDKit descriptors as features. The models were built using <a href="https://scikit-learn.org/stable/" target="_blank">scikit-learn</a> library.
               </div>
           </div>
           <div class="definition">
@@ -41,9 +40,7 @@
           <div class="definition">
               <div class="name">Data Availability:</div>
               <div class="value">
-                  A subset of the dataset used for developing these models is made publicly available at PubChem Bioassay database: <a
-                      href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508591" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">AID
-                      1508591</a>.
+                  A subset of the dataset used for developing these models will be deposited to the <a href="https://pubchem.ncbi.nlm.nih.gov" target="_blank" admeTrackLinkEvent evLabel="rlm pubchem">PubChem Bioassay database</a>.
               </div>
           </div>
 
@@ -67,7 +64,7 @@
         </li>
       </ol>
   </div>
--->
+
     <div class="inner-container" *ngIf="model == 'rlm'">
         <h2>
             RLM Stability
