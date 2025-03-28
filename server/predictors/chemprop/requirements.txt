@@ -13,3 +13,4 @@ tensorflow>=1.13.1
 torch>=1.5.1
 tqdm>=4.45.0
 typed-argument-parser>=1.5.2
+werkzeug>=3.0.6 # not directly required, pinned by Snyk to avoid a vulnerability
