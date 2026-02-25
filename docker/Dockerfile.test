@@ -23,8 +23,10 @@ ENV PYTHONPATH=/opt/adme/predictors
 # TensorFlow settings for cleaner logs
 ENV TF_CPP_MIN_LOG_LEVEL=2
 
-# Layer 2: Models (only rebuilds when models change)
-COPY server/models ./models
+# Layer 2: Download models from NCATS server
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip && rm -rf /var/lib/apt/lists/*
+COPY scripts/download_models.sh ./scripts/download_models.sh
+RUN chmod +x scripts/download_models.sh && ./scripts/download_models.sh --output-dir ./models
 
 # Layer 3: Static predictor files (scaler, descriptor CSVs)
 COPY server/predictors ./predictors

@@ -18,12 +18,16 @@ RUN npx ng build --configuration=production
 FROM continuumio/miniconda3:24.11.1-0
 
 # Install required packages
-RUN apt-get update && apt-get install -y iproute2 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends iproute2 curl unzip && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt/adme
 
 COPY server ./
 COPY server/predictors/functions_for_cytosol.py ./functions_for_cytosol.py
+
+# Download models from NCATS server
+COPY scripts/download_models.sh ./scripts/download_models.sh
+RUN chmod +x scripts/download_models.sh && ./scripts/download_models.sh --output-dir ./models
 
 # Use libmamba solver for faster dependency resolution
 RUN conda config --set solver libmamba && \

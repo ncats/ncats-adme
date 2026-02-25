@@ -12,6 +12,11 @@ WORKDIR /opt/adme
 COPY server ./
 COPY server/predictors/functions_for_cytosol.py ./functions_for_cytosol.py
 
+# Download models from NCATS server
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip && rm -rf /var/lib/apt/lists/*
+COPY scripts/download_models.sh ./scripts/download_models.sh
+RUN chmod +x scripts/download_models.sh && ./scripts/download_models.sh --output-dir ./models
+
 # Use libmamba solver for faster dependency resolution
 RUN conda config --set solver libmamba && \
     conda env create -f environment.yml && \
