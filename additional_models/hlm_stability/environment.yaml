@@ -1,0 +1,15 @@
+name: hlm-env
+channels:
+  - conda-forge
+  - defaults
+  - anaconda
+  - pytorch
+dependencies:
+  - imbalanced-learn=0.13.0=pyhd8ed1ab_0
+  - numpy=1.26.4=py312h7f4fdc5_0
+  - pandas=2.2.3=py312hcf29cfe_0
+  - py-xgboost=3.0.0=cpu_pyh1ce2f49_1
+  - python=3.12.8=hc22306f_1_cpython
+  - rdkit=2024.09.4=py312had33d2d_0
+  - scikit-learn=1.6.1=py312h313beb8_0
+prefix: /opt/anaconda3/envs/hlm-env

@@ -47,6 +47,8 @@ paths:
               - pampa50
               - pampabbb
               - hlc
+              - mlc
+              - rlc
               - cyp450
             default: solubility
           collectionFormat: multi

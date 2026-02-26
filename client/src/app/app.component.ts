@@ -38,6 +38,8 @@ export class AppComponent {
         { label: 'PAMPA BBB', path: '/models/pampa_bbb' },
         { label: 'Solubility', path: '/models/solubility' },
         { label: 'HLC Stability', path: '/models/hlc' },
+        { label: 'MLC Stability', path: '/models/mlc' },
+        { label: 'RLC Stability', path: '/models/rlc' },
         { label: 'CYP450', path: '/models/cyp450' }
       ]
     },

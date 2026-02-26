@@ -50,9 +50,11 @@ export class PredictionsComponent {
     { id: 4, name: 'PAMPA pH 5', value: 'PAMPA50', checked: true },
     { id: 5, name: 'PAMPA BBB', value: 'PAMPABBB', checked: true },
     { id: 6, name: 'HLC Stability', value: 'HLC', checked: true },
-    { id: 7, name: 'CYP450', value: 'CYP450', checked: false }
+    { id: 7, name: 'MLC Stability', value: 'MLC', checked: true },
+    { id: 8, name: 'RLC Stability', value: 'RLC', checked: true },
+    { id: 9, name: 'CYP450', value: 'CYP450', checked: false }
   ];
-  
+
   modelLabels: Record<string, string> = {
     HLM: 'Human Liver Microsomal Stability',
     RLM: 'Rat Liver Microsomal Stability',
@@ -61,10 +63,13 @@ export class PredictionsComponent {
     PAMPA50: 'PAMPA Permeability (pH 5.0)',
     PAMPABBB: 'PAMPA BBB Permeability',
     HLC: 'Human Liver Cytosolic Stability',
+    MLC: 'Mouse Liver Cytosolic Stability',
+    RLC: 'Rat Liver Cytosolic Stability',
     CYP450: 'CYP450'
   };
   
   selectedInputTab = signal(0);
+  selectedResultTab = signal(0);
   sketcherData = signal<PredictionResponse | null>(null);
   fileData = signal<PredictionResponse | null>(null);
   errorMessage = signal('');
@@ -93,6 +98,10 @@ export class PredictionsComponent {
     this.selectedInputTab.set(event.index);
     this.analyticsService.sendEvent('click:tab', 'predictions:input-type', event.tab.label);
   }
+
+  onResultTabChange(event: { index: number; tab: Tab }): void {
+    this.selectedResultTab.set(event.index);
+  }
   
   processSketcherInput(smiles: string): void {
     this.analyticsService.sendEvent('click:button', 'predict', 'sketcher');
@@ -106,8 +115,9 @@ export class PredictionsComponent {
     }
     
     this.selectedModels.set(models);
+    this.selectedResultTab.set(0);
     this.loadingService.show();
-    
+
     this.predictionService.predictFromSmiles(smiles, models).subscribe({
       next: (response) => {
         if (response && Object.keys(response).length > 0) {
@@ -139,6 +149,7 @@ export class PredictionsComponent {
     }
     
     this.selectedModels.set(models);
+    this.selectedResultTab.set(0);
     this.lineBreak = options.lineBreak;
     this.columnSeparator = options.columnSeparator;
     this.loadingService.show();

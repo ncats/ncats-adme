@@ -53,7 +53,13 @@
         <p>
           The substrate depletion method, also called the in vitro t<sub>1/2</sub> method was used to analyze test compounds. Each reaction mixture (110 μL) consisted of a test article (1 μM), human liver microsomes (HLM) (0.5 mg/mL), and NADPH regenerating system in phosphate buffer at pH 7.4. Samples were incubated in 384-well plates at 37°C for 0, 5, 10, 15, 30 and 60 min.
         </p>
-        
+
+        <h3>Additional Models</h3>
+        <p>
+          An additional HLM stability model was trained on three datasets from Biogen, ChEMBL, and NCATS — each having 3,068, 6,092, and 7,509 compounds respectively. This XGBoost model is wrapped with a Balanced Bagging Classifier and uses RDKit molecular descriptors. The model can be accessed on GitHub at
+          <a href="https://github.com/ncats/ncats-adme/tree/master/additional_models/hlm_stability" target="_blank" rel="noopener">ncats-adme/additional_models/hlm_stability</a>.
+        </p>
+
         <h3>References:</h3>
         <ol class="references">
           <li>Shah, P. et al. <a href="https://doi.org/10.1124/dmd.116.072017" target="_blank" rel="noopener">An Automated High-Throughput Metabolic Stability Assay Using an Integrated High Resolution Accurate Mass Method and Automated Data Analysis Software.</a> <em>Drug Metab Dispos.</em> 44, 1653-1661 (2016).</li>
@@ -349,6 +355,82 @@
       </article>
     }
     
+    <!-- MLC Stability -->
+    @if (modelType() === 'mlc') {
+      <article class="model-article">
+        <h1>MLC Stability</h1>
+
+        <div class="definitions">
+          <div class="definition-row">
+            <span class="definition-label">Name:</span>
+            <span class="definition-value">Mouse Liver Cytosolic Stability</span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Dataset Type:</span>
+            <span class="definition-value">Classification</span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Validation:</span>
+            <span class="definition-value">5-Fold CV</span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Descriptors:</span>
+            <span class="definition-value">Morgan Fingerprints, RDKit Fingerprints, Atom Pair Fingerprints, Avalon Fingerprints, MACCS Keys, RDKit 2D Descriptors, Mordred 2D Descriptors</span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Model Details:</span>
+            <span class="definition-value">
+              The model is based on a Deep Neural Network (DNN) wrapped with a Balanced Bagging Classifier. The DNN consists of two hidden layers (64 and 32 units) with ReLU activation and dropout regularization. The model uses a comprehensive set of molecular descriptors as features.
+            </span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Interpretation:</span>
+            <span class="definition-value">
+              The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> ≤ 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> > 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+            </span>
+          </div>
+        </div>
+      </article>
+    }
+
+    <!-- RLC Stability -->
+    @if (modelType() === 'rlc') {
+      <article class="model-article">
+        <h1>RLC Stability</h1>
+
+        <div class="definitions">
+          <div class="definition-row">
+            <span class="definition-label">Name:</span>
+            <span class="definition-value">Rat Liver Cytosolic Stability</span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Dataset Type:</span>
+            <span class="definition-value">Classification</span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Validation:</span>
+            <span class="definition-value">5-Fold CV</span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Descriptors:</span>
+            <span class="definition-value">Morgan Fingerprints, RDKit Fingerprints, Atom Pair Fingerprints, Avalon Fingerprints, MACCS Keys, RDKit 2D Descriptors, Mordred 2D Descriptors</span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Model Details:</span>
+            <span class="definition-value">
+              The model is based on a Deep Neural Network (DNN) wrapped with a Balanced Bagging Classifier. The DNN consists of two hidden layers (64 and 32 units) with ReLU activation and dropout regularization. The model uses a comprehensive set of molecular descriptors as features.
+            </span>
+          </div>
+          <div class="definition-row">
+            <span class="definition-label">Interpretation:</span>
+            <span class="definition-value">
+              The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> ≤ 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> > 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+            </span>
+          </div>
+        </div>
+      </article>
+    }
+
     <!-- CYP450 -->
     @if (modelType() === 'cyp450') {
       <article class="model-article">

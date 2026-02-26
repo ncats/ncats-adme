@@ -63,9 +63,13 @@
   <!-- Sketcher Results -->
   @if (sketcherData()) {
     <section class="results-section">
-      <adme-tab-group [tabs]="resultTabs">
+      <adme-tab-group
+        [tabs]="resultTabs"
+        [selectedTabIndex]="selectedResultTab()"
+        (tabChange)="onResultTabChange($event)"
+      >
         @for (model of selectedModels(); track model; let i = $index) {
-          @if (i === 0) {
+          @if (i === selectedResultTab()) {
             <adme-results-table
               dataHandling="concat"
               [model]="model"
@@ -78,13 +82,17 @@
       </adme-tab-group>
     </section>
   }
-  
+
   <!-- File Results -->
   @if (fileData()) {
     <section class="results-section">
-      <adme-tab-group [tabs]="resultTabs">
+      <adme-tab-group
+        [tabs]="resultTabs"
+        [selectedTabIndex]="selectedResultTab()"
+        (tabChange)="onResultTabChange($event)"
+      >
         @for (model of selectedModels(); track model; let i = $index) {
-          @if (i === 0) {
+          @if (i === selectedResultTab()) {
             <adme-results-table
               dataHandling="replace"
               [model]="model"
