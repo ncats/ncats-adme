@@ -137,11 +137,14 @@ export class ResultsTableComponent {
           'Model': k
         };
         
-        if (predStr.startsWith('1') && k.endsWith('_subs')) {
+        const isSubstrate = k.includes('Substrate');
+        const isInhibition = k.includes('Inhibition');
+
+        if (predStr.startsWith('1') && isSubstrate) {
           newRow['Prediction'] = 'substrate';
-        } else if (predStr.startsWith('1') && k.endsWith('_inhib')) {
+        } else if (predStr.startsWith('1') && isInhibition) {
           newRow['Prediction'] = 'inhibitor';
-        } else if (predStr.startsWith('0') && k.endsWith('_subs')) {
+        } else if (predStr.startsWith('0') && isSubstrate) {
           newRow['Prediction'] = 'non-substrate';
         } else {
           newRow['Prediction'] = 'non-inhibitor';

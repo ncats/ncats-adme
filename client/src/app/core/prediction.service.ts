@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, catchError, of } from 'rxjs';
+import { Observable, catchError, of, timeout, TimeoutError } from 'rxjs';
 import { ConfigService } from './config.service';
 
 export interface PredictionColumn {
@@ -75,15 +75,24 @@ export class PredictionService {
     formData.append('file', options.file);
 
     return this.http.post<PredictionResponse>(`${this.apiBaseUrl}api/v1/predict-file`, formData).pipe(
+      timeout(300000), // 5 minute timeout for large file processing
       catchError(error => {
         console.error('File prediction error:', error);
+        let message: string;
+        if (error instanceof TimeoutError) {
+          message = 'The prediction request timed out. Please try with fewer SMILES or fewer models selected.';
+        } else if (error.status === 0) {
+          message = 'The server took too long to respond. Please try with fewer SMILES or fewer models selected.';
+        } else {
+          message = 'There was an error processing your file. Please make sure you have selected a file that contains SMILES.';
+        }
         return of({
           error: {
             data: [],
             columns: [],
             mainColumnsDict: {},
             hasErrors: true,
-            errorMessages: ['There was an error processing your file. Please make sure you have selected a file that contains SMILES.']
+            errorMessages: [message]
           }
         } as PredictionResponse);
       })

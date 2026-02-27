@@ -308,11 +308,12 @@
       </article>
     }
     
-    <!-- HLC Stability -->
-    @if (modelType() === 'hlc') {
+    <!-- Liver Cytosolic Stability (Integrated: HLC, MLC, RLC) -->
+    @if (modelType() === 'cytosol-stability' || modelType() === 'hlc' || modelType() === 'mlc' || modelType() === 'rlc') {
       <article class="model-article">
-        <h1>HLC Stability</h1>
-        
+        <h1>Liver Cytosolic Stability</h1>
+
+        <h2>1. HLC Stability</h2>
         <div class="definitions">
           <div class="definition-row">
             <span class="definition-label">Name:</span>
@@ -324,42 +325,25 @@
           </div>
           <div class="definition-row">
             <span class="definition-label">Dataset Size:</span>
-            <span class="definition-value">1,214 compounds</span>
+            <span class="definition-value">2,971 compounds</span>
           </div>
           <div class="definition-row">
             <span class="definition-label">Validation:</span>
-            <span class="definition-value">5-Fold CV</span>
+            <span class="definition-value">5-Fold Stratified CV &amp; Internal validation</span>
           </div>
           <div class="definition-row">
             <span class="definition-label">Descriptors:</span>
-            <span class="definition-value">Morgan Fingerprints</span>
+            <span class="definition-value">Consensus (Fingerprints (Morgan, Avalon, AtomPair, and RDKit) + 2D descriptors (Mordred and RDKit))</span>
           </div>
           <div class="definition-row">
             <span class="definition-label">Model Details:</span>
             <span class="definition-value">
-              A consensus of three individual Random Forest models using multiple-undersampling technique. Each model comprises 100 trees using Morgan fingerprints as features.
-            </span>
-          </div>
-          <div class="definition-row">
-            <span class="definition-label">Data Availability:</span>
-            <span class="definition-value">
-              <a href="https://pubchem.ncbi.nlm.nih.gov/bioassay/1508603" target="_blank" rel="noopener">AID 1508603</a>
+              The final model is a consensus of 64 Deep Neural Network (DNN) models trained on balanced bootstrap samples. The DNN architecture consists of two hidden layers (64 and 32 neurons) with ReLU activation and dropout (rate = 0.2). The model was trained using the Adam optimizer (learning rate = 0.001) for 10 epochs with a batch size of 16. To address the class imbalance (14.2% unstable compounds), a Stratified Bagging ensemble strategy was implemented. The models were implemented using TensorFlow and Keras.
             </span>
           </div>
         </div>
-        
-        <h3>References:</h3>
-        <ol class="references">
-          <li>Shah, P., Siramshetty, V.B., Zakharov, A.V. et al., <a href="https://doi.org/10.1186/s13321-020-00426-7" target="_blank" rel="noopener">Predicting liver cytosol stability of small molecules.</a> <em>J Cheminform.</em> 12, 21 (2020).</li>
-        </ol>
-      </article>
-    }
-    
-    <!-- MLC Stability -->
-    @if (modelType() === 'mlc') {
-      <article class="model-article">
-        <h1>MLC Stability</h1>
 
+        <h2>2. MLC Stability</h2>
         <div class="definitions">
           <div class="definition-row">
             <span class="definition-label">Name:</span>
@@ -370,34 +354,26 @@
             <span class="definition-value">Classification</span>
           </div>
           <div class="definition-row">
+            <span class="definition-label">Dataset Size:</span>
+            <span class="definition-value">2,856 compounds</span>
+          </div>
+          <div class="definition-row">
             <span class="definition-label">Validation:</span>
-            <span class="definition-value">5-Fold CV</span>
+            <span class="definition-value">5-Fold Stratified CV &amp; Internal validation</span>
           </div>
           <div class="definition-row">
             <span class="definition-label">Descriptors:</span>
-            <span class="definition-value">Morgan Fingerprints, RDKit Fingerprints, Atom Pair Fingerprints, Avalon Fingerprints, MACCS Keys, RDKit 2D Descriptors, Mordred 2D Descriptors</span>
+            <span class="definition-value">Consensus (Fingerprints (Morgan, Avalon, AtomPair, and RDKit) + 2D descriptors (Mordred and RDKit))</span>
           </div>
           <div class="definition-row">
             <span class="definition-label">Model Details:</span>
             <span class="definition-value">
-              The model is based on a Deep Neural Network (DNN) wrapped with a Balanced Bagging Classifier. The DNN consists of two hidden layers (64 and 32 units) with ReLU activation and dropout regularization. The model uses a comprehensive set of molecular descriptors as features.
-            </span>
-          </div>
-          <div class="definition-row">
-            <span class="definition-label">Interpretation:</span>
-            <span class="definition-value">
-              The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> ≤ 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> > 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+              The final model aggregates predictions from 4 Deep Neural Network (DNN) models trained on balanced subsets. The DNN architecture features two hidden layers (256 and 128 neurons) with ReLU activation and dropout (rate = 0.3). The model was trained using the Adam optimizer for 10 epochs with a batch size of 64. To mitigate severe class imbalance (8.5% unstable compounds), a Stratified Bagging ensemble strategy was applied. The models were implemented using TensorFlow and Keras.
             </span>
           </div>
         </div>
-      </article>
-    }
 
-    <!-- RLC Stability -->
-    @if (modelType() === 'rlc') {
-      <article class="model-article">
-        <h1>RLC Stability</h1>
-
+        <h2>3. RLC Stability</h2>
         <div class="definitions">
           <div class="definition-row">
             <span class="definition-label">Name:</span>
@@ -408,26 +384,47 @@
             <span class="definition-value">Classification</span>
           </div>
           <div class="definition-row">
+            <span class="definition-label">Dataset Size:</span>
+            <span class="definition-value">1,198 compounds</span>
+          </div>
+          <div class="definition-row">
             <span class="definition-label">Validation:</span>
-            <span class="definition-value">5-Fold CV</span>
+            <span class="definition-value">5-Fold Stratified CV &amp; Internal validation</span>
           </div>
           <div class="definition-row">
             <span class="definition-label">Descriptors:</span>
-            <span class="definition-value">Morgan Fingerprints, RDKit Fingerprints, Atom Pair Fingerprints, Avalon Fingerprints, MACCS Keys, RDKit 2D Descriptors, Mordred 2D Descriptors</span>
+            <span class="definition-value">RDKit Descriptors</span>
           </div>
           <div class="definition-row">
             <span class="definition-label">Model Details:</span>
             <span class="definition-value">
-              The model is based on a Deep Neural Network (DNN) wrapped with a Balanced Bagging Classifier. The DNN consists of two hidden layers (64 and 32 units) with ReLU activation and dropout regularization. The model uses a comprehensive set of molecular descriptors as features.
-            </span>
-          </div>
-          <div class="definition-row">
-            <span class="definition-label">Interpretation:</span>
-            <span class="definition-value">
-              The model provides predicted class (1 or 0) for a given compound. If the predicted class is '1', it means the compound is predicted as unstable (t<sub>1/2</sub> ≤ 30 min) and if the predicted class is '0', the compound is predicted as stable (t<sub>1/2</sub> > 30 min). The model also provides a probability score (between 0 and 1), shown in parentheses next to the predicted class.
+              Due to extreme class scarcity (4.9% unstable compounds), the model utilizes a Stratified Bagging ensemble of 64 Random Forest (RF) models. Each RF estimator is configured with 100 trees, using the square root of features for splitting. The model was built using the scikit-learn library and RDKit molecular descriptors.
             </span>
           </div>
         </div>
+
+        <h3>Inference</h3>
+        <p>
+          The model predicts stability class (1: Unstable, t<sub>1/2</sub> &le; 30 min; 0: Stable, t<sub>1/2</sub> &gt; 30 min) and a probability score (between 0 and 1). An Applicability Domain (AD) threshold of 0.7 (Maximum Tanimoto similarity score) is used to flag low-confidence predictions.
+        </p>
+
+        <h3>Data Availability</h3>
+        <p>
+          The datasets and models are available through the
+          <a href="https://opendata.ncats.nih.gov/adme" target="_blank" rel="noopener">NCATS&#64;ADME platform</a>.
+        </p>
+
+        <h3>Assay Protocol</h3>
+        <p>
+          Mixed gender human (H0610.C), male CD-1 mouse (M1000.C), and male Sprague Dawley rat (R1000.C) liver cytosol fractions were purchased from Sekisui XenoTech, LLC (Kansas City, USA). The substrate depletion method was used to determine in vitro t<sub>1/2</sub>. The assay (384-well format) involved incubating a test compound (1 &micro;M) with cytosol fractions (2 mg/mL) in phosphate buffer (100 mM, pH 7.4) at 37 &deg;C. Samples were collected at 0, 5, 10, 15, 30, and 60 min. Percent remaining of the parent compound was analyzed using an integrated LC/MS method, and t<sub>1/2</sub> was calculated as described in previous work (Shah et al., 2016; Shah et al., 2020). Compounds with t<sub>1/2</sub> &gt; 30 min were classified as stable, while those with t<sub>1/2</sub> &le; 30 min were classified as unstable.
+        </p>
+
+        <h3>References</h3>
+        <ol class="references">
+          <li>Lim, G., Jain, S., Xu, X., &amp; Shah, P. Advancements in Forecasting Liver Cytosol Stability: A Comprehensive Update on Machine Learning Predictive Models. (Manuscript submitted).</li>
+          <li>Shah, P. et al. <a href="https://doi.org/10.1186/s13321-020-00426-7" target="_blank" rel="noopener">Predicting liver cytosol stability of small molecules.</a> <em>J Cheminform.</em> 12, 21 (2020).</li>
+          <li>Shah, P. et al. <a href="https://doi.org/10.1124/dmd.116.072017" target="_blank" rel="noopener">An Automated High-Throughput Metabolic Stability Assay Using an Integrated High Resolution Accurate Mass Method and Automated Data Analysis Software.</a> <em>Drug Metab Dispos.</em> 44, 1653-1661 (2016).</li>
+        </ol>
       </article>
     }
 

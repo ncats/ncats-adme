@@ -2,7 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { LoadingOverlayComponent } from '@shared/components/loading-overlay/loading-overlay.component';
-import { ConfigService } from '@core/config.service';
 import { AnalyticsService } from '@core/analytics.service';
 
 interface NavItem {
@@ -19,7 +18,6 @@ interface NavItem {
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  private configService = inject(ConfigService);
   private analyticsService = inject(AnalyticsService);
   
   modelsMenuOpen = signal(false);
@@ -37,9 +35,7 @@ export class AppComponent {
         { label: 'PAMPA pH 5.0', path: '/models/pampa_ph5' },
         { label: 'PAMPA BBB', path: '/models/pampa_bbb' },
         { label: 'Solubility', path: '/models/solubility' },
-        { label: 'HLC Stability', path: '/models/hlc' },
-        { label: 'MLC Stability', path: '/models/mlc' },
-        { label: 'RLC Stability', path: '/models/rlc' },
+        { label: 'Liver Cytosolic Stability', path: '/models/cytosol-stability' },
         { label: 'CYP450', path: '/models/cyp450' }
       ]
     },
