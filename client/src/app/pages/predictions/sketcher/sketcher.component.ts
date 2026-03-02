@@ -24,6 +24,7 @@ declare global {
 export class SketcherComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('ketcherFrame') ketcherFrame!: ElementRef<HTMLIFrameElement>;
   @Input() apiBaseUrl = '';
+  @Input() hasSelectedModels = false;
   @Output() moleculeInput = new EventEmitter<string>();
 
   private sanitizer = inject(DomSanitizer);
@@ -49,7 +50,7 @@ export class SketcherComponent implements OnInit, AfterViewInit, OnDestroy {
 
         if (this.ketcher?.editor) {
           this.ketcher.editor.on('change', () => {
-            this.checkMolecule();
+            this.ngZone.run(() => this.checkMolecule());
           });
         }
 

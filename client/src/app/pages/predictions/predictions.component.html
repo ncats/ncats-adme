@@ -29,15 +29,19 @@
       @switch (selectedInputTab()) {
         @case (0) {
           <div class="tab-content">
-            <adme-sketcher 
-              [apiBaseUrl]="apiKetcherUrl" 
+            <adme-sketcher
+              [apiBaseUrl]="apiKetcherUrl"
+              [hasSelectedModels]="selectedModelValues.length > 0"
               (moleculeInput)="processSketcherInput($event)"
             />
           </div>
         }
         @case (1) {
           <div class="tab-content">
-            <adme-file-upload (fileProcess)="processFile($event)" />
+            <adme-file-upload
+              [hasSelectedModels]="selectedModelValues.length > 0"
+              (fileProcess)="processFile($event)"
+            />
           </div>
         }
       }

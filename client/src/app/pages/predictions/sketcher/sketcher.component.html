@@ -7,14 +7,18 @@
   ></iframe>
   
   <div class="sketcher-actions">
-    <button class="btn-primary" (click)="submitMolecule()" [disabled]="!hasValidMolecule">
+    <button class="btn-primary" (click)="submitMolecule()" [disabled]="!hasValidMolecule || !hasSelectedModels">
       <svg viewBox="0 0 24 24" fill="currentColor">
         <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
       </svg>
       Predict
     </button>
     <p class="sketcher-hint">
-      Draw or paste a molecule above, then click Predict
+      @if (!hasSelectedModels) {
+        Select at least one model above to enable predictions
+      } @else {
+        Draw or paste a molecule above, then click Predict
+      }
     </p>
   </div>
 </div>

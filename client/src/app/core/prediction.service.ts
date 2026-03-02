@@ -75,7 +75,7 @@ export class PredictionService {
     formData.append('file', options.file);
 
     return this.http.post<PredictionResponse>(`${this.apiBaseUrl}api/v1/predict-file`, formData).pipe(
-      timeout(300000), // 5 minute timeout for large file processing
+      timeout(600000), // 10 minute timeout for large file processing
       catchError(error => {
         console.error('File prediction error:', error);
         let message: string;

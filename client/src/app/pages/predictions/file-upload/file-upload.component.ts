@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FileSelectDirective } from '@shared/directives/file-select.directive';
@@ -33,7 +33,8 @@ const FILE_TYPE_DEFAULTS: Record<string, FileTypeDefaults> = {
 })
 export class FileUploadComponent {
   @Output() fileProcess = new EventEmitter<FileFormOptions>();
-  
+  @Input() hasSelectedModels = false;
+
   selectedFile = signal<File | null>(null);
   selectedFileName = signal<string>('');
   fileType = signal<string>('csv');

@@ -258,11 +258,39 @@ def get_glowing_image():
 
             return response, 400
 
-def predict_df(df, smi_column_name, models):
+# Models that benefit from batching due to expensive feature generation or many sub-models
+BATCH_MODELS = {'cyp450', 'hlc', 'mlc', 'rlc'}
+BATCH_SIZE = 100
 
-    #interpret = False
-    #if gcnnOpt == 'yes':
-    #    interpret = True
+
+def _create_predictor(model_name, working_df, smi_column_name):
+    """Create a predictor instance for a given model name."""
+    m = model_name.lower()
+    if m == 'hlm':
+        return HLMPredictior(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'rlm':
+        return RLMPredictior(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'pampa':
+        return PAMPAPredictior(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'pampa50':
+        return PAMPA50Predictior(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'pampabbb':
+        return PAMPABBBPredictior(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'solubility':
+        return SolubilityPredictior(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'hlc':
+        return LCPredictor(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'mlc':
+        return MLCPredictor(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'rlc':
+        return RLCPredictor(kekule_smiles=working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
+    elif m == 'cyp450':
+        return CYP450Predictor(kekule_mols=working_df['mols'].values, smiles=working_df[smi_column_name].values)
+    else:
+        return None
+
+
+def predict_df(df, smi_column_name, models):
 
     response = {}
     working_df = df.copy()
@@ -282,70 +310,93 @@ def predict_df(df, smi_column_name, models):
         response[model] = {}
         error_messages = []
 
-        if model.lower() == 'hlm':
-            predictor = HLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'rlm':
-            predictor = RLMPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'pampa':
-            predictor = PAMPAPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'pampa50':
-            predictor = PAMPA50Predictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'pampabbb':
-            predictor = PAMPABBBPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'solubility':
-            predictor = SolubilityPredictior(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'hlc':
-            predictor = LCPredictor(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'mlc':
-            predictor = MLCPredictor(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'rlc':
-            predictor = RLCPredictor(kekule_smiles = working_df['kekule_smiles'].values, smiles=working_df[smi_column_name].values)
-        elif model.lower() == 'cyp450':
-            predictor = CYP450Predictor(kekule_mols = working_df['mols'].values, smiles=working_df[smi_column_name].values)
-        else:
-            break
+        try:
+            use_batching = model.lower() in BATCH_MODELS and len(working_df) > BATCH_SIZE
 
-        pred_df = predictor.get_predictions()
+            if use_batching:
+                # Process in batches for slow models
+                print(f'{model}: Using batched processing ({BATCH_SIZE} per batch) for {len(working_df)} molecules')
+                batch_pred_dfs = []
+                batch_has_errors = False
+                batch_model_errors = []
+                last_predictor = None
 
-        if data_path != '':
-            predictor.record_predictions(f'{data_path}/predictions.csv')
-        pred_df = working_df.join(pred_df)
-        pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
+                for start in range(0, len(working_df), BATCH_SIZE):
+                    end = min(start + BATCH_SIZE, len(working_df))
+                    chunk = working_df.iloc[start:end].copy()
+                    chunk = chunk.reset_index(drop=True)
+                    print(f'{model}: Processing batch {start//BATCH_SIZE + 1} (rows {start}-{end})', flush=True)
 
-        # columns not present in original df
-        diff_cols = pred_df.columns.difference(df.columns)
-        df_res = pred_df[diff_cols]
+                    predictor = _create_predictor(model, chunk, smi_column_name)
+                    if predictor is None:
+                        break
+                    batch_df = predictor.get_predictions()
+                    batch_pred_dfs.append(batch_df)
+                    last_predictor = predictor
 
-        #response_df = pd.merge(df, pred_df, how='inner', left_on=smi_column_name, right_on=smi_column_name)
-        # making sure the response df is of the exact same length (rows) as original df
-        response_df = pd.merge(df, df_res, left_index=True, right_index=True, how='inner')
+                    if predictor.has_errors:
+                        batch_has_errors = True
+                        batch_model_errors.extend(predictor.get_errors()['model_errors'])
 
-        errors_dict = predictor.get_errors()
-        response[model]['hasErrors'] = predictor.has_errors
-        model_errors = errors_dict['model_errors']
+                if not batch_pred_dfs or last_predictor is None:
+                    continue
 
-        if len(model_errors) > 0:
-            error_message = base_models_error_message + ', '.join(model_errors)
-            error_messages.append(error_message)
+                pred_df = pd.concat(batch_pred_dfs, ignore_index=True)
 
-        response[model]['errorMessages'] = error_messages
-        response[model]['columns'] = list(response_df.columns.values)
+                # Use last_predictor for metadata (columns_dict, etc.)
+                predictor = last_predictor
+                predictor.has_errors = batch_has_errors
+                predictor.model_errors = batch_model_errors
+            else:
+                # Non-batched: process all at once
+                predictor = _create_predictor(model, working_df, smi_column_name)
+                if predictor is None:
+                    continue
+                pred_df = predictor.get_predictions()
 
-        columns_dict =  predictor.columns_dict()
-        dict_length = len(columns_dict.keys())
-        columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+            pred_df = working_df.reset_index(drop=True).join(pred_df)
+            pred_df.drop(['mols', 'kekule_smiles'], axis=1, inplace=True)
 
-        # replace SMILES with interpret SMILES when interpretation available
-        #if len(model_errors) == 0:
-        #    if 'mol' in response_df.columns:
-        #        response_df[smi_column_name] = response_df['mol']
-        #        response_df = response_df.drop('mol', 1)
-                #print(response_df.head())
+            # columns not present in original df
+            diff_cols = pred_df.columns.difference(df.columns)
+            df_res = pred_df[diff_cols]
 
-        response[model]['mainColumnsDict'] = columns_dict
-        response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
-        if model.lower() in ['rlm', 'pampa', 'solubility']:
-            response[model]['model_version'] = predictor.get_model_version()
+            # making sure the response df is of the exact same length (rows) as original df
+            response_df = pd.merge(df.reset_index(drop=True), df_res, left_index=True, right_index=True, how='inner')
+
+            errors_dict = predictor.get_errors()
+            response[model]['hasErrors'] = predictor.has_errors
+            model_errors = errors_dict['model_errors']
+
+            if len(model_errors) > 0:
+                error_message = base_models_error_message + ', '.join(model_errors)
+                error_messages.append(error_message)
+
+            response[model]['errorMessages'] = error_messages
+            response[model]['columns'] = list(response_df.columns.values)
+
+            columns_dict = predictor.columns_dict()
+            columns_dict[smi_column_name] = { 'order': 0, 'description': 'SMILES', 'isSmilesColumn': True }
+
+            response[model]['mainColumnsDict'] = columns_dict
+            response[model]['data'] = response_df.replace(np.nan, '', regex=True).to_dict(orient='records')
+            if model.lower() in ['rlm', 'pampa', 'solubility']:
+                response[model]['model_version'] = predictor.get_model_version()
+
+            if data_path != '':
+                predictor.record_predictions(f'{data_path}/predictions.csv')
+
+        except Exception as e:
+            print(f'ERROR processing model {model}: {e}', flush=True)
+            import traceback
+            traceback.print_exc()
+            response[model]['hasErrors'] = True
+            response[model]['errorMessages'] = [f'Error processing {model}: {str(e)}']
+            response[model]['data'] = []
+            response[model]['columns'] = []
+            response[model]['mainColumnsDict'] = {}
+            # Continue to next model instead of aborting
+            continue
 
     return response
 
