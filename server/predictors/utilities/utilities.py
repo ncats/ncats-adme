@@ -52,7 +52,7 @@ def get_kekule_smiles(mol: Mol) -> str:
 
 def addMolsKekuleSmilesToFrame(df: DataFrame, smi_column_name: str):
     for index, row in df.iterrows():
-        mol = Chem.MolFromSmiles(row[smi_column_name])
+        mol = Chem.MolFromSmiles(str(row[smi_column_name]))
         if mol is not None:
             Chem.Kekulize(mol)
             df.loc[index, 'mols'] = mol

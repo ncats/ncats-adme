@@ -7,7 +7,7 @@
       (ngModelChange)="onPageSizeChange($event)"
     >
       @for (size of pageSizeOptions; track size) {
-        <option [value]="size">{{ size }}</option>
+        <option [ngValue]="size">{{ size }}</option>
       }
     </select>
   </div>

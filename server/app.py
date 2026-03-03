@@ -300,7 +300,7 @@ def predict_df(df, smi_column_name, models):
     if len(working_df.index) == 0:
         response['hasErrors'] = True
         response['errorMessages'] = 'We were not able to parse the smiles you provided'
-        return jsonify(response)
+        return response
 
     base_models_error_message = 'We were not able to make predictions using the following model(s): '
 

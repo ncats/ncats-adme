@@ -75,8 +75,8 @@ export class PaginatorComponent {
     }
   }
   
-  onPageSizeChange(newSize: number): void {
-    this._pageSize.set(newSize);
+  onPageSizeChange(newSize: number | string): void {
+    this._pageSize.set(Number(newSize));
     this.emitPageEvent(0);
   }
   

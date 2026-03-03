@@ -88,15 +88,11 @@ export class ResultsTableComponent {
   
   private processAllData(predictions: Record<string, PredictionData>): void {
     const allData: Record<string, unknown>[] = [];
-    let allCols: string[] = [];
-    
+    const colSet = new Set<string>();
+
     for (const key in predictions) {
       const prediction = predictions[key];
-      allCols = [...prediction.columns];
-      
-      if (!allCols.includes('Tanimoto Similarity')) allCols.push('Tanimoto Similarity');
-      if (!allCols.includes('Model')) allCols.push('Model');
-      
+
       if (this.dataHandling === 'replace') {
         const predData = prediction.data;
         if (key === 'CYP450') {
@@ -116,10 +112,18 @@ export class ResultsTableComponent {
           allData.push({ ...predData, Model: key });
         }
       }
+
+      if (key === 'CYP450') {
+        ['smiles', 'Model', 'Predicted Class (Probability)', 'Prediction', 'Tanimoto Similarity'].forEach(c => colSet.add(c));
+      } else {
+        prediction.columns.forEach(c => colSet.add(c));
+        colSet.add('Tanimoto Similarity');
+        colSet.add('Model');
+      }
     }
-    
+
     this.dataAll.set(allData);
-    this.allColumnsAll.set(allCols);
+    this.allColumnsAll.set([...colSet]);
   }
   
   private pivotCYPData(predData: Record<string, unknown>): Record<string, unknown>[] {
