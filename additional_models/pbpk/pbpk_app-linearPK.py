@@ -51,32 +51,17 @@ CUSTOM_CSS = """
 """
 st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
 
-# Logo: prefer local repo asset if present, else show nothing (avoid broken URLs)
-from pathlib import Path as _Path
-_logo_candidates = [
-    _Path(__file__).parent / "assets" / "dmpk_core_logo.png",
-    _Path(__file__).parent / "assets" / "dmpk_logo.png",
-]
-_logo_path = next((p for p in _logo_candidates if p.exists()), None)
-
 with st.container():
-    c1, c2 = st.columns([0.18, 0.82], vertical_alignment="center")
-    with c1:
-        if _logo_path is not None:
-            st.image(str(_logo_path), use_container_width=True)
-        else:
-            st.empty()
-    with c2:
-        st.markdown(
-            '<div class="header">'
-            '<div style="display:flex;align-items:center;gap:10px;">'
-            '<h2 style="margin:0;">PBPK Dose Simulator</h2>'
-            '<span class="badge">NCATS DMPK Core</span>'
-            '</div>'
-            '<div class="smallnote">Interactive PBPK simulation with versatile regimens, tissue displays, and full NCA outputs.</div>'
-            '</div>',
-            unsafe_allow_html=True
-        )
+    st.markdown(
+        '<div class="header">'
+        '<div style="display:flex;align-items:center;gap:10px;">'
+        '<h2 style="margin:0;">PBPK Dose Simulator</h2>'
+        '<span class="badge">NCATS DMPK Core</span>'
+        '</div>'
+        '<div class="smallnote">Interactive PBPK simulation with versatile regimens, tissue displays, and full NCA outputs.</div>'
+        '</div>',
+        unsafe_allow_html=True
+    )
 
 st.caption("DISCLAIMER: Research/education tool only. Not validated for clinical decision-making.")
 
