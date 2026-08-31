@@ -1,9 +1,14 @@
+# syntax=docker/dockerfile:1
 # Dockerfile for OpenData subdomain deployment (opendata.ncats.nih.gov/adme)
 # Full stack with Angular frontend and Flask backend
 #
 # Usage:
 #   docker build -f docker/Dockerfile.opendata -t ncats-adme-opendata .
 #   docker run -p 5000:5000 ncats-adme-opendata
+
+# scan build context and all stages so the SBOM covers build-time deps too
+ARG BUILDKIT_SBOM_SCAN_CONTEXT=true
+ARG BUILDKIT_SBOM_SCAN_STAGE=true
 
 FROM node:22 AS build
 
