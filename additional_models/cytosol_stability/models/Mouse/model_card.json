@@ -1,0 +1,32 @@
+{
+  "species": "Mouse",
+  "task": "binary classification (0=Stable, 1=Unstable) of cytosol metabolic stability",
+  "algorithm": "rf",
+  "feature_set": "all_features",
+  "sampling": "stratified_bagging",
+  "n_bags": 32,
+  "n_features": 6461,
+  "hyperparameters": {
+    "max_depth": 10,
+    "max_features": "sqrt",
+    "min_samples_leaf": 1,
+    "min_samples_split": 2,
+    "n_bags": 32,
+    "n_estimators": 200
+  },
+  "decision_threshold": 0.5297,
+  "external_test_metrics": {
+    "acc": 0.7413,
+    "bacc": 0.6581,
+    "sensitivity": 0.5556,
+    "specificity": 0.7606,
+    "precision": 0.1948,
+    "f1": 0.2885,
+    "auc": 0.7266,
+    "mcc": 0.2084
+  },
+  "model_file": "progress/7_hyperparameter_optimization/Mouse/final_model.pkl",
+  "predictions_file": "progress/7_hyperparameter_optimization/Mouse/external_predictions.csv",
+  "requires": "scikit-learn 1.7.2 (pickle is version-specific); see environment.yml",
+  "random_state": 42
+}
