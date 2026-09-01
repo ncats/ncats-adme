@@ -1,7 +1,7 @@
 # Species-specific cytosolic metabolic stability models — reproduction package
 
-Supporting material for *"Machine learning models for species-specific prediction of cytosolic
-metabolic stability"* (Lim, Jain, Xu, Shah).
+Supporting material for *"Advancements in Forecasting Liver Cytosol Metabolic Stability: A
+Comprehensive Update on Machine Learning Predictive Models"* (Lim, Jain, Xu, Shah).
 
 This package contains the **data split assignments**, the **preprocessing and modeling code**, and
 the **trained final models** for the human, mouse, and rat cytosolic metabolic stability
@@ -168,8 +168,8 @@ converted back to absolute descriptor values, and no structures can be read from
 
 ## Citation
 
-> Lim G, Jain S, Xu X, Shah P. Machine learning models for species-specific prediction of cytosolic
-> metabolic stability. *Bioinformatics Advances* (in press).
+> Lim G, Jain S, Xu X, Shah P. Advancements in Forecasting Liver Cytosol Metabolic Stability:
+> A Comprehensive Update on Machine Learning Predictive Models. *Bioinformatics Advances* (in press).
 
 Previous human model, and the source of the compounds marked `Old` in `data_source`:
 
