@@ -1,0 +1,31 @@
+{
+  "species": "Rat",
+  "task": "binary classification (0=Stable, 1=Unstable) of cytosol metabolic stability",
+  "algorithm": "svm",
+  "feature_set": "rdkit_ds",
+  "sampling": "stratified_bagging",
+  "n_bags": 16,
+  "n_features": 166,
+  "hyperparameters": {
+    "C": 1.0,
+    "class_weight": null,
+    "gamma": "auto",
+    "kernel": "rbf",
+    "n_bags": 16
+  },
+  "decision_threshold": 0.5287,
+  "external_test_metrics": {
+    "acc": 0.7333,
+    "bacc": 0.7244,
+    "sensitivity": 0.7143,
+    "specificity": 0.7345,
+    "precision": 0.1429,
+    "f1": 0.2381,
+    "auc": 0.8862,
+    "mcc": 0.2314
+  },
+  "model_file": "progress/7_hyperparameter_optimization/Rat/final_model.pkl",
+  "predictions_file": "progress/7_hyperparameter_optimization/Rat/external_predictions.csv",
+  "requires": "scikit-learn 1.7.2 (pickle is version-specific); see environment.yml",
+  "random_state": 42
+}

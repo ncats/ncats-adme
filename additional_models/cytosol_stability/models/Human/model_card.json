@@ -1,0 +1,31 @@
+{
+  "species": "Human",
+  "task": "binary classification (0=Stable, 1=Unstable) of cytosol metabolic stability",
+  "algorithm": "lgbm",
+  "feature_set": "avalon_fp_2048",
+  "sampling": "stratified_bagging",
+  "n_bags": 64,
+  "n_features": 1535,
+  "hyperparameters": {
+    "learning_rate": 0.05,
+    "min_child_samples": 20,
+    "n_bags": 64,
+    "n_estimators": 200,
+    "num_leaves": 31
+  },
+  "decision_threshold": 0.5516,
+  "external_test_metrics": {
+    "acc": 0.8658,
+    "bacc": 0.8121,
+    "sensitivity": 0.7241,
+    "specificity": 0.9,
+    "precision": 0.6364,
+    "f1": 0.6774,
+    "auc": 0.8825,
+    "mcc": 0.5951
+  },
+  "model_file": "progress/7_hyperparameter_optimization/Human/final_model.pkl",
+  "predictions_file": "progress/7_hyperparameter_optimization/Human/external_predictions.csv",
+  "requires": "scikit-learn 1.7.2 (pickle is version-specific); see environment.yml",
+  "random_state": 42
+}
