@@ -1,0 +1,5 @@
+streamlit==1.60.0
+numpy
+pandas
+plotly
+scipy
