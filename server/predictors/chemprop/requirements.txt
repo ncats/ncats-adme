@@ -14,3 +14,4 @@ torch>=1.5.1
 tqdm>=4.45.0
 typed-argument-parser>=1.5.2
 keras>=3.11.3 # not directly required, pinned by Snyk to avoid a vulnerability
+fonttools>=4.61.0 # not directly required, pinned by Snyk to avoid a vulnerability
